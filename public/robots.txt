@@ -1,0 +1,28 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://blog.itsmillan.com/sitemap.xml
+
+# Specific rules for SEO optimization
+Crawl-delay: 1
+
+# Allow all major search engines
+User-agent: Googlebot
+Allow: /
+
+User-agent: Bingbot  
+Allow: /
+
+User-agent: Slurp
+Allow: /
+
+# Disallow admin areas (if any in future)
+User-agent: *
+Disallow: /admin/
+Disallow: /private/
+Disallow: /*.json$
+
+# Allow RSS feed
+User-agent: *
+Allow: /rss.xml

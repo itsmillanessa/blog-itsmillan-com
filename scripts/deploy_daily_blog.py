@@ -95,8 +95,8 @@ class BlogDeployment:
             return False
     
     def create_rss_feed(self):
-        """Generar RSS feed"""
-        print("\n📡 STEP 3: Generating RSS feed")
+        """Generar RSS feed y SEO assets"""
+        print("\n📡 STEP 3: Generating RSS feed and SEO assets")
         print("=" * 50)
         
         rss_generator = f"""
@@ -171,6 +171,14 @@ print("RSS feed generated successfully")
             f"source {self.venv_path}/bin/activate && python3 generate_rss.py",
             "Generating RSS feed"
         )
+        
+        if success:
+            # Also run sitemap generator
+            success2, output2 = self.run_command(
+                f"cd {self.blog_dir} && source {self.venv_path}/bin/activate && python3 scripts/generate_sitemap.py",
+                "Generating sitemap and SEO assets"
+            )
+            return success2
         
         return success
     
