@@ -29,7 +29,8 @@ class BlogDeployment:
                 capture_output=True,
                 text=True,
                 cwd=cwd or self.workspace_dir,
-                timeout=300
+                timeout=300,
+                executable="/bin/bash"
             )
             
             if result.returncode == 0:
@@ -99,69 +100,55 @@ class BlogDeployment:
         print("\n📡 STEP 3: Generating RSS feed and SEO assets")
         print("=" * 50)
         
-        rss_generator = f"""
-import os
-import json
-from datetime import datetime
-from xml.dom import minidom
-
-# Simple RSS generation
-posts_dir = "{self.blog_dir}/content/posts"
-rss_path = "{self.blog_dir}/public/rss.xml"
-
-items = []
-if os.path.exists(posts_dir):
-    for filename in sorted(os.listdir(posts_dir), reverse=True)[:10]:
-        if filename.endswith('.md'):
-            with open(os.path.join(posts_dir, filename), 'r', encoding='utf-8') as f:
-                content = f.read()
-                if '---' in content:
-                    _, front_matter, _ = content.split('---', 2)
-                    try:
-                        # Simple frontmatter parsing
-                        title = 'Tech Digest'
-                        date = datetime.now().isoformat()
-                        excerpt = ''
-                        
-                        for line in front_matter.split('\\n'):
-                            if line.startswith('title:'):
-                                title = line.split(':', 1)[1].strip(' "')
-                            elif line.startswith('date:'):
-                                date = line.split(':', 1)[1].strip(' "')
-                            elif line.startswith('excerpt:'):
-                                excerpt = line.split(':', 1)[1].strip(' "')
-                        
-                        slug = filename.replace('.md', '')
-                        items.append(f'''
-        <item>
-            <title>{title}</title>
-            <link>https://blog.itsmillan.com/{slug}/</link>
-            <description>{excerpt}</description>
-            <pubDate>{datetime.fromisoformat(date.replace('Z', '+00:00')).strftime('%a, %d %b %Y %H:%M:%S GMT')}</pubDate>
-            <guid>https://blog.itsmillan.com/{slug}/</guid>
-        </item>''')
-                    except:
-                        continue
-
-rss_content = f'''<?xml version="1.0" encoding="UTF-8"?>
-<rss version="2.0">
-    <channel>
-        <title>Tech Digest | Blog de Millán</title>
-        <link>https://blog.itsmillan.com</link>
-        <description>Noticias diarias de tecnología, IA y ciberseguridad analizadas por NovaSecOps</description>
-        <language>es</language>
-        <lastBuildDate>{datetime.now().strftime('%a, %d %b %Y %H:%M:%S GMT')}</lastBuildDate>
-        <generator>NovaSecOps AI Blog System</generator>
-        {''.join(items)}
-    </channel>
-</rss>'''
-
-os.makedirs(os.path.dirname(rss_path), exist_ok=True)
-with open(rss_path, 'w', encoding='utf-8') as f:
-    f.write(rss_content)
-
-print("RSS feed generated successfully")
-"""
+        blog_dir = self.blog_dir
+        rss_generator = (
+            "import os\n"
+            "import json\n"
+            "from datetime import datetime\n"
+            "\n"
+            f"posts_dir = '{blog_dir}/content/posts'\n"
+            f"rss_path = '{blog_dir}/public/rss.xml'\n"
+            "\n"
+            "items = []\n"
+            "if os.path.exists(posts_dir):\n"
+            "    for filename in sorted(os.listdir(posts_dir), reverse=True)[:10]:\n"
+            "        if filename.endswith('.md'):\n"
+            "            with open(os.path.join(posts_dir, filename), 'r', encoding='utf-8') as f:\n"
+            "                content = f.read()\n"
+            "            if '---' in content:\n"
+            "                parts = content.split('---', 2)\n"
+            "                if len(parts) >= 3:\n"
+            "                    front_matter = parts[1]\n"
+            "                    try:\n"
+            "                        title = 'Tech Digest'\n"
+            "                        date = datetime.now().isoformat()\n"
+            "                        excerpt = ''\n"
+            "                        for line in front_matter.split('\\n'):\n"
+            "                            line = line.strip()\n"
+            "                            if line.startswith('title:'):\n"
+            "                                title = line.split(':', 1)[1].strip().strip('\"')\n"
+            "                            elif line.startswith('date:'):\n"
+            "                                date = line.split(':', 1)[1].strip().strip('\"')\n"
+            "                            elif line.startswith('excerpt:'):\n"
+            "                                excerpt = line.split(':', 1)[1].strip().strip('\"')\n"
+            "                        slug = filename.replace('.md', '')\n"
+            "                        items.append(f'<item><title>{title}</title><link>https://blog.itsmillan.com/{slug}/</link><description>{excerpt}</description><guid>https://blog.itsmillan.com/{slug}/</guid></item>')\n"
+            "                    except:\n"
+            "                        continue\n"
+            "\n"
+            "rss_content = '<?xml version=\"1.0\" encoding=\"UTF-8\"?>\\n<rss version=\"2.0\"><channel>'\n"
+            "rss_content += '<title>Tech Digest | Blog de Millan</title>'\n"
+            "rss_content += '<link>https://blog.itsmillan.com</link>'\n"
+            "rss_content += '<description>Noticias diarias de tecnologia, IA y ciberseguridad</description>'\n"
+            "rss_content += '<language>es</language>'\n"
+            "rss_content += ''.join(items)\n"
+            "rss_content += '</channel></rss>'\n"
+            "\n"
+            "os.makedirs(os.path.dirname(rss_path), exist_ok=True)\n"
+            "with open(rss_path, 'w', encoding='utf-8') as f:\n"
+            "    f.write(rss_content)\n"
+            "print('RSS feed generated successfully')\n"
+        )
         
         # Write and execute RSS generator
         with open(f"{self.workspace_dir}/generate_rss.py", 'w') as f:

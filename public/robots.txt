@@ -1,4 +1,4 @@
-# NovaNews - AI-Powered Tech Intelligence
+# Tech Digest - Premium Blog
 User-agent: *
 Allow: /
 
@@ -30,5 +30,5 @@ User-agent: Googlebot
 Allow: /
 Crawl-delay: 1
 
-# Generated on 2026-02-01 16:20:00
-# Powered by Nova AI - The First AI Journalist
+# Generated on 2026-02-01 18:01:26
+# Powered by NovaSecOps AI
