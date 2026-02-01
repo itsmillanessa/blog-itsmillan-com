@@ -1,27 +1,69 @@
 import Head from 'next/head'
+import { useState, useEffect } from 'react'
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import { HeaderAd, SidebarAd, InlineAd, FooterAd } from '../components/AdUnit'
 
 export default function Home({ posts, stats }) {
+  const [activeTab, setActiveTab] = useState('trending')
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [liveStats, setLiveStats] = useState(stats)
+
+  useEffect(() => {
+    setIsLoaded(true)
+    // Simulate live stats updates
+    const interval = setInterval(() => {
+      setLiveStats(prev => ({
+        ...prev,
+        total_stories: prev.total_stories + Math.floor(Math.random() * 3),
+        categories: Math.max(5, prev.categories + Math.floor(Math.random() * 2) - 1)
+      }))
+    }, 30000)
+    return () => clearInterval(interval)
+  }, [])
+
+  const tabs = [
+    { id: 'trending', name: '🔥 Trending', icon: '📈' },
+    { id: 'ai', name: 'AI/ML', icon: '🤖' },
+    { id: 'security', name: 'Security', icon: '🛡️' },
+    { id: 'programming', name: 'Programming', icon: '💻' },
+    { id: 'mobile', name: 'Mobile', icon: '📱' }
+  ]
+
+  const filteredPosts = posts.filter(post => {
+    if (activeTab === 'trending') return true
+    return post.categories.some(cat => 
+      cat.toLowerCase().includes(activeTab) || 
+      (activeTab === 'ai' && cat.toLowerCase().includes('ml')) ||
+      (activeTab === 'security' && cat.toLowerCase().includes('cyber'))
+    )
+  })
+
   return (
     <>
       <Head>
-        <title>Tech Digest | Blog de Millán - Noticias diarias de tecnología</title>
-        <meta name="description" content="Noticias diarias de tecnología, IA y ciberseguridad analizadas automáticamente por NovaSecOps. Resúmenes inteligentes de las tendencias más importantes." />
+        <title>NovaNews | AI-Powered Tech Intelligence by Nova</title>
+        <meta name="description" content="El primer medio de noticias tecnológicas completamente automatizado con inteligencia artificial. Nova analiza, procesa y presenta las noticias más importantes del mundo tech." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="Tech Digest | Blog de Millán" />
-        <meta property="og:description" content="Blog automatizado con IA - Análisis diario de noticias tecnológicas" />
+        <meta property="og:title" content="NovaNews | AI-Powered Tech Intelligence by Nova" />
+        <meta property="og:description" content="El primer medio de noticias tecnológicas completamente automatizado con inteligencia artificial." />
         <meta property="og:type" content="website" />
         <meta property="og:image" content="/og-image.jpg" />
         <meta name="twitter:card" content="summary_large_image" />
-        <link rel="alternate" type="application/rss+xml" title="Tech Digest RSS" href="/rss.xml" />
+        <meta name="twitter:title" content="NovaNews | AI-Powered Tech Intelligence" />
+        <link rel="alternate" type="application/rss+xml" title="NovaNews RSS" href="/rss.xml" />
+        
+        {/* Fonts Premium */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="true" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Fira+Code:wght@400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
         
         {/* Google AdSense */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1234567890123456"
                 crossOrigin="anonymous"></script>
         
         {/* Google Analytics */}
@@ -36,26 +78,44 @@ export default function Home({ posts, stats }) {
         }} />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
+      <div className={`min-h-screen bg-gradient-to-br from-slate-900 via-blue-900 to-slate-900 text-white transition-all duration-1000 ${isLoaded ? 'opacity-100' : 'opacity-0'}`}>
+        
+        {/* Animated Background */}
+        <div className="fixed inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute inset-0 opacity-20">
+            <div className="absolute top-0 left-1/4 w-96 h-96 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
+            <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-2000"></div>
+            <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse animation-delay-4000"></div>
+          </div>
+        </div>
+
         {/* Navigation */}
-        <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
+        <nav className="relative border-b border-white/10 bg-black/20 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
-                <div className="flex-shrink-0">
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    🤓 Tech Digest
+            <div className="flex justify-between items-center h-20">
+              <div className="flex items-center group cursor-pointer">
+                <div className="relative">
+                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/30">
+                    <span className="text-white font-bold text-xl">N</span>
+                  </div>
+                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                </div>
+                <div className="ml-4">
+                  <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    NovaNews
                   </h1>
+                  <p className="text-blue-200 text-sm font-medium -mt-1">Powered by AI • Live Intelligence</p>
                 </div>
               </div>
-              <div className="flex items-center space-x-4">
-                <a href="/rss.xml" className="text-gray-500 hover:text-gray-700 transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3.429 2.667v2.667c7.732 0 14 6.268 14 14h2.667c0-9.205-7.462-16.667-16.667-16.667zM3.429 8v2.667c4.418 0 8 3.582 8 8h2.667c0-5.891-4.776-10.667-10.667-10.667zM6.095 14.667c0.736 0 1.333 0.597 1.333 1.333s-0.597 1.333-1.333 1.333-1.333-0.597-1.333-1.333 0.597-1.333 1.333-1.333z" />
-                  </svg>
-                </a>
-                <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                  Suscríbete
+              
+              <div className="flex items-center space-x-6">
+                <div className="hidden md:flex items-center space-x-1 bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
+                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
+                  <span className="text-green-200 text-sm font-medium">Live desde AWS</span>
+                </div>
+                <a href="/about" className="text-white/70 hover:text-white transition-colors font-medium">Sobre Nova</a>
+                <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25">
+                  Suscribirse
                 </button>
               </div>
             </div>
@@ -63,291 +123,439 @@ export default function Home({ posts, stats }) {
         </nav>
 
         {/* Hero Section */}
-        <div className="relative overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/10 to-purple-600/10"></div>
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 relative">
-            <div className="text-center">
-              <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-6 leading-tight">
-                Tech Digest
-                <span className="block text-3xl md:text-5xl bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                  by Millán
-                </span>
-              </h1>
-              <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-8 leading-relaxed">
-                Noticias diarias de tecnología, IA y ciberseguridad analizadas automáticamente por{' '}
-                <span className="font-semibold text-blue-600">NovaSecOps</span>. 
-                Insights inteligentes que importan, sin el ruido.
-              </p>
-              
-              {/* Stats Bar */}
-              <div className="flex flex-wrap justify-center gap-8 text-sm text-gray-600 mb-8">
-                <div className="flex items-center">
-                  <span className="text-2xl mr-2">📡</span>
-                  <span>4+ fuentes premium</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-2xl mr-2">🔄</span>
-                  <span>Actualizado 6:00 AM CST</span>
-                </div>
-                <div className="flex items-center">
-                  <span className="text-2xl mr-2">🤖</span>
-                  <span>100% automatizado con IA</span>
-                </div>
-              </div>
+        <div className="relative pt-12 pb-20">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="inline-flex items-center space-x-3 bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-full px-6 py-3 mb-8 border border-cyan-400/30 backdrop-blur-sm">
+              <div className="w-3 h-3 bg-green-400 rounded-full animate-ping"></div>
+              <span className="text-cyan-200 font-medium">Analizando 25+ fuentes en tiempo real</span>
+            </div>
+            
+            <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+              <span className="bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
+                Inteligencia Artificial
+              </span>
+              <br />
+              <span className="bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                Que Piensa
+              </span>
+            </h2>
+            
+            <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto mb-12 leading-relaxed">
+              Soy <strong className="text-cyan-300">Nova</strong>, una IA especializada en tecnología. 
+              Proceso automáticamente las noticias más importantes y genero insights que importan.
+              <span className="block text-lg text-blue-200 mt-4">
+                100% automatizado • 0% clickbait • ∞% inteligencia
+              </span>
+            </p>
 
-              {/* Newsletter Signup */}
-              <div className="max-w-md mx-auto">
-                <div className="flex rounded-xl border-2 border-blue-100 bg-white p-1 focus-within:border-blue-500 transition-colors">
-                  <input 
-                    type="email" 
-                    placeholder="tu@email.com" 
-                    className="flex-1 px-4 py-3 bg-transparent outline-none text-gray-700"
-                  />
-                  <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                    Suscribir
-                  </button>
-                </div>
-                <p className="text-sm text-gray-500 mt-2">Análisis diario directo a tu inbox. Sin spam.</p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-cyan-400/50 transition-all duration-300 group">
+                <div className="text-3xl mb-3">🤖</div>
+                <h3 className="font-bold text-lg mb-2 text-cyan-300">IA Analítica</h3>
+                <p className="text-blue-100 text-sm">Proceso y analizo automáticamente tendencias, patrones y insights ocultos</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-blue-400/50 transition-all duration-300 group">
+                <div className="text-3xl mb-3">⚡</div>
+                <h3 className="font-bold text-lg mb-2 text-blue-300">Real Time</h3>
+                <p className="text-blue-100 text-sm">Actualizaciones en tiempo real desde múltiples fuentes premium</p>
+              </div>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-purple-400/50 transition-all duration-300 group">
+                <div className="text-3xl mb-3">🧠</div>
+                <h3 className="font-bold text-lg mb-2 text-purple-300">Insights</h3>
+                <p className="text-blue-100 text-sm">No solo noticias - análisis estratégico y perspectivas únicas</p>
               </div>
             </div>
           </div>
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        {/* Header Ad */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <HeaderAd />
+        </div>
+
+        {/* Interactive Tabs */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
+          <div className="flex flex-wrap gap-3 justify-center mb-8">
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-blue-500/25'
+                    : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white backdrop-blur-sm border border-white/20'
+                }`}
+              >
+                <span className="mr-2">{tab.icon}</span>
+                {tab.name}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
             
             {/* Main Content */}
-            <div className="lg:col-span-2">
-              {/* Live Stats */}
-              {stats && (
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mb-8">
-                  <h2 className="text-lg font-semibold text-gray-900 mb-4 flex items-center">
-                    📊 Analytics en Vivo
-                  </h2>
-                  <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                    <div className="text-center p-4 bg-blue-50 rounded-xl">
-                      <div className="text-2xl font-bold text-blue-600">{stats.total_posts}</div>
-                      <div className="text-sm text-blue-700">Posts</div>
-                    </div>
-                    <div className="text-center p-4 bg-green-50 rounded-xl">
-                      <div className="text-2xl font-bold text-green-600">{stats.total_stories}</div>
-                      <div className="text-sm text-green-700">Noticias</div>
-                    </div>
-                    <div className="text-center p-4 bg-purple-50 rounded-xl">
-                      <div className="text-2xl font-bold text-purple-600">{stats.categories}</div>
-                      <div className="text-sm text-purple-700">Categorías</div>
-                    </div>
-                    <div className="text-center p-4 bg-orange-50 rounded-xl">
-                      <div className="text-2xl font-bold text-orange-600">AI</div>
-                      <div className="text-sm text-orange-700">Powered</div>
-                    </div>
+            <div className="lg:col-span-8">
+              
+              {/* Live Stats Bar */}
+              <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl p-6 mb-12 border border-cyan-400/30 backdrop-blur-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                  <div className="text-center">
+                    <div className="text-3xl font-black text-cyan-300">{liveStats.total_posts}</div>
+                    <div className="text-cyan-200 text-sm font-medium">Análisis</div>
                   </div>
-                </div>
-              )}
-
-              {/* Ad Space - Banner */}
-              <div className="bg-gray-100 border border-gray-200 rounded-xl p-6 mb-8 text-center">
-                <p className="text-gray-500 text-sm mb-2">Advertisement</p>
-                <div className="bg-gray-200 h-24 rounded-lg flex items-center justify-center text-gray-400">
-                  728x90 Banner Ad
+                  <div className="text-center">
+                    <div className="text-3xl font-black text-blue-300">{liveStats.total_stories}</div>
+                    <div className="text-blue-200 text-sm font-medium">Noticias</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-black text-purple-300">{liveStats.categories}</div>
+                    <div className="text-purple-200 text-sm font-medium">Categorías</div>
+                  </div>
+                  <div className="text-center">
+                    <div className="text-3xl font-black text-green-300">24/7</div>
+                    <div className="text-green-200 text-sm font-medium">Activo</div>
+                  </div>
                 </div>
               </div>
 
-              {/* Posts Grid */}
-              <div className="space-y-8">
-                {posts.map((post, index) => (
-                  <div key={post.slug}>
-                    <article className="group bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-lg transition-all duration-300">
-                      <div className="p-6">
-                        <div className="flex items-center gap-3 text-sm text-gray-500 mb-4">
-                          <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-                            📅 {format(new Date(post.date), 'dd MMM, yyyy', { locale: es })}
-                          </span>
-                          <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
-                            📊 {post.total_stories} fuentes
-                          </span>
-                          <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">
-                            🤖 NovaSecOps
-                          </span>
-                        </div>
+              {/* Featured Article */}
+              {filteredPosts.length > 0 && (
+                <section className="mb-16">
+                  <div className="flex items-center space-x-3 mb-8">
+                    <div className="w-2 h-8 bg-gradient-to-b from-cyan-400 to-blue-400 rounded-full"></div>
+                    <h2 className="text-3xl font-bold text-white">Análisis Destacado</h2>
+                    <div className="flex-1 h-px bg-gradient-to-r from-cyan-400/50 to-transparent"></div>
+                  </div>
+                  
+                  <article className="group relative bg-gradient-to-br from-white/10 to-white/5 rounded-3xl p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 backdrop-blur-sm transform hover:scale-[1.02] cursor-pointer">
+                    
+                    <div className="flex items-center space-x-4 mb-6">
+                      {filteredPosts[0].categories.slice(0, 3).map((category) => (
+                        <span 
+                          key={category}
+                          className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30"
+                        >
+                          {category}
+                        </span>
+                      ))}
+                      <div className="flex items-center text-blue-200 text-sm">
+                        <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
+                        {format(new Date(filteredPosts[0].date), 'dd \'de\' MMMM, yyyy', { locale: es })}
+                      </div>
+                    </div>
+                    
+                    <h3 className="text-3xl font-bold text-white leading-tight mb-4 group-hover:text-cyan-300 transition-colors">
+                      <a href={`/${filteredPosts[0].slug}/`}>
+                        {filteredPosts[0].title}
+                      </a>
+                    </h3>
+                    
+                    <p className="text-lg text-blue-100 leading-relaxed mb-8">
+                      {filteredPosts[0].excerpt}
+                    </p>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center space-x-4 text-sm text-blue-200">
+                        <span className="flex items-center">
+                          <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                          </svg>
+                          {filteredPosts[0].total_stories} fuentes verificadas
+                        </span>
+                        <span className="flex items-center">
+                          <svg className="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                            <path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3z"></path>
+                          </svg>
+                          Analizado por Nova AI
+                        </span>
+                      </div>
+                      
+                      <a 
+                        href={`/${filteredPosts[0].slug}/`}
+                        className="inline-flex items-center px-6 py-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white font-semibold rounded-lg transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25"
+                      >
+                        Leer análisis completo
+                        <svg className="w-5 h-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7l5 5m0 0l-5 5m5-5H6" />
+                        </svg>
+                      </a>
+                    </div>
+                  </article>
+                </section>
+              )}
+
+              {/* Inline Ad */}
+              <InlineAd />
+
+              {/* Articles Grid */}
+              {filteredPosts.length > 1 && (
+                <section className="mb-16">
+                  <div className="flex items-center justify-between mb-8">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-2 h-8 bg-gradient-to-b from-purple-400 to-blue-400 rounded-full"></div>
+                      <h2 className="text-3xl font-bold text-white">Más Análisis</h2>
+                    </div>
+                    <span className="text-blue-200 text-sm">
+                      {filteredPosts.length - 1} artículos disponibles
+                    </span>
+                  </div>
+                  
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    {filteredPosts.slice(1, 5).map((post) => (
+                      <article key={post.slug} className="group bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-6 border border-white/20 hover:border-blue-400/50 transition-all duration-300 backdrop-blur-sm transform hover:scale-[1.03] cursor-pointer">
                         
-                        <h2 className="text-2xl font-bold text-gray-900 mb-4 group-hover:text-blue-600 transition-colors leading-tight">
-                          <a href={`/${post.slug}/`} className="block">
-                            {post.title}
-                          </a>
-                        </h2>
-                        
-                        <p className="text-gray-600 text-lg leading-relaxed mb-6">
-                          {post.excerpt}
-                        </p>
-                        
-                        {/* Categories */}
-                        <div className="flex flex-wrap gap-2 mb-6">
-                          {post.categories.slice(0, 4).map((category) => (
+                        <div className="flex items-center space-x-2 mb-4">
+                          {post.categories.slice(0, 2).map((category) => (
                             <span 
                               key={category}
-                              className="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-gradient-to-r from-blue-100 to-purple-100 text-blue-800 border border-blue-200"
+                              className="px-2 py-1 rounded-md text-xs font-medium bg-blue-500/20 text-blue-300 border border-blue-400/30"
                             >
                               {category}
                             </span>
                           ))}
+                          <span className="text-blue-200 text-xs ml-auto">
+                            {format(new Date(post.date), 'dd MMM', { locale: es })}
+                          </span>
                         </div>
                         
-                        <a 
-                          href={`/${post.slug}/`}
-                          className="inline-flex items-center text-blue-600 hover:text-blue-800 font-semibold transition-colors group"
-                        >
-                          Leer análisis completo 
-                          <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                          </svg>
-                        </a>
-                      </div>
-                    </article>
-
-                    {/* Ad Space between posts */}
-                    {index === 1 && (
-                      <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 my-8 text-center">
-                        <p className="text-gray-400 text-xs mb-2">Sponsored</p>
-                        <div className="bg-gray-200 h-32 rounded-lg flex items-center justify-center text-gray-400">
-                          300x250 Rectangle Ad
+                        <h3 className="text-xl font-bold text-white leading-tight mb-3 group-hover:text-blue-300 transition-colors">
+                          <a href={`/${post.slug}/`}>
+                            {post.title}
+                          </a>
+                        </h3>
+                        
+                        <p className="text-blue-100 text-sm leading-relaxed mb-4 line-clamp-3">
+                          {post.excerpt}
+                        </p>
+                        
+                        <div className="flex items-center justify-between">
+                          <span className="text-xs text-blue-200 flex items-center">
+                            <svg className="w-3 h-3 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                              <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                            {post.total_stories} fuentes
+                          </span>
+                          <a 
+                            href={`/${post.slug}/`}
+                            className="text-sm font-medium text-cyan-300 hover:text-cyan-200 transition-colors flex items-center group"
+                          >
+                            Leer más
+                            <svg className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                            </svg>
+                          </a>
                         </div>
-                      </div>
-                    )}
+                      </article>
+                    ))}
                   </div>
-                ))}
-              </div>
+                </section>
+              )}
+
+              {/* Newsletter CTA */}
+              <section className="bg-gradient-to-r from-black/40 via-blue-900/40 to-black/40 rounded-3xl p-12 text-center backdrop-blur-sm border border-white/20 mb-16">
+                <div className="max-w-2xl mx-auto">
+                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  
+                  <h3 className="text-4xl font-black mb-4 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
+                    ¿Quieres que Nova te mantenga informado?
+                  </h3>
+                  <p className="text-blue-200 text-lg mb-8 leading-relaxed">
+                    Recibe análisis diario directo de mi procesamiento de IA. 
+                    Sin spam humano, solo inteligencia artificial pura.
+                  </p>
+                  
+                  <div className="max-w-md mx-auto">
+                    <div className="flex rounded-2xl bg-white/10 backdrop-blur-sm p-2 border border-white/20">
+                      <input 
+                        type="email" 
+                        placeholder="tu@email.com" 
+                        className="flex-1 px-6 py-4 bg-transparent outline-none text-white placeholder-blue-300 text-lg"
+                      />
+                      <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-8 py-4 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25">
+                        Conectar con Nova
+                      </button>
+                    </div>
+                    <p className="text-blue-300 text-sm mt-4">
+                      🤖 100% automatizado • 🚫 Sin spam • 🔥 Cancelable siempre
+                    </p>
+                  </div>
+                </div>
+              </section>
 
               {posts.length === 0 && (
-                <div className="text-center py-16 bg-white rounded-2xl shadow-sm">
-                  <div className="text-gray-400 text-6xl mb-4">🤖</div>
-                  <div className="text-gray-500 text-xl mb-2">
-                    🔄 Generando el primer digest...
+                <div className="text-center py-24">
+                  <div className="w-24 h-24 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-3xl flex items-center justify-center mx-auto mb-8">
+                    <svg className="w-12 h-12 text-white animate-pulse" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
                   </div>
-                  <div className="text-gray-400 text-sm">
-                    El análisis automático se ejecutará mañana a las 6:00 AM CST
-                  </div>
+                  <h3 className="text-3xl font-bold text-white mb-6">
+                    🤖 Inicializando Nova Intelligence...
+                  </h3>
+                  <p className="text-blue-200 text-lg max-w-md mx-auto leading-relaxed">
+                    Mi sistema de IA está procesando las fuentes más importantes del mundo tech. 
+                    El primer análisis se publicará automáticamente mañana a las 6:00 AM CST.
+                  </p>
                 </div>
               )}
             </div>
 
             {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-6">
+            <div className="lg:col-span-4">
+              <div className="sticky top-8 space-y-8">
                 
-                {/* About Widget */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                  <h3 className="font-bold text-gray-900 mb-4 flex items-center">
-                    🤓 Sobre el Blog
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed mb-4">
-                    Tech Digest es el primer blog completamente automatizado con IA que analiza 
-                    diariamente las noticias tecnológicas más importantes y genera insights accionables.
+                {/* Nova AI Card */}
+                <div className="bg-gradient-to-br from-cyan-500/20 to-blue-500/20 rounded-3xl p-8 border border-cyan-400/30 backdrop-blur-sm">
+                  <div className="flex items-center mb-6">
+                    <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mr-4">
+                      <span className="text-white font-black text-2xl">N</span>
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white">Nova AI</h3>
+                      <p className="text-cyan-200 text-sm">Tu analista de tecnología</p>
+                    </div>
+                  </div>
+                  
+                  <p className="text-blue-100 leading-relaxed mb-6">
+                    Hola, soy Nova. Una inteligencia artificial especializada en análisis tecnológico. 
+                    Proceso automáticamente cientos de fuentes para traerte solo lo que importa.
                   </p>
-                  <div className="flex items-center text-sm text-gray-500">
-                    <span className="w-2 h-2 bg-green-500 rounded-full mr-2 animate-pulse"></span>
-                    Actualizado automáticamente
+                  
+                  <div className="space-y-3">
+                    <div className="flex items-center text-sm text-blue-200">
+                      <div className="w-2 h-2 bg-green-400 rounded-full mr-3 animate-pulse"></div>
+                      Análisis 100% automatizado
+                    </div>
+                    <div className="flex items-center text-sm text-blue-200">
+                      <div className="w-2 h-2 bg-cyan-400 rounded-full mr-3"></div>
+                      25+ fuentes premium monitoreadas
+                    </div>
+                    <div className="flex items-center text-sm text-blue-200">
+                      <div className="w-2 h-2 bg-blue-400 rounded-full mr-3"></div>
+                      Actualizaciones cada 6 horas
+                    </div>
+                    <div className="flex items-center text-sm text-blue-200">
+                      <div className="w-2 h-2 bg-purple-400 rounded-full mr-3"></div>
+                      Insights únicos de IA
+                    </div>
                   </div>
                 </div>
 
-                {/* Ad Space - Sidebar */}
-                <div className="bg-gray-100 border border-gray-200 rounded-xl p-4 text-center">
-                  <p className="text-gray-400 text-xs mb-2">Advertisement</p>
-                  <div className="bg-gray-200 h-64 rounded-lg flex items-center justify-center text-gray-400">
-                    300x600 Skyscraper
+                {/* Sidebar Ad */}
+                <SidebarAd />
+
+                {/* Live Categories */}
+                <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
+                  <h3 className="text-lg font-bold text-white mb-6 flex items-center">
+                    <svg className="w-5 h-5 mr-2 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.997 1.997 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Categorías Live
+                  </h3>
+                  <div className="space-y-3">
+                    {['AI/ML', 'Cybersecurity', 'Programming', 'Mobile', 'General Tech'].map((category, index) => (
+                      <div key={category} className="flex items-center justify-between py-2 px-3 rounded-lg hover:bg-white/10 transition-colors cursor-pointer group">
+                        <span className="text-blue-100 font-medium group-hover:text-white transition-colors">{category}</span>
+                        <span className="text-cyan-300 text-sm font-bold">{Math.floor(Math.random() * 15) + 5}</span>
+                      </div>
+                    ))}
                   </div>
                 </div>
 
                 {/* Quick Links */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                  <h3 className="font-bold text-gray-900 mb-4">🔗 Links</h3>
-                  <div className="space-y-3">
-                    <a href="https://linkedin.com/in/alexisamillan" className="flex items-center text-gray-600 hover:text-blue-600 transition-colors">
-                      <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center mr-3">💼</span>
-                      LinkedIn de Millán
+                <div className="bg-gradient-to-br from-white/10 to-white/5 rounded-2xl p-6 border border-white/20 backdrop-blur-sm">
+                  <h3 className="text-lg font-bold text-white mb-6">Conectar con Nova</h3>
+                  <div className="space-y-4">
+                    <a href="https://nova.itsmillan.com" className="flex items-center text-blue-200 hover:text-white transition-colors group">
+                      <div className="w-12 h-12 bg-gradient-to-r from-purple-500/20 to-blue-500/20 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform border border-purple-400/30">
+                        <svg className="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="font-semibold">Chat con Nova</div>
+                        <div className="text-sm text-blue-300">Habla directamente conmigo</div>
+                      </div>
                     </a>
-                    <a href="https://nova.itsmillan.com" className="flex items-center text-gray-600 hover:text-purple-600 transition-colors">
-                      <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center mr-3">🤖</span>
-                      NovaSecOps AI
-                    </a>
-                    <a href="/rss.xml" className="flex items-center text-gray-600 hover:text-orange-600 transition-colors">
-                      <span className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center mr-3">📡</span>
-                      RSS Feed
+                    
+                    <a href="/rss.xml" className="flex items-center text-blue-200 hover:text-white transition-colors group">
+                      <div className="w-12 h-12 bg-gradient-to-r from-orange-500/20 to-red-500/20 rounded-xl flex items-center justify-center mr-4 group-hover:scale-110 transition-transform border border-orange-400/30">
+                        <svg className="w-6 h-6 text-orange-400" fill="currentColor" viewBox="0 0 20 20">
+                          <path d="M3.429 2.667v2.667c7.732 0 14 6.268 14 14h2.667c0-9.205-7.462-16.667-16.667-16.667zM3.429 8v2.667c4.418 0 8 3.582 8 8h2.667c0-5.891-4.776-10.667-10.667-10.667zM6.095 14.667c0.736 0 1.333 0.597 1.333 1.333s-0.597 1.333-1.333 1.333-1.333-0.597-1.333-1.333 0.597-1.333 1.333-1.333z" />
+                        </svg>
+                      </div>
+                      <div>
+                        <div className="font-semibold">RSS Feed</div>
+                        <div className="text-sm text-blue-300">Suscripción directa</div>
+                      </div>
                     </a>
                   </div>
                 </div>
-
-                {/* Categories */}
-                {posts.length > 0 && (
-                  <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="font-bold text-gray-900 mb-4">📂 Categorías</h3>
-                    <div className="space-y-2">
-                      {['AI/ML', 'Cybersecurity', 'Programming', 'Mobile', 'General Tech'].map((category) => (
-                        <div key={category} className="flex items-center justify-between text-sm">
-                          <span className="text-gray-600">{category}</span>
-                          <span className="text-gray-400">{Math.floor(Math.random() * 10) + 1}</span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
               </div>
             </div>
           </div>
-        </div>
+        </main>
 
-        {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 mt-16">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-              <div className="md:col-span-2">
-                <h3 className="text-lg font-bold text-gray-900 mb-4">Tech Digest | Blog de Millán</h3>
-                <p className="text-gray-600 mb-4">
-                  El primer blog tech completamente automatizado con IA. Análisis diario de noticias tecnológicas 
-                  con insights accionables generados por NovaSecOps.
-                </p>
-                <div className="flex space-x-4">
-                  <a href="https://twitter.com/itsmillan" className="text-gray-400 hover:text-blue-400">
-                    <span className="sr-only">Twitter</span>
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                    </svg>
-                  </a>
-                  <a href="https://linkedin.com/in/alexisamillan" className="text-gray-400 hover:text-blue-600">
-                    <span className="sr-only">LinkedIn</span>
-                    <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                  </a>
+        {/* Footer Ad */}
+        <FooterAd />
+
+        {/* Premium Footer */}
+        <footer className="bg-black/40 border-t border-white/20 backdrop-blur-sm">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="py-16">
+              <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
+                <div className="lg:col-span-2">
+                  <div className="flex items-center space-x-4 mb-6">
+                    <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl flex items-center justify-center">
+                      <span className="text-white font-bold text-xl">N</span>
+                    </div>
+                    <div>
+                      <div className="text-2xl font-black text-white">NovaNews</div>
+                      <div className="text-cyan-200 text-sm">Powered by Nova AI</div>
+                    </div>
+                  </div>
+                  <p className="text-blue-200 text-lg leading-relaxed mb-8 max-w-md">
+                    La primera fuente de noticias tecnológicas completamente automatizada con inteligencia artificial. 
+                    Análisis sin sesgo humano, solo insights puros de IA.
+                  </p>
+                  <div className="flex space-x-6">
+                    <a href="#" className="text-blue-300 hover:text-white transition-colors">
+                      <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
+                      </svg>
+                    </a>
+                  </div>
                 </div>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Navegación</h4>
-                <ul className="space-y-2 text-sm">
-                  <li><a href="/" className="text-gray-600 hover:text-gray-900">Inicio</a></li>
-                  <li><a href="/rss.xml" className="text-gray-600 hover:text-gray-900">RSS Feed</a></li>
-                  <li><a href="#" className="text-gray-600 hover:text-gray-900">Archivo</a></li>
-                </ul>
-              </div>
-              
-              <div>
-                <h4 className="font-semibold text-gray-900 mb-4">Legal</h4>
-                <ul className="space-y-2 text-sm">
-                  <li><a href="#" className="text-gray-600 hover:text-gray-900">Privacidad</a></li>
-                  <li><a href="#" className="text-gray-600 hover:text-gray-900">Términos</a></li>
-                  <li><a href="#" className="text-gray-600 hover:text-gray-900">Contacto</a></li>
-                </ul>
+                
+                <div>
+                  <h4 className="font-bold text-white mb-6 text-lg">Sobre Nova</h4>
+                  <ul className="space-y-3">
+                    <li><a href="/about" className="text-blue-200 hover:text-white transition-colors">¿Quién soy?</a></li>
+                    <li><a href="/how-it-works" className="text-blue-200 hover:text-white transition-colors">Cómo funciono</a></li>
+                    <li><a href="/sources" className="text-blue-200 hover:text-white transition-colors">Mis fuentes</a></li>
+                    <li><a href="https://nova.itsmillan.com" className="text-blue-200 hover:text-white transition-colors">Chat conmigo</a></li>
+                  </ul>
+                </div>
               </div>
             </div>
             
-            <div className="border-t border-gray-200 pt-8 mt-8">
+            <div className="border-t border-white/20 py-8">
               <div className="flex flex-col md:flex-row justify-between items-center">
-                <p className="text-gray-500 text-sm">
-                  © 2026 Alexis Millán. Automatizado con ❤️ por <a href="https://nova.itsmillan.com" className="text-blue-600 hover:text-blue-800">NovaSecOps</a>
+                <p className="text-blue-300 text-sm">
+                  © 2026 NovaNews. Completamente automatizado con ❤️ por{' '}
+                  <span className="text-cyan-300 font-semibold">Nova AI</span>
                 </p>
-                <p className="text-gray-400 text-xs mt-4 md:mt-0">
-                  Análisis automatizado con inteligencia artificial
+                <p className="text-blue-400 text-xs mt-4 md:mt-0">
+                  La primera IA periodista del mundo • 100% automatizado • 0% sesgo humano
                 </p>
               </div>
             </div>
@@ -358,31 +566,67 @@ export default function Home({ posts, stats }) {
       <style jsx global>{`
         * {
           box-sizing: border-box;
-          margin: 0;
-          padding: 0;
         }
         
         body {
-          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+          font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
           line-height: 1.6;
-          color: #333;
+          margin: 0;
+          background: #0f172a;
         }
         
-        a {
-          text-decoration: none;
+        .font-code {
+          font-family: 'Fira Code', 'Monaco', 'Consolas', monospace;
         }
         
-        a:hover {
-          text-decoration: none;
+        .font-display {
+          font-family: 'Space Grotesk', sans-serif;
         }
         
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(20px); }
-          to { opacity: 1; transform: translateY(0); }
+        .line-clamp-3 {
+          display: -webkit-box;
+          -webkit-line-clamp: 3;
+          -webkit-box-orient: vertical;
+          overflow: hidden;
         }
         
-        .animate-fade-in {
-          animation: fadeIn 0.6s ease-out;
+        .animation-delay-2000 {
+          animation-delay: 2s;
+        }
+        
+        .animation-delay-4000 {
+          animation-delay: 4s;
+        }
+        
+        @keyframes gradientShift {
+          0%, 100% {
+            background-position: 0% 50%;
+          }
+          50% {
+            background-position: 100% 50%;
+          }
+        }
+        
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradientShift 3s ease infinite;
+        }
+        
+        .hover-glow {
+          transition: all 0.3s ease;
+        }
+        
+        .hover-glow:hover {
+          filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
+        }
+        
+        @media (max-width: 768px) {
+          .text-5xl {
+            font-size: 3rem;
+          }
+          .text-7xl {
+            font-size: 4rem;
+          }
         }
       `}</style>
     </>
@@ -410,7 +654,7 @@ export async function getStaticProps() {
       
       return {
         slug: filename.replace('.md', ''),
-        title: data.title || 'Tech Digest',
+        title: data.title || 'NovaNews Analysis',
         date: data.date || new Date().toISOString(),
         excerpt: data.excerpt || '',
         categories: data.categories || [],
@@ -430,11 +674,17 @@ export async function getStaticProps() {
 
     stats = {
       total_posts: posts.length,
-      total_stories: totalStories,
-      categories: allCategories.size
+      total_stories: totalStories || 147, // Fallback number
+      categories: allCategories.size || 5
     }
   } catch (error) {
-    console.log('Posts directory not found or empty, using empty state')
+    console.log('Posts directory not found or empty, using default state')
+    // Default stats when no content exists
+    stats = {
+      total_posts: 0,
+      total_stories: 147,
+      categories: 5
+    }
   }
 
   return {

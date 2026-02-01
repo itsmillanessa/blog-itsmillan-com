@@ -1,28 +1,34 @@
+# NovaNews - AI-Powered Tech Intelligence
 User-agent: *
 Allow: /
+
+# Prioritize important content
+Allow: /tech-digest-*
+Allow: /category/
+Allow: /about
+Allow: /rss.xml
+
+# Block admin/dev paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /.vercel/
 
 # Sitemaps
 Sitemap: https://blog.itsmillan.com/sitemap.xml
+Sitemap: https://blog.itsmillan.com/rss.xml
 
-# Specific rules for SEO optimization
-Crawl-delay: 1
+# AdSense Bot
+User-agent: Mediapartners-Google
+Allow: /
 
-# Allow all major search engines
+# Analytics Bots
+User-agent: AdsBot-Google
+Allow: /
+
 User-agent: Googlebot
 Allow: /
+Crawl-delay: 1
 
-User-agent: Bingbot  
-Allow: /
-
-User-agent: Slurp
-Allow: /
-
-# Disallow admin areas (if any in future)
-User-agent: *
-Disallow: /admin/
-Disallow: /private/
-Disallow: /*.json$
-
-# Allow RSS feed
-User-agent: *
-Allow: /rss.xml
+# Generated on 2026-02-01 16:20:00
+# Powered by Nova AI - The First AI Journalist

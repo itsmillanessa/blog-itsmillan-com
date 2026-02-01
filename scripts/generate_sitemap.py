@@ -1,131 +1,199 @@
 #!/usr/bin/env python3
 """
-Sitemap Generator para Tech Blog
-Genera sitemap.xml automáticamente basado en posts
+🗺️ SITEMAP GENERATOR - Tech Digest
+Genera sitemap.xml automáticamente para SEO premium
 """
 
 import os
-import json
-from datetime import datetime
+import glob
 import xml.etree.ElementTree as ET
+from datetime import datetime
+import frontmatter
 
 def generate_sitemap():
-    """Generar sitemap.xml para el blog"""
-    print("🗺️ Generating sitemap.xml...")
+    """Generar sitemap.xml completo"""
+    print("🗺️ Generating premium sitemap...")
     
-    # Base URL
+    # URLs base
     base_url = "https://blog.itsmillan.com"
     
-    # Create root element
+    # Root element
     urlset = ET.Element("urlset")
     urlset.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
+    urlset.set("xmlns:news", "http://www.google.com/schemas/sitemap-news/0.9")
+    urlset.set("xmlns:xhtml", "http://www.w3.org/1999/xhtml")
+    urlset.set("xmlns:image", "http://www.google.com/schemas/sitemap-image/1.1")
     
-    # Homepage
-    url = ET.SubElement(urlset, "url")
-    ET.SubElement(url, "loc").text = base_url
-    ET.SubElement(url, "lastmod").text = datetime.now().strftime('%Y-%m-%d')
-    ET.SubElement(url, "changefreq").text = "daily"
-    ET.SubElement(url, "priority").text = "1.0"
+    # Static pages
+    static_pages = [
+        {"url": "/", "priority": "1.0", "changefreq": "daily"},
+        {"url": "/about", "priority": "0.8", "changefreq": "monthly"},
+        {"url": "/archivo", "priority": "0.9", "changefreq": "weekly"},
+        {"url": "/privacy", "priority": "0.3", "changefreq": "yearly"},
+        {"url": "/terms", "priority": "0.3", "changefreq": "yearly"},
+        {"url": "/contact", "priority": "0.5", "changefreq": "monthly"},
+    ]
     
-    # RSS Feed
-    url = ET.SubElement(urlset, "url")
-    ET.SubElement(url, "loc").text = f"{base_url}/rss.xml"
-    ET.SubElement(url, "lastmod").text = datetime.now().strftime('%Y-%m-%d')
-    ET.SubElement(url, "changefreq").text = "daily"
-    ET.SubElement(url, "priority").text = "0.8"
+    # Add static pages
+    for page in static_pages:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"{base_url}{page['url']}"
+        ET.SubElement(url_elem, "lastmod").text = datetime.now().strftime("%Y-%m-%d")
+        ET.SubElement(url_elem, "changefreq").text = page["changefreq"]
+        ET.SubElement(url_elem, "priority").text = page["priority"]
     
-    # Posts
-    posts_dir = "./content/posts"
+    # Add dynamic posts
+    posts_dir = "content/posts"
     if os.path.exists(posts_dir):
-        for filename in os.listdir(posts_dir):
-            if filename.endswith('.md'):
-                slug = filename.replace('.md', '')
+        for post_file in glob.glob(f"{posts_dir}/*.md"):
+            try:
+                with open(post_file, 'r', encoding='utf-8') as f:
+                    post = frontmatter.load(f)
                 
-                # Read post to get date
-                post_date = datetime.now().strftime('%Y-%m-%d')
-                try:
-                    with open(os.path.join(posts_dir, filename), 'r', encoding='utf-8') as f:
-                        content = f.read()
-                        if 'date:' in content:
-                            # Extract date from frontmatter
-                            for line in content.split('\n'):
-                                if line.startswith('date:'):
-                                    date_str = line.split(':', 1)[1].strip(' "')
-                                    post_date = datetime.fromisoformat(date_str.replace('Z', '+00:00')).strftime('%Y-%m-%d')
-                                    break
-                except:
-                    pass
+                # Extract post data
+                filename = os.path.basename(post_file).replace('.md', '')
+                title = post.metadata.get('title', 'Tech Digest')
+                date = post.metadata.get('date', datetime.now().isoformat())
+                categories = post.metadata.get('categories', [])
                 
-                url = ET.SubElement(urlset, "url")
-                ET.SubElement(url, "loc").text = f"{base_url}/{slug}/"
-                ET.SubElement(url, "lastmod").text = post_date
-                ET.SubElement(url, "changefreq").text = "weekly"
-                ET.SubElement(url, "priority").text = "0.9"
+                # Convert date to proper format
+                if isinstance(date, str):
+                    try:
+                        date_obj = datetime.fromisoformat(date.replace('Z', '+00:00'))
+                        lastmod = date_obj.strftime("%Y-%m-%d")
+                    except:
+                        lastmod = datetime.now().strftime("%Y-%m-%d")
+                else:
+                    lastmod = date.strftime("%Y-%m-%d")
+                
+                # Add URL to sitemap
+                url_elem = ET.SubElement(urlset, "url")
+                ET.SubElement(url_elem, "loc").text = f"{base_url}/{filename}/"
+                ET.SubElement(url_elem, "lastmod").text = lastmod
+                ET.SubElement(url_elem, "changefreq").text = "monthly"
+                ET.SubElement(url_elem, "priority").text = "0.8"
+                
+                # Add News sitemap data for recent posts (last 3 days)
+                date_obj = datetime.fromisoformat(date.replace('Z', '+00:00')) if isinstance(date, str) else date
+                if (datetime.now() - date_obj).days <= 3:
+                    news_elem = ET.SubElement(url_elem, "news:news")
+                    news_pub = ET.SubElement(news_elem, "news:publication")
+                    ET.SubElement(news_pub, "news:name").text = "Tech Digest"
+                    ET.SubElement(news_pub, "news:language").text = "es"
+                    
+                    news_article = ET.SubElement(news_elem, "news:publication_date")
+                    news_article.text = date_obj.strftime("%Y-%m-%d")
+                    
+                    ET.SubElement(news_elem, "news:title").text = title
+                    
+                    if categories:
+                        ET.SubElement(news_elem, "news:keywords").text = ", ".join(categories)
+                
+                print(f"✅ Added post: {filename}")
+                
+            except Exception as e:
+                print(f"❌ Error processing {post_file}: {e}")
+    
+    # Add category pages
+    categories = ["ai-ml", "cybersecurity", "programming", "mobile", "general-tech"]
+    for category in categories:
+        url_elem = ET.SubElement(urlset, "url")
+        ET.SubElement(url_elem, "loc").text = f"{base_url}/category/{category}/"
+        ET.SubElement(url_elem, "lastmod").text = datetime.now().strftime("%Y-%m-%d")
+        ET.SubElement(url_elem, "changefreq").text = "weekly"
+        ET.SubElement(url_elem, "priority").text = "0.7"
     
     # Write sitemap
     tree = ET.ElementTree(urlset)
-    ET.indent(tree, space="  ", level=0)
+    ET.indent(tree, space="  ")
     
-    sitemap_path = "./public/sitemap.xml"
-    os.makedirs(os.path.dirname(sitemap_path), exist_ok=True)
+    output_file = "public/sitemap.xml"
+    os.makedirs(os.path.dirname(output_file), exist_ok=True)
     
-    with open(sitemap_path, 'wb') as f:
-        f.write('<?xml version="1.0" encoding="UTF-8"?>\n'.encode('utf-8'))
-        tree.write(f, encoding='utf-8')
+    tree.write(output_file, encoding="utf-8", xml_declaration=True)
     
-    print(f"✅ Sitemap generated: {sitemap_path}")
-    return True
+    print(f"✅ Sitemap generated: {output_file}")
+    
+    # Generate sitemap index if needed
+    generate_sitemap_index()
 
-def generate_manifest():
-    """Generar manifest.json para PWA"""
-    print("📱 Generating manifest.json...")
+def generate_sitemap_index():
+    """Generar sitemap index para múltiples sitemaps"""
+    sitemaps = [
+        {"url": "/sitemap.xml", "lastmod": datetime.now().strftime("%Y-%m-%d")},
+    ]
     
-    manifest = {
-        "name": "Tech Digest | Blog de Millán",
-        "short_name": "Tech Digest",
-        "description": "Noticias diarias de tecnología, IA y ciberseguridad analizadas automáticamente por NovaSecOps",
-        "start_url": "/",
-        "display": "standalone",
-        "background_color": "#ffffff",
-        "theme_color": "#3b82f6",
-        "icons": [
-            {
-                "src": "/icon-192.png",
-                "sizes": "192x192",
-                "type": "image/png"
-            },
-            {
-                "src": "/icon-512.png", 
-                "sizes": "512x512",
-                "type": "image/png"
-            }
-        ],
-        "categories": ["news", "technology", "education"],
-        "lang": "es",
-        "scope": "/",
-        "orientation": "portrait-primary"
-    }
+    # Create RSS sitemap entry
+    rss_lastmod = datetime.now().strftime("%Y-%m-%d")
     
-    manifest_path = "./public/manifest.json"
-    with open(manifest_path, 'w', encoding='utf-8') as f:
-        json.dump(manifest, f, indent=2, ensure_ascii=False)
+    sitemapindex = ET.Element("sitemapindex")
+    sitemapindex.set("xmlns", "http://www.sitemaps.org/schemas/sitemap/0.9")
     
-    print(f"✅ Manifest generated: {manifest_path}")
-    return True
+    for sitemap_data in sitemaps:
+        sitemap_elem = ET.SubElement(sitemapindex, "sitemap")
+        ET.SubElement(sitemap_elem, "loc").text = f"https://blog.itsmillan.com{sitemap_data['url']}"
+        ET.SubElement(sitemap_elem, "lastmod").text = sitemap_data["lastmod"]
+    
+    # Write sitemap index
+    tree = ET.ElementTree(sitemapindex)
+    ET.indent(tree, space="  ")
+    tree.write("public/sitemap-index.xml", encoding="utf-8", xml_declaration=True)
+    
+    print("✅ Sitemap index generated")
+
+def generate_robots_txt():
+    """Generar robots.txt optimizado"""
+    robots_content = f"""# Tech Digest - Premium Blog
+User-agent: *
+Allow: /
+
+# Prioritize important content
+Allow: /tech-digest-*
+Allow: /category/
+Allow: /about
+Allow: /rss.xml
+
+# Block admin/dev paths
+Disallow: /api/
+Disallow: /_next/
+Disallow: /admin/
+Disallow: /.vercel/
+
+# Sitemaps
+Sitemap: https://blog.itsmillan.com/sitemap.xml
+Sitemap: https://blog.itsmillan.com/rss.xml
+
+# AdSense Bot
+User-agent: Mediapartners-Google
+Allow: /
+
+# Analytics Bots
+User-agent: AdsBot-Google
+Allow: /
+
+User-agent: Googlebot
+Allow: /
+Crawl-delay: 1
+
+# Generated on {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}
+# Powered by NovaSecOps AI
+"""
+    
+    with open("public/robots.txt", "w") as f:
+        f.write(robots_content)
+    
+    print("✅ robots.txt generated")
 
 def main():
-    """Ejecutar generadores"""
-    print("🔧 SEO Assets Generator")
+    """Main sitemap generation"""
+    print("🚀 STARTING SITEMAP GENERATION")
     print("=" * 40)
     
     generate_sitemap()
-    generate_manifest()
+    generate_robots_txt()
     
-    print("\n✅ All SEO assets generated successfully!")
-    print("\nNext steps:")
-    print("1. Submit sitemap to Google Search Console")
-    print("2. Verify manifest.json in Chrome DevTools")
-    print("3. Test PWA installation")
+    print("✅ SEO FILES GENERATED SUCCESSFULLY")
+    print("📊 Ready for search engines!")
 
 if __name__ == "__main__":
     main()
