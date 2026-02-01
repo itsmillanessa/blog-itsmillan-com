@@ -23,6 +23,7 @@ class BlogDeployment:
         print(f"   Command: {command}")
         
         try:
+            env = os.environ.copy()
             result = subprocess.run(
                 command,
                 shell=True,
@@ -30,7 +31,8 @@ class BlogDeployment:
                 text=True,
                 cwd=cwd or self.workspace_dir,
                 timeout=300,
-                executable="/bin/bash"
+                executable="/bin/bash",
+                env=env
             )
             
             if result.returncode == 0:
@@ -177,7 +179,7 @@ class BlogDeployment:
         commands = [
             "git add .",
             f"git commit -m '📰 Daily digest: {datetime.now().strftime('%Y-%m-%d')}'",
-            "git push origin main"
+            "git push origin master"
         ]
         
         for cmd in commands:

@@ -250,12 +250,17 @@ export default function Editorial({ posts, featuredPost }) {
           --space-lg: 1.5rem;
           --space-xl: 2rem;
           --space-xxl: 3rem;
+          --space-xxxl: 4rem;
           
           /* Layout */
           --container-width: 1200px;
           --content-width: 800px;
           --border-radius: 12px;
           --transition: all 0.2s ease;
+          
+          /* Responsive spacing */
+          --section-padding: clamp(3rem, 8vh, 6rem);
+          --card-gap: clamp(1.5rem, 3vw, 2.5rem);
         }
 
         @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;900&display=swap');
@@ -272,25 +277,32 @@ export default function Editorial({ posts, featuredPost }) {
         /* TYPOGRAPHY */
         .display-1 {
           font-family: var(--font-display);
-          font-size: clamp(2.5rem, 6vw, 4.5rem);
-          font-weight: 600;
+          font-size: clamp(2.5rem, 6vw, 5.5rem);
+          font-weight: 700;
           line-height: 1.1;
-          letter-spacing: -0.02em;
+          letter-spacing: -0.025em;
         }
 
         .display-2 {
           font-family: var(--font-display);
-          font-size: clamp(2rem, 5vw, 3.5rem);
+          font-size: clamp(2rem, 5vw, 4rem);
           font-weight: 600;
-          line-height: 1.2;
-          letter-spacing: -0.015em;
+          line-height: 1.15;
+          letter-spacing: -0.02em;
         }
 
         .headline {
           font-family: var(--font-display);
-          font-size: clamp(1.75rem, 4vw, 2.25rem);
+          font-size: clamp(1.75rem, 4vw, 3rem);
           font-weight: 600;
-          line-height: 1.3;
+          line-height: 1.25;
+          letter-spacing: -0.015em;
+        }
+
+        @media (min-width: 1200px) {
+          .display-1 {
+            font-size: clamp(4rem, 5vw, 6rem);
+          }
         }
 
         .title {
@@ -358,12 +370,18 @@ export default function Editorial({ posts, featuredPost }) {
           width: 100%;
           max-width: var(--container-width);
           margin: 0 auto;
-          padding: 0 var(--space-md);
+          padding: 0 var(--space-lg);
         }
 
         .content-container {
           max-width: var(--content-width);
           margin: 0 auto;
+        }
+
+        @media (min-width: 1400px) {
+          .container {
+            max-width: 1400px;
+          }
         }
 
         /* HEADER */
@@ -433,13 +451,24 @@ export default function Editorial({ posts, featuredPost }) {
 
         /* HERO */
         .hero {
-          padding: var(--space-xxl) 0 var(--space-xl);
+          padding: clamp(4rem, 10vh, 8rem) 0 clamp(3rem, 8vh, 6rem);
           text-align: center;
+          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
         }
 
         .hero-content {
-          max-width: 800px;
+          max-width: 900px;
           margin: 0 auto;
+        }
+
+        @media (min-width: 1200px) {
+          .hero {
+            padding: 8rem 0 6rem;
+          }
+          
+          .hero-content {
+            max-width: 1000px;
+          }
         }
 
         .cta-button {
@@ -462,15 +491,26 @@ export default function Editorial({ posts, featuredPost }) {
 
         /* FEATURED POST */
         .featured-post {
-          padding: var(--space-xl) 0;
-          background: var(--bg-secondary);
+          padding: clamp(3rem, 8vh, 6rem) 0;
+          background: var(--bg-primary);
+          border-top: 1px solid var(--border-light);
+          border-bottom: 1px solid var(--border-light);
         }
 
         .featured-content {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: var(--space-xl);
+          gap: clamp(2rem, 5vw, 4rem);
           align-items: center;
+          max-width: 1200px;
+          margin: 0 auto;
+        }
+
+        @media (min-width: 1400px) {
+          .featured-content {
+            max-width: 1300px;
+            gap: 5rem;
+          }
         }
 
         .featured-label {
@@ -508,11 +548,12 @@ export default function Editorial({ posts, featuredPost }) {
 
         /* STORIES */
         .stories {
-          padding: var(--space-xxl) 0;
+          padding: clamp(3rem, 8vh, 6rem) 0;
+          background: var(--bg-secondary);
         }
 
         .stories-header {
-          margin-bottom: var(--space-xl);
+          margin-bottom: clamp(2rem, 5vh, 4rem);
           text-align: center;
         }
 
@@ -525,12 +566,13 @@ export default function Editorial({ posts, featuredPost }) {
         }
 
         .filter-button {
-          padding: var(--space-xs) var(--space-md);
+          padding: var(--space-sm) var(--space-lg);
           background: transparent;
           border: 1px solid var(--border-medium);
-          border-radius: 20px;
+          border-radius: 25px;
           color: var(--text-secondary);
           font-size: 0.875rem;
+          font-weight: 500;
           cursor: pointer;
           transition: var(--transition);
         }
@@ -540,41 +582,73 @@ export default function Editorial({ posts, featuredPost }) {
           background: var(--accent-primary);
           color: white;
           border-color: var(--accent-primary);
+          transform: translateY(-1px);
+          box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
         }
 
         .stories-grid {
           display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-          gap: var(--space-xl);
+          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+          gap: clamp(1.5rem, 3vw, 2.5rem);
+          max-width: 1400px;
+          margin: 0 auto;
+        }
+
+        @media (min-width: 768px) {
+          .stories-grid {
+            grid-template-columns: repeat(2, 1fr);
+          }
+        }
+
+        @media (min-width: 1200px) {
+          .stories-grid {
+            grid-template-columns: repeat(3, 1fr);
+          }
+        }
+
+        @media (min-width: 1600px) {
+          .stories-grid {
+            grid-template-columns: repeat(4, 1fr);
+          }
         }
 
         .story-card {
-          border-radius: var(--border-radius);
+          border-radius: 16px;
           overflow: hidden;
-          transition: var(--transition);
+          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+          background: var(--bg-primary);
+          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
           border: 1px solid var(--border-light);
         }
 
         .story-card:hover {
-          transform: translateY(-4px);
-          box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+          transform: translateY(-8px) scale(1.02);
+          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+          border-color: var(--accent-primary);
         }
 
         .story-card a {
           text-decoration: none;
           color: inherit;
           display: block;
+          height: 100%;
         }
 
         .card-image {
           position: relative;
-          height: 200px;
+          height: 220px;
+          overflow: hidden;
         }
 
         .card-image img {
           width: 100%;
           height: 100%;
           object-fit: cover;
+          transition: transform 0.3s ease;
+        }
+
+        .story-card:hover .card-image img {
+          transform: scale(1.05);
         }
 
         .card-category {
@@ -582,9 +656,10 @@ export default function Editorial({ posts, featuredPost }) {
           top: var(--space-md);
           left: var(--space-md);
           background: rgba(0, 102, 204, 0.9);
+          backdrop-filter: blur(8px);
           color: white;
-          padding: var(--space-xs) var(--space-sm);
-          border-radius: 4px;
+          padding: var(--space-xs) var(--space-md);
+          border-radius: 20px;
           font-size: 0.75rem;
           font-weight: 600;
           text-transform: uppercase;
@@ -593,22 +668,29 @@ export default function Editorial({ posts, featuredPost }) {
 
         .card-content {
           padding: var(--space-lg);
+          display: flex;
+          flex-direction: column;
+          height: calc(100% - 220px);
         }
 
         .card-title {
           margin-bottom: var(--space-sm);
           line-height: 1.4;
+          flex-shrink: 0;
         }
 
         .card-excerpt {
           color: var(--text-secondary);
           margin-bottom: var(--space-md);
+          flex-grow: 1;
+          line-height: 1.6;
         }
 
         .card-meta {
           display: flex;
           align-items: center;
           gap: var(--space-sm);
+          margin-top: auto;
         }
 
         .empty-state {
@@ -635,44 +717,72 @@ export default function Editorial({ posts, featuredPost }) {
 
         /* NEWSLETTER */
         .newsletter {
-          padding: var(--space-xxl) 0;
-          background: var(--bg-secondary);
+          padding: clamp(4rem, 10vh, 8rem) 0;
+          background: linear-gradient(135deg, var(--accent-primary) 0%, #4f46e5 100%);
           text-align: center;
+          color: white;
+        }
+
+        .newsletter h2 {
+          color: white;
+          margin-bottom: var(--space-md);
+        }
+
+        .newsletter .body-large {
+          color: rgba(255, 255, 255, 0.9);
+          margin-bottom: var(--space-xl);
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
         }
 
         .newsletter-form {
           display: flex;
-          max-width: 400px;
-          margin: 0 auto var(--space-md);
-          gap: var(--space-sm);
+          max-width: 500px;
+          margin: 0 auto var(--space-lg);
+          gap: var(--space-md);
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          padding: var(--space-sm);
+          border-radius: 50px;
         }
 
         .newsletter-input {
           flex: 1;
-          padding: var(--space-md);
-          border: 1px solid var(--border-medium);
-          border-radius: 8px;
+          padding: var(--space-md) var(--space-lg);
+          border: none;
+          border-radius: 40px;
           font-size: 1rem;
+          background: rgba(255, 255, 255, 0.9);
+        }
+
+        .newsletter-input::placeholder {
+          color: var(--text-tertiary);
         }
 
         .newsletter-button {
-          padding: var(--space-md) var(--space-lg);
-          background: var(--accent-primary);
+          padding: var(--space-md) var(--space-xl);
+          background: rgba(255, 255, 255, 0.2);
           color: white;
-          border: none;
-          border-radius: 8px;
+          border: 2px solid rgba(255, 255, 255, 0.3);
+          border-radius: 40px;
           font-weight: 600;
           cursor: pointer;
           transition: var(--transition);
           white-space: nowrap;
+          backdrop-filter: blur(10px);
         }
 
         .newsletter-button:hover {
-          background: var(--accent-secondary);
+          background: white;
+          color: var(--accent-primary);
+          border-color: white;
         }
 
         .newsletter-disclaimer {
           text-align: center;
+          color: rgba(255, 255, 255, 0.8);
+          font-size: 0.875rem;
         }
 
         /* FOOTER */
@@ -702,7 +812,23 @@ export default function Editorial({ posts, featuredPost }) {
           color: white;
         }
 
-        /* RESPONSIVE */
+        /* RESPONSIVE IMPROVEMENTS */
+        @media (min-width: 768px) {
+          .header-content {
+            padding: 0 var(--space-lg);
+          }
+          
+          .nav-menu {
+            gap: var(--space-xl);
+          }
+        }
+
+        @media (min-width: 1200px) {
+          .container {
+            padding: 0 var(--space-xl);
+          }
+        }
+
         @media (max-width: 768px) {
           .nav-menu {
             display: none;
@@ -711,6 +837,7 @@ export default function Editorial({ posts, featuredPost }) {
           .featured-content {
             grid-template-columns: 1fr;
             text-align: center;
+            gap: var(--space-xl);
           }
 
           .category-filters {
@@ -720,12 +847,22 @@ export default function Editorial({ posts, featuredPost }) {
             margin: var(--space-lg) -var(--space-md) 0;
           }
 
-          .stories-grid {
-            grid-template-columns: 1fr;
-          }
-
           .newsletter-form {
             flex-direction: column;
+          }
+          
+          .hero {
+            padding: 3rem 0 2rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .container {
+            padding: 0 var(--space-md);
+          }
+          
+          .filter-button {
+            white-space: nowrap;
           }
         }
       `}</style>
