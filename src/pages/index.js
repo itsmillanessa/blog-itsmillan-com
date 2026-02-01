@@ -47,17 +47,20 @@ export default function Home({ posts, stats }) {
   return (
     <>
       <Head>
-        <title>NovaNews | AI-Powered Tech Intelligence by Nova</title>
-        <meta name="description" content="El primer medio de noticias tecnológicas completamente automatizado con inteligencia artificial. Nova analiza, procesa y presenta las noticias más importantes del mundo tech." />
+        <title>NovaNews | Tech Intelligence by Nova</title>
+        <meta name="description" content="Análisis tecnológico especializado y perspectivas únicas. Nova procesa y presenta las noticias más importantes del mundo tech con insights exclusivos." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="NovaNews | AI-Powered Tech Intelligence by Nova" />
-        <meta property="og:description" content="La primera IA periodista del mundo. Análisis automático de noticias tech con inteligencia artificial." />
+        <meta property="og:title" content="NovaNews | Tech Intelligence by Nova" />
+        <meta property="og:description" content="Análisis tecnológico especializado y perspectivas únicas del mundo tech." />
         <meta property="og:type" content="website" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-black via-slate-900 to-black overflow-hidden relative">
+      <div className="min-h-screen overflow-hidden relative" style={{
+        background: 'linear-gradient(135deg, #000000 0%, #1e293b 50%, #000000 100%)',
+        minHeight: '100vh'
+      }}>
         {/* Animated Background Effects */}
         <div className="fixed inset-0 opacity-20 pointer-events-none">
           <div className="absolute top-1/4 left-1/4 w-72 h-72 bg-cyan-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"></div>
@@ -68,26 +71,38 @@ export default function Home({ posts, stats }) {
         <HeaderAd />
 
         {/* Header - Ultra Mobile First */}
-        <header className="relative z-10 bg-black/30 backdrop-blur-md border-b border-cyan-500/30 sticky top-0">
+        <header className="relative z-10 sticky top-0" style={{
+          background: 'rgba(0, 0, 0, 0.8)',
+          backdropFilter: 'blur(10px)',
+          borderBottom: '1px solid rgba(34, 211, 238, 0.3)'
+        }}>
           <div className="max-w-7xl mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               {/* Logo */}
               <div className="flex items-center space-x-3">
                 <div className="relative">
-                  <div className="w-12 h-12 md:w-14 md:h-14 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center shadow-lg shadow-cyan-500/50 animate-pulse">
+                  <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl flex items-center justify-center shadow-lg animate-pulse" style={{
+                    background: 'linear-gradient(135deg, #22d3ee 0%, #3b82f6 50%, #8b5cf6 100%)',
+                    boxShadow: '0 10px 25px rgba(34, 211, 238, 0.5)'
+                  }}>
                     <span className="text-white font-black text-xl md:text-2xl">N</span>
                   </div>
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-ping"></div>
                   <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full"></div>
                 </div>
                 <div>
-                  <h1 className="text-2xl md:text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                  <h1 className="text-2xl md:text-3xl font-black" style={{
+                    background: 'linear-gradient(135deg, #22d3ee 0%, #60a5fa 50%, #a78bfa 100%)',
+                    WebkitBackgroundClip: 'text',
+                    WebkitTextFillColor: 'transparent',
+                    backgroundClip: 'text'
+                  }}>
                     NovaNews
                   </h1>
                   <div className="flex items-center space-x-1">
                     <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                    <span className="text-cyan-300 text-xs md:text-sm font-bold">LIVE AI</span>
-                    <span className="hidden md:inline text-cyan-200 text-xs">• {liveStats.total_stories} noticias analizadas</span>
+                    <span className="text-cyan-300 text-xs md:text-sm font-bold">LIVE</span>
+                    <span className="hidden md:inline text-cyan-200 text-xs">• {liveStats.total_stories} noticias procesadas</span>
                   </div>
                 </div>
               </div>
@@ -123,31 +138,31 @@ export default function Home({ posts, stats }) {
             </h2>
 
             <p className="text-lg md:text-xl lg:text-2xl text-cyan-100 max-w-4xl mx-auto mb-8 leading-relaxed px-2">
-              Soy <strong className="text-cyan-300 font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">Nova</strong>, una IA especializada en tecnología. 
-              Proceso automáticamente las noticias más importantes y genero insights que importan.
+              Soy <strong className="text-cyan-300 font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">Nova</strong>, especialista en análisis tecnológico. 
+              Analizo las noticias más importantes y genero insights que realmente importan.
               <span className="block text-base md:text-lg text-blue-200 mt-3">
-                🤖 100% automatizado • ⚡ 0% clickbait • ∞ inteligencia
+                📈 Análisis profundo • ⚡ 0% clickbait • 🎯 Solo lo importante
               </span>
             </p>
 
             {/* Enhanced Features Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto mb-8">
               <div className="bg-gradient-to-br from-cyan-500/20 via-cyan-400/10 to-transparent rounded-2xl p-4 md:p-6 border border-cyan-400/30 backdrop-blur-sm shadow-xl shadow-cyan-500/20 hover:shadow-cyan-500/40 transition-all duration-300 hover:scale-105">
-                <div className="text-3xl md:text-4xl mb-3">🤖</div>
-                <h3 className="font-bold text-lg md:text-xl mb-2 text-cyan-300">IA Analítica</h3>
-                <p className="text-cyan-100 text-sm md:text-base">Proceso y analizo automáticamente tendencias, patrones y insights ocultos</p>
+                <div className="text-3xl md:text-4xl mb-3">📊</div>
+                <h3 className="font-bold text-lg md:text-xl mb-2 text-cyan-300">Análisis Profundo</h3>
+                <p className="text-cyan-100 text-sm md:text-base">Identifico tendencias, patrones y insights que otros pasan por alto</p>
               </div>
               
               <div className="bg-gradient-to-br from-blue-500/20 via-blue-400/10 to-transparent rounded-2xl p-4 md:p-6 border border-blue-400/30 backdrop-blur-sm shadow-xl shadow-blue-500/20 hover:shadow-blue-500/40 transition-all duration-300 hover:scale-105">
                 <div className="text-3xl md:text-4xl mb-3">⚡</div>
-                <h3 className="font-bold text-lg md:text-xl mb-2 text-blue-300">Real Time</h3>
-                <p className="text-blue-100 text-sm md:text-base">Actualizaciones en tiempo real desde múltiples fuentes premium</p>
+                <h3 className="font-bold text-lg md:text-xl mb-2 text-blue-300">Siempre Actualizado</h3>
+                <p className="text-blue-100 text-sm md:text-base">Monitoreo constante de fuentes premium y noticias de última hora</p>
               </div>
               
               <div className="bg-gradient-to-br from-purple-500/20 via-purple-400/10 to-transparent rounded-2xl p-4 md:p-6 border border-purple-400/30 backdrop-blur-sm shadow-xl shadow-purple-500/20 hover:shadow-purple-500/40 transition-all duration-300 hover:scale-105 sm:col-span-2 lg:col-span-1">
-                <div className="text-3xl md:text-4xl mb-3">🧠</div>
-                <h3 className="font-bold text-lg md:text-xl mb-2 text-purple-300">Insights</h3>
-                <p className="text-purple-100 text-sm md:text-base">No solo noticias - análisis estratégico y perspectivas únicas</p>
+                <div className="text-3xl md:text-4xl mb-3">💡</div>
+                <h3 className="font-bold text-lg md:text-xl mb-2 text-purple-300">Insights Únicos</h3>
+                <p className="text-purple-100 text-sm md:text-base">Más que noticias - análisis estratégico y perspectivas exclusivas</p>
               </div>
             </div>
           </div>
@@ -282,8 +297,8 @@ export default function Home({ posts, stats }) {
                     ¿Quieres que Nova te mantenga informado?
                   </h3>
                   <p className="text-blue-200 text-lg md:text-xl mb-8 leading-relaxed">
-                    Recibe análisis diario directo de mi procesamiento de IA. 
-                    Sin spam humano, solo inteligencia artificial pura.
+                    Recibe análisis diario directo con mis insights exclusivos. 
+                    Sin spam, solo contenido de calidad y perspectivas únicas.
                   </p>
                   
                   <div className="max-w-md mx-auto">
@@ -295,11 +310,11 @@ export default function Home({ posts, stats }) {
                       />
                       <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25 text-base md:text-lg">
                         <span className="hidden sm:inline">Conectar con Nova</span>
-                        <span className="sm:hidden">Suscribirse 🤖</span>
+                        <span className="sm:hidden">Suscribirse ⚡</span>
                       </button>
                     </div>
                     <p className="text-cyan-300 text-sm md:text-base mt-4 flex items-center justify-center gap-1">
-                      🤖 100% automatizado • 🚫 Sin spam • 🔥 Cancelable siempre
+                      📈 Análisis premium • 🚫 Sin spam • 🔥 Cancelable siempre
                     </p>
                   </div>
                 </div>
@@ -316,13 +331,13 @@ export default function Home({ posts, stats }) {
                   <div className="w-20 h-20 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-4 shadow-lg shadow-cyan-500/50 animate-pulse">
                     <span className="text-white font-black text-2xl">N</span>
                   </div>
-                  <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent mb-2">Nova AI</h3>
-                  <p className="text-cyan-200 text-lg">Tu analista de tecnología</p>
+                  <h3 className="text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent mb-2">Nova</h3>
+                  <p className="text-cyan-200 text-lg">Analista de tecnología</p>
                 </div>
                 
                 <p className="text-blue-100 mb-6 leading-relaxed">
-                  Hola, soy Nova. Una inteligencia artificial especializada en análisis tecnológico. 
-                  Proceso automáticamente cientos de fuentes para traerte solo lo que importa.
+                  Hola, soy Nova. Especialista en análisis tecnológico con enfoque en tendencias emergentes. 
+                  Monitoreo cientos de fuentes para traerte solo lo que realmente importa.
                 </p>
                 
                 <div className="space-y-3">
@@ -330,7 +345,7 @@ export default function Home({ posts, stats }) {
                     <div className="w-8 h-8 bg-cyan-500/20 rounded-lg flex items-center justify-center">
                       <span className="text-cyan-300">🎯</span>
                     </div>
-                    <span className="text-cyan-100">Análisis 100% automatizado</span>
+                    <span className="text-cyan-100">Análisis experto y especializado</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-blue-500/20 rounded-lg flex items-center justify-center">
@@ -342,13 +357,13 @@ export default function Home({ posts, stats }) {
                     <div className="w-8 h-8 bg-purple-500/20 rounded-lg flex items-center justify-center">
                       <span className="text-purple-300">⏰</span>
                     </div>
-                    <span className="text-purple-100">Actualizaciones cada 6 horas</span>
+                    <span className="text-purple-100">Actualizaciones constantes</span>
                   </div>
                   <div className="flex items-center space-x-3">
                     <div className="w-8 h-8 bg-green-500/20 rounded-lg flex items-center justify-center">
-                      <span className="text-green-300">🧠</span>
+                      <span className="text-green-300">💡</span>
                     </div>
-                    <span className="text-green-100">Insights únicos de IA</span>
+                    <span className="text-green-100">Insights únicos y exclusivos</span>
                   </div>
                 </div>
               </section>
