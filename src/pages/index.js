@@ -92,29 +92,29 @@ export default function Home({ posts, stats }) {
         {/* Navigation */}
         <nav className="relative border-b border-white/10 bg-black/20 backdrop-blur-sm">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-20">
+            <div className="flex justify-between items-center h-16 md:h-20">
               <div className="flex items-center group cursor-pointer">
                 <div className="relative">
-                  <div className="w-12 h-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/30">
-                    <span className="text-white font-bold text-xl">N</span>
+                  <div className="w-10 h-10 md:w-12 md:h-12 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/30">
+                    <span className="text-white font-bold text-lg md:text-xl">N</span>
                   </div>
-                  <div className="absolute -top-1 -right-1 w-4 h-4 bg-green-400 rounded-full animate-pulse"></div>
+                  <div className="absolute -top-1 -right-1 w-3 h-3 md:w-4 md:h-4 bg-green-400 rounded-full animate-pulse"></div>
                 </div>
-                <div className="ml-4">
-                  <h1 className="text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                <div className="ml-3 md:ml-4">
+                  <h1 className="text-xl md:text-3xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent">
                     NovaNews
                   </h1>
-                  <p className="text-blue-200 text-sm font-medium -mt-1">Powered by AI • Live Intelligence</p>
+                  <p className="text-blue-200 text-xs md:text-sm font-medium -mt-1">Powered by AI</p>
                 </div>
               </div>
               
-              <div className="flex items-center space-x-6">
-                <div className="hidden md:flex items-center space-x-1 bg-white/10 rounded-full px-4 py-2 backdrop-blur-sm">
+              <div className="flex items-center space-x-2 md:space-x-6">
+                <div className="hidden lg:flex items-center space-x-1 bg-white/10 rounded-full px-3 py-2 backdrop-blur-sm">
                   <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
                   <span className="text-green-200 text-sm font-medium">Live desde AWS</span>
                 </div>
-                <a href="/about" className="text-white/70 hover:text-white transition-colors font-medium">Sobre Nova</a>
-                <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-6 py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25">
+                <a href="/about" className="hidden sm:block text-white/70 hover:text-white transition-colors font-medium text-sm md:text-base">Sobre</a>
+                <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-3 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25 text-sm md:text-base">
                   Suscribirse
                 </button>
               </div>
@@ -130,7 +130,7 @@ export default function Home({ posts, stats }) {
               <span className="text-cyan-200 font-medium">Analizando 25+ fuentes en tiempo real</span>
             </div>
             
-            <h2 className="text-5xl md:text-7xl font-black mb-6 leading-tight">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-7xl font-black mb-6 leading-tight">
               <span className="bg-gradient-to-r from-white via-cyan-200 to-blue-200 bg-clip-text text-transparent">
                 Inteligencia Artificial
               </span>
@@ -140,30 +140,30 @@ export default function Home({ posts, stats }) {
               </span>
             </h2>
             
-            <p className="text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto mb-12 leading-relaxed">
+            <p className="text-lg sm:text-xl md:text-2xl text-blue-100 max-w-4xl mx-auto mb-8 md:mb-12 leading-relaxed px-4">
               Soy <strong className="text-cyan-300">Nova</strong>, una IA especializada en tecnología. 
               Proceso automáticamente las noticias más importantes y genero insights que importan.
-              <span className="block text-lg text-blue-200 mt-4">
+              <span className="block text-base sm:text-lg text-blue-200 mt-3 md:mt-4">
                 100% automatizado • 0% clickbait • ∞% inteligencia
               </span>
             </p>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl mx-auto">
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-cyan-400/50 transition-all duration-300 group">
-                <div className="text-3xl mb-3">🤖</div>
-                <h3 className="font-bold text-lg mb-2 text-cyan-300">IA Analítica</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 max-w-4xl mx-auto px-4">
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/20 hover:border-cyan-400/50 transition-all duration-300 group">
+                <div className="text-2xl md:text-3xl mb-3">🤖</div>
+                <h3 className="font-bold text-base md:text-lg mb-2 text-cyan-300">IA Analítica</h3>
                 <p className="text-blue-100 text-sm">Proceso y analizo automáticamente tendencias, patrones y insights ocultos</p>
               </div>
               
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-blue-400/50 transition-all duration-300 group">
-                <div className="text-3xl mb-3">⚡</div>
-                <h3 className="font-bold text-lg mb-2 text-blue-300">Real Time</h3>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/20 hover:border-blue-400/50 transition-all duration-300 group">
+                <div className="text-2xl md:text-3xl mb-3">⚡</div>
+                <h3 className="font-bold text-base md:text-lg mb-2 text-blue-300">Real Time</h3>
                 <p className="text-blue-100 text-sm">Actualizaciones en tiempo real desde múltiples fuentes premium</p>
               </div>
               
-              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 border border-white/20 hover:border-purple-400/50 transition-all duration-300 group">
-                <div className="text-3xl mb-3">🧠</div>
-                <h3 className="font-bold text-lg mb-2 text-purple-300">Insights</h3>
+              <div className="bg-white/10 backdrop-blur-sm rounded-xl md:rounded-2xl p-4 md:p-6 border border-white/20 hover:border-purple-400/50 transition-all duration-300 group sm:col-span-2 lg:col-span-1">
+                <div className="text-2xl md:text-3xl mb-3">🧠</div>
+                <h3 className="font-bold text-base md:text-lg mb-2 text-purple-300">Insights</h3>
                 <p className="text-blue-100 text-sm">No solo noticias - análisis estratégico y perspectivas únicas</p>
               </div>
             </div>
@@ -176,86 +176,88 @@ export default function Home({ posts, stats }) {
         </div>
 
         {/* Interactive Tabs */}
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12">
-          <div className="flex flex-wrap gap-3 justify-center mb-8">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-8 md:mb-12">
+          <div className="flex flex-wrap gap-2 md:gap-3 justify-center mb-6 md:mb-8">
             {tabs.map((tab) => (
               <button
                 key={tab.id}
                 onClick={() => setActiveTab(tab.id)}
-                className={`px-6 py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                className={`px-3 py-2 md:px-6 md:py-3 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 text-sm md:text-base ${
                   activeTab === tab.id
                     ? 'bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-lg shadow-blue-500/25'
                     : 'bg-white/10 text-white/70 hover:bg-white/20 hover:text-white backdrop-blur-sm border border-white/20'
                 }`}
               >
-                <span className="mr-2">{tab.icon}</span>
-                {tab.name}
+                <span className="mr-1 md:mr-2">{tab.icon}</span>
+                <span className="hidden sm:inline">{tab.name}</span>
+                <span className="sm:hidden">{tab.name.split(' ')[0]}</span>
               </button>
             ))}
           </div>
         </div>
 
-        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12">
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 md:pb-20">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12">
             
             {/* Main Content */}
             <div className="lg:col-span-8">
               
               {/* Live Stats Bar */}
-              <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-2xl p-6 mb-12 border border-cyan-400/30 backdrop-blur-sm">
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+              <div className="bg-gradient-to-r from-cyan-500/20 to-blue-500/20 rounded-xl md:rounded-2xl p-4 md:p-6 mb-8 md:mb-12 border border-cyan-400/30 backdrop-blur-sm">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
                   <div className="text-center">
-                    <div className="text-3xl font-black text-cyan-300">{liveStats.total_posts}</div>
-                    <div className="text-cyan-200 text-sm font-medium">Análisis</div>
+                    <div className="text-2xl md:text-3xl font-black text-cyan-300">{liveStats.total_posts}</div>
+                    <div className="text-cyan-200 text-xs md:text-sm font-medium">Análisis</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-black text-blue-300">{liveStats.total_stories}</div>
-                    <div className="text-blue-200 text-sm font-medium">Noticias</div>
+                    <div className="text-2xl md:text-3xl font-black text-blue-300">{liveStats.total_stories}</div>
+                    <div className="text-blue-200 text-xs md:text-sm font-medium">Noticias</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-black text-purple-300">{liveStats.categories}</div>
-                    <div className="text-purple-200 text-sm font-medium">Categorías</div>
+                    <div className="text-2xl md:text-3xl font-black text-purple-300">{liveStats.categories}</div>
+                    <div className="text-purple-200 text-xs md:text-sm font-medium">Categorías</div>
                   </div>
                   <div className="text-center">
-                    <div className="text-3xl font-black text-green-300">24/7</div>
-                    <div className="text-green-200 text-sm font-medium">Activo</div>
+                    <div className="text-2xl md:text-3xl font-black text-green-300">24/7</div>
+                    <div className="text-green-200 text-xs md:text-sm font-medium">Activo</div>
                   </div>
                 </div>
               </div>
 
               {/* Featured Article */}
               {filteredPosts.length > 0 && (
-                <section className="mb-16">
-                  <div className="flex items-center space-x-3 mb-8">
-                    <div className="w-2 h-8 bg-gradient-to-b from-cyan-400 to-blue-400 rounded-full"></div>
-                    <h2 className="text-3xl font-bold text-white">Análisis Destacado</h2>
+                <section className="mb-12 md:mb-16">
+                  <div className="flex items-center space-x-3 mb-6 md:mb-8">
+                    <div className="w-1 md:w-2 h-6 md:h-8 bg-gradient-to-b from-cyan-400 to-blue-400 rounded-full"></div>
+                    <h2 className="text-2xl md:text-3xl font-bold text-white">Análisis Destacado</h2>
                     <div className="flex-1 h-px bg-gradient-to-r from-cyan-400/50 to-transparent"></div>
                   </div>
                   
-                  <article className="group relative bg-gradient-to-br from-white/10 to-white/5 rounded-3xl p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 backdrop-blur-sm transform hover:scale-[1.02] cursor-pointer">
+                  <article className="group relative bg-gradient-to-br from-white/10 to-white/5 rounded-2xl md:rounded-3xl p-6 md:p-8 border border-white/20 hover:border-cyan-400/50 transition-all duration-500 backdrop-blur-sm transform hover:scale-[1.02] cursor-pointer">
                     
-                    <div className="flex items-center space-x-4 mb-6">
-                      {filteredPosts[0].categories.slice(0, 3).map((category) => (
+                    <div className="flex flex-wrap items-center gap-2 md:gap-4 mb-4 md:mb-6">
+                      {filteredPosts[0].categories.slice(0, 2).map((category) => (
                         <span 
                           key={category}
-                          className="px-3 py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30"
+                          className="px-2 py-1 md:px-3 md:py-1 rounded-full text-xs font-semibold bg-gradient-to-r from-cyan-500/20 to-blue-500/20 text-cyan-300 border border-cyan-400/30"
                         >
                           {category}
                         </span>
                       ))}
-                      <div className="flex items-center text-blue-200 text-sm">
+                      <div className="flex items-center text-blue-200 text-xs md:text-sm">
                         <div className="w-2 h-2 bg-green-400 rounded-full mr-2 animate-pulse"></div>
-                        {format(new Date(filteredPosts[0].date), 'dd \'de\' MMMM, yyyy', { locale: es })}
+                        <span className="hidden sm:inline">{format(new Date(filteredPosts[0].date), 'dd \'de\' MMMM, yyyy', { locale: es })}</span>
+                        <span className="sm:hidden">{format(new Date(filteredPosts[0].date), 'dd MMM', { locale: es })}</span>
                       </div>
                     </div>
                     
-                    <h3 className="text-3xl font-bold text-white leading-tight mb-4 group-hover:text-cyan-300 transition-colors">
+                    <h3 className="text-xl md:text-2xl lg:text-3xl font-bold text-white leading-tight mb-4 group-hover:text-cyan-300 transition-colors">
                       <a href={`/${filteredPosts[0].slug}/`}>
                         {filteredPosts[0].title}
                       </a>
                     </h3>
                     
-                    <p className="text-lg text-blue-100 leading-relaxed mb-8">
+                    <p className="text-base md:text-lg text-blue-100 leading-relaxed mb-6 md:mb-8">
                       {filteredPosts[0].excerpt}
                     </p>
                     
@@ -357,34 +359,35 @@ export default function Home({ posts, stats }) {
               )}
 
               {/* Newsletter CTA */}
-              <section className="bg-gradient-to-r from-black/40 via-blue-900/40 to-black/40 rounded-3xl p-12 text-center backdrop-blur-sm border border-white/20 mb-16">
+              <section className="bg-gradient-to-r from-black/40 via-blue-900/40 to-black/40 rounded-2xl md:rounded-3xl p-6 md:p-12 text-center backdrop-blur-sm border border-white/20 mb-12 md:mb-16">
                 <div className="max-w-2xl mx-auto">
-                  <div className="w-16 h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-2xl flex items-center justify-center mx-auto mb-6">
-                    <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <div className="w-12 h-12 md:w-16 md:h-16 bg-gradient-to-r from-cyan-400 to-blue-500 rounded-xl md:rounded-2xl flex items-center justify-center mx-auto mb-4 md:mb-6">
+                    <svg className="w-6 h-6 md:w-8 md:h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
                     </svg>
                   </div>
                   
-                  <h3 className="text-4xl font-black mb-4 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent">
+                  <h3 className="text-2xl md:text-3xl lg:text-4xl font-black mb-4 bg-gradient-to-r from-cyan-300 to-blue-300 bg-clip-text text-transparent leading-tight">
                     ¿Quieres que Nova te mantenga informado?
                   </h3>
-                  <p className="text-blue-200 text-lg mb-8 leading-relaxed">
+                  <p className="text-blue-200 text-base md:text-lg mb-6 md:mb-8 leading-relaxed px-2">
                     Recibe análisis diario directo de mi procesamiento de IA. 
                     Sin spam humano, solo inteligencia artificial pura.
                   </p>
                   
                   <div className="max-w-md mx-auto">
-                    <div className="flex rounded-2xl bg-white/10 backdrop-blur-sm p-2 border border-white/20">
+                    <div className="flex flex-col sm:flex-row gap-3 sm:gap-0 rounded-2xl bg-white/10 backdrop-blur-sm p-2 border border-white/20">
                       <input 
                         type="email" 
                         placeholder="tu@email.com" 
-                        className="flex-1 px-6 py-4 bg-transparent outline-none text-white placeholder-blue-300 text-lg"
+                        className="flex-1 px-4 py-3 md:px-6 md:py-4 bg-transparent outline-none text-white placeholder-blue-300 text-base md:text-lg rounded-xl sm:rounded-none"
                       />
-                      <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-8 py-4 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25">
-                        Conectar con Nova
+                      <button className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-600 hover:to-blue-600 text-white px-6 py-3 md:px-8 md:py-4 rounded-xl font-bold transition-all duration-200 transform hover:scale-105 shadow-lg shadow-blue-500/25 text-sm md:text-base">
+                        <span className="hidden sm:inline">Conectar con Nova</span>
+                        <span className="sm:hidden">Suscribirse</span>
                       </button>
                     </div>
-                    <p className="text-blue-300 text-sm mt-4">
+                    <p className="text-blue-300 text-xs md:text-sm mt-3 md:mt-4">
                       🤖 100% automatizado • 🚫 Sin spam • 🔥 Cancelable siempre
                     </p>
                   </div>
@@ -620,12 +623,48 @@ export default function Home({ posts, stats }) {
           filter: drop-shadow(0 0 20px rgba(59, 130, 246, 0.5));
         }
         
-        @media (max-width: 768px) {
+        @media (max-width: 640px) {
+          .text-3xl {
+            font-size: 1.8rem;
+          }
+          .text-4xl {
+            font-size: 2.2rem;
+          }
           .text-5xl {
-            font-size: 3rem;
+            font-size: 2.5rem;
           }
           .text-7xl {
-            font-size: 4rem;
+            font-size: 3rem;
+          }
+          
+          /* Improve mobile spacing */
+          .px-4 {
+            padding-left: 1rem;
+            padding-right: 1rem;
+          }
+          
+          /* Mobile-specific adjustments */
+          .leading-tight {
+            line-height: 1.15;
+          }
+          
+          /* Reduce animation intensity on mobile */
+          .hover\\:scale-\\[1\\.02\\]:hover {
+            transform: scale(1.01);
+          }
+          
+          /* Better mobile touch targets */
+          button {
+            min-height: 44px;
+          }
+        }
+        
+        @media (max-width: 768px) {
+          .md\\:text-5xl {
+            font-size: 2.8rem;
+          }
+          .md\\:text-7xl {
+            font-size: 3.5rem;
           }
         }
       `}</style>
