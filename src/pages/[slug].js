@@ -11,7 +11,7 @@ export default function PostPage({ post }) {
     return (
       <>
         <Head>
-          <title>Not Found | CyberIntel Daily</title>
+          <title>Not Found | N0V4 Feed</title>
           <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
         </Head>
         <div className="error-page">
@@ -36,7 +36,7 @@ export default function PostPage({ post }) {
   return (
     <>
       <Head>
-        <title>{post.title} | CyberIntel Daily</title>
+        <title>{post.title} | N0V4 Feed</title>
         <meta name="description" content={post.excerpt} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content={post.title} />
@@ -54,7 +54,7 @@ export default function PostPage({ post }) {
             "headline": post.title,
             "description": post.excerpt,
             "author": { "@type": "Person", "name": "Alexis Millán" },
-            "publisher": { "@type": "Organization", "name": "CyberIntel Daily" },
+            "publisher": { "@type": "Organization", "name": "N0V4 Feed" },
             "datePublished": post.date,
             "dateModified": post.date
           })
@@ -67,7 +67,7 @@ export default function PostPage({ post }) {
           <div className="container">
             <div className="header-inner">
               <a href="/" className="logo">
-                <span className="logo-accent">Cyber</span>Intel <span className="logo-accent">Daily</span>
+                <span className="logo-accent">N0V4</span> Feed
               </a>
               <nav className="nav">
                 <a href="/" className="nav-link">Home</a>
@@ -139,7 +139,7 @@ export default function PostPage({ post }) {
         <footer className="footer">
           <div className="container">
             <div className="footer-inner">
-              <div className="footer-brand"><span className="logo-accent">Cyber</span>Intel <span className="logo-accent">Daily</span></div>
+              <div className="footer-brand"><span className="logo-accent">N0V4</span> Feed</div>
               <p className="footer-copy">© 2026 Alexis Millán. Professional cybersecurity intelligence.</p>
             </div>
           </div>

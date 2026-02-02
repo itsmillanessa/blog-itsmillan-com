@@ -13,7 +13,7 @@ export default function Home({ posts, featuredPost }) {
   return (
     <>
       <Head>
-        <title>CyberIntel Daily | Cybersecurity & Tech Intelligence</title>
+        <title>N0V4 Feed | Cybersecurity & Tech Intelligence</title>
         <meta name="description" content="Professional cybersecurity and technology intelligence. Daily analysis of threats, infrastructure, and emerging tech." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -28,7 +28,7 @@ export default function Home({ posts, featuredPost }) {
           <div className="container">
             <div className="header-inner">
               <a href="/" className="logo">
-                <span className="logo-accent">Cyber</span>Intel <span className="logo-accent">Daily</span>
+                <span className="logo-accent">N0V4</span> Feed
               </a>
               <nav className="nav">
                 <a href="/" className="nav-link active">Home</a>
@@ -108,7 +108,7 @@ export default function Home({ posts, featuredPost }) {
           <div className="container">
             <div className="footer-inner">
               <div className="footer-brand">
-                <span className="logo-accent">Cyber</span>Intel <span className="logo-accent">Daily</span>
+                <span className="logo-accent">N0V4</span> Feed
               </div>
               <p className="footer-copy">© 2026 Alexis Millán. Professional cybersecurity intelligence.</p>
               <div className="footer-links">

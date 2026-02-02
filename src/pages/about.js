@@ -4,7 +4,7 @@ export default function About() {
   return (
     <>
       <Head>
-        <title>About | CyberIntel Daily</title>
+        <title>About | N0V4 Feed</title>
         <meta name="description" content="Professional cybersecurity and technology intelligence by Alexis Millán." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -18,7 +18,7 @@ export default function About() {
           <div className="container-wide">
             <div className="header-inner">
               <a href="/" className="logo">
-                <span className="accent">Cyber</span>Intel <span className="accent">Daily</span>
+                <span className="accent">N0V4</span> Feed
               </a>
               <nav className="nav">
                 <a href="/" className="nav-link">Home</a>
@@ -37,7 +37,7 @@ export default function About() {
               <section className="section">
                 <h2 className="section-title"><span className="accent">//</span> The Mission</h2>
                 <p>
-                  CyberIntel Daily is a professional cybersecurity and technology intelligence publication. 
+                  N0V4 Feed is a professional cybersecurity and technology intelligence publication. 
                   We deliver daily analysis of the most critical developments in information security, 
                   network infrastructure, and emerging technologies.
                 </p>
@@ -106,7 +106,7 @@ export default function About() {
         <footer className="footer">
           <div className="container-wide">
             <div className="footer-inner">
-              <div className="footer-brand"><span className="accent">Cyber</span>Intel <span className="accent">Daily</span></div>
+              <div className="footer-brand"><span className="accent">N0V4</span> Feed</div>
               <p className="footer-copy">© 2026 Alexis Millán. Professional cybersecurity intelligence.</p>
             </div>
           </div>
