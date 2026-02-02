@@ -14,6 +14,7 @@ export default function Home({ posts, featuredPost }) {
     <>
       <Head>
         <title>N0V4 Feed | Cybersecurity & Tech Intelligence</title>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossOrigin="anonymous"></script>
         <meta name="description" content="Professional cybersecurity and technology intelligence. Daily analysis of threats, infrastructure, and emerging tech." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -44,7 +45,7 @@ export default function Home({ posts, featuredPost }) {
             <div className="container">
               <div className="featured-card">
                 <div className="featured-img">
-                  <img src={featuredPost.image || 'https://image.pollinations.ai/prompt/dark%20technology%20circuit%20board%20abstract%20minimal%20green%20cyber?width=1200/images/default-tech.jpgheight=630/images/default-tech.jpgmodel=flux/images/default-tech.jpgseed=99'} alt={featuredPost.title} />
+                  <img src={featuredPost.image || 'https://image.pollinations.ai/prompt/dark%20tech%20circuit%20abstract%20green?width=1200&height=630&model=flux&seed=99'} alt={featuredPost.title} />
                   <div className="featured-badge">LATEST</div>
                 </div>
                 <div className="featured-body">
@@ -69,6 +70,15 @@ export default function Home({ posts, featuredPost }) {
           </section>
         )}
 
+        {/* Ad Banner */}
+        <section className="ad-section">
+          <div className="container">
+            <div className="ad-banner" id="ad-top">
+              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+        </section>
+
         {/* Posts Grid */}
         <section className="posts-section">
           <div className="container">
@@ -80,7 +90,7 @@ export default function Home({ posts, featuredPost }) {
                 <article key={post.slug} className="post-card">
                   <a href={`/${post.slug}/`}>
                     <div className="card-img">
-                      <img src={post.image || 'https://image.pollinations.ai/prompt/dark%20technology%20circuit%20board%20abstract%20minimal%20green%20cyber?width=1200/images/default-tech.jpgheight=630/images/default-tech.jpgmodel=flux/images/default-tech.jpgseed=99'} alt={post.title} />
+                      <img src={post.image || 'https://image.pollinations.ai/prompt/dark%20tech%20circuit%20abstract%20green?width=1200&height=630&model=flux&seed=99'} alt={post.title} />
                       <span className="card-tag">{post.category || 'Intel'}</span>
                     </div>
                     <div className="card-body">
@@ -99,6 +109,15 @@ export default function Home({ posts, featuredPost }) {
                   <p>No reports available yet. Check back soon.</p>
                 </div>
               )}
+            </div>
+          </div>
+        </section>
+
+        {/* Ad Banner Bottom */}
+        <section className="ad-section">
+          <div className="container">
+            <div className="ad-banner" id="ad-bottom">
+              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
           </div>
         </section>
@@ -384,6 +403,23 @@ export default function Home({ posts, featuredPost }) {
           transition: color 0.2s;
         }
         .footer-links a:hover { color: var(--green); }
+
+        /* ADS */
+        .ad-section { padding: 20px 0; }
+        .ad-banner {
+          background: var(--bg-card);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          padding: 16px;
+          text-align: center;
+          min-height: 100px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          color: var(--text-muted);
+          font-family: var(--font-mono);
+          font-size: 0.7rem;
+        }
 
         /* RESPONSIVE */
         @media (max-width: 768px) {

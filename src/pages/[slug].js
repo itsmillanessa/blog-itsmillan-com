@@ -37,6 +37,7 @@ export default function PostPage({ post }) {
     <>
       <Head>
         <title>{post.title} | N0V4 Feed</title>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossOrigin="anonymous"></script>
         <meta name="description" content={post.excerpt} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content={post.title} />
@@ -107,6 +108,15 @@ export default function PostPage({ post }) {
             <div className="article-body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
           </div>
         </article>
+
+        {/* Ad - In Article */}
+        <section className="ad-section">
+          <div className="container">
+            <div className="ad-banner">
+              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            </div>
+          </div>
+        </section>
 
         {/* Tags */}
         {post.tags && post.tags.length > 0 && (
@@ -293,6 +303,15 @@ export default function PostPage({ post }) {
         .footer-inner { text-align: center; }
         .footer-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
         .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
+
+        /* ADS */
+        .ad-section { padding: 20px 0; }
+        .ad-banner {
+          background: var(--bg-card); border: 1px solid var(--border);
+          border-radius: var(--radius); padding: 16px; text-align: center;
+          min-height: 100px; display: flex; align-items: center; justify-content: center;
+          color: var(--text-muted); font-family: var(--font-mono); font-size: 0.7rem;
+        }
 
         @media (max-width: 768px) {
           .article-title { font-size: 1.5rem; }
