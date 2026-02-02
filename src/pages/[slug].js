@@ -4,17 +4,17 @@ import path from 'path'
 import matter from 'gray-matter'
 import { marked } from 'marked'
 import { format } from 'date-fns'
-import { es } from 'date-fns/locale'
 
-export default function PostPage({ post }) {
+export default function ArticlePage({ post }) {
   if (!post) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50 flex items-center justify-center">
-        <div className="text-center bg-white rounded-2xl shadow-lg p-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">Post no encontrado</h1>
-          <a href="/" className="text-blue-600 hover:text-blue-800 font-medium">
-            ← Volver al inicio
-          </a>
+      <div className="error-page">
+        <div className="container">
+          <div className="error-content">
+            <h1>Article Not Found</h1>
+            <p>The requested cybersecurity intelligence article could not be found.</p>
+            <a href="/" className="return-home">Return to Homepage</a>
+          </div>
         </div>
       </div>
     )
@@ -23,39 +23,37 @@ export default function PostPage({ post }) {
   return (
     <>
       <Head>
-        <title>{post.title} | Tech Digest</title>
+        <title>{post.title} | CyberIntel Daily</title>
         <meta name="description" content={post.excerpt} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.excerpt} />
         <meta property="og:type" content="article" />
-        <meta property="og:image" content="/og-image.jpg" />
+        <meta property="og:image" content={post.image || '/images/default-tech.jpg'} />
         <meta property="article:published_time" content={post.date} />
-        <meta property="article:author" content="NovaSecOps" />
+        <meta property="article:author" content="Alexis Millán" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={post.title} />
         <meta name="twitter:description" content={post.excerpt} />
         <link rel="canonical" href={`https://blog.itsmillan.com/${post.slug}/`} />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
         
-        {/* Google AdSense */}
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX"
-                crossOrigin="anonymous"></script>
-                
         {/* JSON-LD Structured Data */}
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
-            "@type": "BlogPosting",
+            "@type": "NewsArticle",
             "headline": post.title,
             "description": post.excerpt,
             "author": {
               "@type": "Person",
-              "name": "NovaSecOps",
-              "url": "https://nova.itsmillan.com"
+              "name": "Alexis Millán"
             },
             "publisher": {
               "@type": "Organization",
-              "name": "Tech Digest | Blog de Millán",
+              "name": "CyberIntel Daily",
               "logo": {
                 "@type": "ImageObject",
                 "url": "https://blog.itsmillan.com/logo.png"
@@ -66,308 +64,271 @@ export default function PostPage({ post }) {
             "mainEntityOfPage": {
               "@type": "WebPage",
               "@id": `https://blog.itsmillan.com/${post.slug}/`
-            }
+            },
+            "image": post.image || '/images/default-tech.jpg'
           })
         }} />
       </Head>
 
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-        {/* Navigation */}
-        <nav className="bg-white/80 backdrop-blur-md border-b border-gray-200 sticky top-0 z-50">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex justify-between items-center h-16">
-              <div className="flex items-center">
-                <a href="/" className="flex-shrink-0">
-                  <h1 className="text-xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
-                    🤓 Tech Digest
-                  </h1>
-                </a>
-              </div>
-              <div className="flex items-center space-x-4">
-                <a href="/" className="text-gray-600 hover:text-gray-900 transition-colors">
-                  Inicio
-                </a>
-                <a href="/rss.xml" className="text-gray-500 hover:text-gray-700 transition-colors">
-                  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3.429 2.667v2.667c7.732 0 14 6.268 14 14h2.667c0-9.205-7.462-16.667-16.667-16.667zM3.429 8v2.667c4.418 0 8 3.582 8 8h2.667c0-5.891-4.776-10.667-10.667-10.667zM6.095 14.667c0.736 0 1.333 0.597 1.333 1.333s-0.597 1.333-1.333 1.333-1.333-0.597-1.333-1.333 0.597-1.333 1.333-1.333z" />
-                  </svg>
-                </a>
-              </div>
-            </div>
-          </div>
-        </nav>
-
-        {/* Article Header */}
-        <header className="relative overflow-hidden bg-white border-b">
-          <div className="absolute inset-0 bg-gradient-to-r from-blue-600/5 to-purple-600/5"></div>
-          <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 relative">
-            <nav className="text-sm text-gray-500 mb-6">
-              <a href="/" className="text-blue-600 hover:text-blue-800 transition-colors">
-                ← Volver al inicio
+      <div className="article-page">
+        {/* HEADER */}
+        <header className="article-header">
+          <div className="container">
+            <nav className="breadcrumb">
+              <a href="/" className="breadcrumb-link">Home</a>
+              <span className="breadcrumb-separator">/</span>
+              <a href={`/categories/${post.category?.toLowerCase()}`} className="breadcrumb-link">
+                {post.category}
               </a>
+              <span className="breadcrumb-separator">/</span>
+              <span className="breadcrumb-current">Article</span>
             </nav>
             
-            <div className="flex flex-wrap items-center gap-3 text-sm mb-6">
-              <span className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full font-medium">
-                📅 {format(new Date(post.date), 'dd \'de\' MMMM, yyyy', { locale: es })}
-              </span>
-              <span className="bg-green-100 text-green-700 px-3 py-1 rounded-full font-medium">
-                📊 {post.total_stories} noticias analizadas
-              </span>
-              <span className="bg-purple-100 text-purple-700 px-3 py-1 rounded-full font-medium">
-                🤖 NovaSecOps AI
-              </span>
-              <span className="bg-orange-100 text-orange-700 px-3 py-1 rounded-full font-medium">
-                ⏱️ {Math.ceil(post.contentHtml.length / 1000)} min lectura
-              </span>
+            <div className="site-brand">
+              <a href="/">
+                <h1 className="brand-title">CyberIntel <span className="brand-accent">Daily</span></h1>
+              </a>
             </div>
-            
-            <h1 className="text-3xl md:text-5xl font-bold text-gray-900 leading-tight mb-6">
-              {post.title}
-            </h1>
-            
-            <p className="text-xl text-gray-600 leading-relaxed max-w-3xl">
-              {post.excerpt}
-            </p>
           </div>
         </header>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            
-            {/* Main Article Content */}
-            <div className="lg:col-span-2">
-              <article className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                {/* Article Meta */}
-                <div className="border-b border-gray-100 p-6">
-                  <div className="bg-gradient-to-r from-blue-50 to-purple-50 rounded-xl p-6">
-                    <h3 className="font-bold text-gray-900 mb-4 flex items-center">
-                      📈 Resumen del Análisis
-                    </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                      <div>
-                        <span className="font-semibold text-blue-700 text-sm">Fuentes:</span>
-                        <div className="text-gray-600 text-sm mt-1">
-                          {post.sources.join(', ')}
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-semibold text-green-700 text-sm">Cobertura:</span>
-                        <div className="text-gray-600 text-sm mt-1">
-                          {post.total_stories} noticias procesadas
-                        </div>
-                      </div>
-                      <div>
-                        <span className="font-semibold text-purple-700 text-sm">Categorías:</span>
-                        <div className="flex flex-wrap gap-1 mt-1">
-                          {post.categories.slice(0, 3).map((category) => (
-                            <span 
-                              key={category}
-                              className="inline-block px-2 py-1 text-xs bg-white border border-purple-200 text-purple-700 rounded-md"
-                            >
-                              {category}
-                            </span>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
+        {/* ARTICLE HERO */}
+        <section className="article-hero">
+          <div className="container">
+            <div className="hero-content">
+              <div className="article-meta">
+                <span className="category-tag">{post.category}</span>
+                <span className="meta-separator">•</span>
+                <time className="publish-date" dateTime={post.date}>
+                  {format(new Date(post.date), 'MMMM dd, yyyy')}
+                </time>
+                <span className="meta-separator">•</span>
+                <span className="reading-time">{post.readTime || '5 min read'}</span>
+              </div>
+              
+              <h1 className="article-title">{post.title}</h1>
+              
+              {post.excerpt && (
+                <p className="article-excerpt">{post.excerpt}</p>
+              )}
+              
+              <div className="author-info">
+                <div className="author-details">
+                  <span className="author-name">By Alexis Millán</span>
+                  <span className="author-title">Cybersecurity Intelligence Analyst</span>
                 </div>
-
-                {/* Ad Space - After Meta */}
-                <div className="bg-gray-50 border-y border-gray-100 p-4 text-center">
-                  <p className="text-gray-400 text-xs mb-2">Advertisement</p>
-                  <div className="bg-gray-200 h-20 rounded-lg flex items-center justify-center text-gray-400">
-                    728x90 Header Ad
-                  </div>
+                
+                <div className="article-actions">
+                  <button className="share-btn" onClick={() => {
+                    if (typeof window !== 'undefined' && navigator.share) {
+                      navigator.share({
+                        title: post.title,
+                        url: window.location.href
+                      })
+                    }
+                  }}>
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                      <path d="M4 12v4a2 2 0 002 2h8a2 2 0 002-2v-4M12 8l-4-4m0 0L4 8m4-4v12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                    Share
+                  </button>
                 </div>
+              </div>
+            </div>
+          </div>
+        </section>
 
-                {/* Article Content */}
-                <div className="p-8">
-                  <div className="prose prose-lg prose-blue max-w-none">
-                    <div 
-                      className="article-content"
-                      dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
-                    />
-                  </div>
-                </div>
+        {/* FEATURED IMAGE */}
+        {post.image && (
+          <section className="featured-image">
+            <div className="container">
+              <div className="image-container">
+                <img src={post.image} alt={post.title} />
+              </div>
+            </div>
+          </section>
+        )}
 
-                {/* Tags */}
+        {/* ARTICLE CONTENT */}
+        <main className="article-main">
+          <div className="container">
+            <div className="content-layout">
+              <article className="article-content">
+                <div 
+                  className="prose"
+                  dangerouslySetInnerHTML={{ __html: post.contentHtml }} 
+                />
+                
+                {/* TAGS */}
                 {post.tags && post.tags.length > 0 && (
-                  <div className="border-t border-gray-100 p-6 bg-gray-50">
-                    <h3 className="text-sm font-semibold text-gray-900 mb-4">🏷️ Tags relacionados:</h3>
-                    <div className="flex flex-wrap gap-2">
+                  <div className="article-tags">
+                    <h4 className="tags-title">Related Topics</h4>
+                    <div className="tags-list">
                       {post.tags.map((tag) => (
-                        <span 
-                          key={tag}
-                          className="inline-block px-3 py-1 text-sm bg-white border border-gray-200 text-gray-700 rounded-full hover:border-blue-300 hover:text-blue-700 transition-colors cursor-pointer"
-                        >
+                        <span key={tag} className="tag">
                           {tag}
                         </span>
                       ))}
                     </div>
                   </div>
                 )}
-              </article>
 
-              {/* Ad Space - After Article */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-6 text-center">
-                <p className="text-gray-400 text-xs mb-4">Sponsored Content</p>
-                <div className="bg-gray-100 h-32 rounded-xl flex items-center justify-center text-gray-400">
-                  728x200 Content Ad
-                </div>
-              </div>
-
-              {/* Share Section */}
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 mt-6">
-                <h3 className="font-bold text-gray-900 mb-4 text-center">📢 Compartir este análisis</h3>
-                <div className="flex justify-center gap-4">
-                  <a 
-                    href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}/`)}&via=ItsMillan`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-6 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors font-medium shadow-sm"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84" />
-                    </svg>
-                    Twitter
-                  </a>
-                  <a 
-                    href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}/`)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center px-6 py-3 bg-blue-800 text-white rounded-xl hover:bg-blue-900 transition-colors font-medium shadow-sm"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 24 24">
-                      <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
-                    </svg>
-                    LinkedIn
-                  </a>
-                  <button 
-                    onClick={() => navigator.clipboard.writeText(window.location.href)}
-                    className="inline-flex items-center px-6 py-3 bg-gray-600 text-white rounded-xl hover:bg-gray-700 transition-colors font-medium shadow-sm"
-                  >
-                    <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                    </svg>
-                    Copiar
-                  </button>
-                </div>
-              </div>
-
-              {/* Newsletter CTA */}
-              <div className="bg-gradient-to-r from-blue-600 to-purple-600 rounded-2xl p-8 mt-6 text-center text-white">
-                <h3 className="text-2xl font-bold mb-4">📧 ¿Te gustó este análisis?</h3>
-                <p className="text-blue-100 mb-6 max-w-md mx-auto">
-                  Recibe el digest diario directo en tu inbox. Sin spam, solo insights que importan.
-                </p>
-                <div className="max-w-md mx-auto">
-                  <div className="flex rounded-xl bg-white p-1">
-                    <input 
-                      type="email" 
-                      placeholder="tu@email.com" 
-                      className="flex-1 px-4 py-3 bg-transparent outline-none text-gray-700 rounded-l-lg"
-                    />
-                    <button className="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-colors font-medium">
-                      Suscribir
+                {/* SHARE SECTION */}
+                <div className="article-share">
+                  <h4 className="share-title">Share This Intelligence</h4>
+                  <div className="share-buttons">
+                    <a 
+                      href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}`)}&via=itsmillan`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="share-button twitter"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M8.29 20.251c7.547 0 11.675-6.253 11.675-11.675 0-.178 0-.355-.012-.53A8.348 8.348 0 0022 5.92a8.19 8.19 0 01-2.357.646 4.118 4.118 0 001.804-2.27 8.224 8.224 0 01-2.605.996 4.107 4.107 0 00-6.993 3.743 11.65 11.65 0 01-8.457-4.287 4.106 4.106 0 001.27 5.477A4.072 4.072 0 012.8 9.713v.052a4.105 4.105 0 003.292 4.022 4.095 4.095 0 01-1.853.07 4.108 4.108 0 003.834 2.85A8.233 8.233 0 012 18.407a11.616 11.616 0 006.29 1.84"/>
+                      </svg>
+                      Twitter
+                    </a>
+                    
+                    <a 
+                      href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}`)}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="share-button linkedin"
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+                      </svg>
+                      LinkedIn
+                    </a>
+                    
+                    <button 
+                      className="share-button copy"
+                      onClick={() => {
+                        if (typeof window !== 'undefined') {
+                          navigator.clipboard.writeText(window.location.href).then(() => {
+                            alert('Link copied to clipboard!')
+                          }).catch(() => {
+                            alert('Failed to copy link')
+                          })
+                        }
+                      }}
+                    >
+                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                        <path d="m5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+                      </svg>
+                      Copy Link
                     </button>
                   </div>
                 </div>
-              </div>
-            </div>
+              </article>
 
-            {/* Sidebar */}
-            <div className="lg:col-span-1">
-              <div className="sticky top-24 space-y-6">
+              {/* SIDEBAR */}
+              <aside className="article-sidebar">
                 
-                {/* Ad Space - Sidebar Top */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-4 text-center">
-                  <p className="text-gray-400 text-xs mb-2">Advertisement</p>
-                  <div className="bg-gray-100 h-64 rounded-xl flex items-center justify-center text-gray-400">
-                    300x250 Rectangle
-                  </div>
-                </div>
-
-                {/* Related Articles */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                  <h3 className="font-bold text-gray-900 mb-4">📰 Más Análisis</h3>
-                  <div className="space-y-4">
-                    <a href="/" className="block group">
-                      <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors leading-snug">
-                        Análisis diario de tecnología anterior
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">Hace 1 día</div>
-                    </a>
-                    <a href="/" className="block group">
-                      <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors leading-snug">
-                        Tendencias en IA y Machine Learning
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">Hace 2 días</div>
-                    </a>
-                    <a href="/" className="block group">
-                      <div className="text-sm font-medium text-gray-900 group-hover:text-blue-600 transition-colors leading-snug">
-                        Ciberseguridad: Nuevas amenazas
-                      </div>
-                      <div className="text-xs text-gray-500 mt-1">Hace 3 días</div>
-                    </a>
-                  </div>
-                </div>
-
-                {/* About Widget */}
-                <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6">
-                  <h3 className="font-bold text-gray-900 mb-4 flex items-center">
-                    🤖 Sobre NovaSecOps
-                  </h3>
-                  <p className="text-gray-600 text-sm leading-relaxed">
-                    Asistente de IA especializado en análisis tecnológico y ciberseguridad. 
-                    Genero insights diarios procesando múltiples fuentes de noticias tech.
+                {/* NEWSLETTER SIGNUP */}
+                <div className="sidebar-card">
+                  <h3 className="card-title">Stay Updated</h3>
+                  <p className="card-desc">
+                    Get the latest cybersecurity intelligence delivered to your inbox.
                   </p>
-                  <a href="https://nova.itsmillan.com" className="inline-flex items-center mt-3 text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors">
-                    Conocer más →
-                  </a>
+                  <form className="newsletter-form">
+                    <input 
+                      type="email" 
+                      placeholder="your@email.com" 
+                      className="newsletter-input"
+                      required 
+                    />
+                    <button type="submit" className="newsletter-btn">
+                      Subscribe
+                    </button>
+                  </form>
+                  <p className="form-note">No spam. Professional insights only.</p>
                 </div>
 
-                {/* Ad Space - Sidebar Bottom */}
-                <div className="bg-white rounded-2xl border border-gray-100 p-4 text-center">
-                  <p className="text-gray-400 text-xs mb-2">Sponsored</p>
-                  <div className="bg-gray-100 h-32 rounded-xl flex items-center justify-center text-gray-400">
-                    300x120 Banner
+                {/* RELATED ARTICLES */}
+                <div className="sidebar-card">
+                  <h3 className="card-title">Related Intelligence</h3>
+                  <div className="related-articles">
+                    <a href="/" className="related-item">
+                      <h4 className="related-title">Latest Cybersecurity Threats</h4>
+                      <span className="related-date">2 days ago</span>
+                    </a>
+                    <a href="/" className="related-item">
+                      <h4 className="related-title">Infrastructure Security Updates</h4>
+                      <span className="related-date">4 days ago</span>
+                    </a>
+                    <a href="/" className="related-item">
+                      <h4 className="related-title">Technology Trend Analysis</h4>
+                      <span className="related-date">1 week ago</span>
+                    </a>
                   </div>
                 </div>
-              </div>
+
+                {/* AUTHOR INFO */}
+                <div className="sidebar-card">
+                  <h3 className="card-title">About the Author</h3>
+                  <div className="author-card">
+                    <div className="author-avatar">AM</div>
+                    <div className="author-info">
+                      <h4 className="author-name">Alexis Millán</h4>
+                      <p className="author-bio">
+                        Cybersecurity professional and technology analyst. 
+                        Specializes in infrastructure security, threat intelligence, 
+                        and emerging technology trends.
+                      </p>
+                      <div className="author-links">
+                        <a href="https://twitter.com/itsmillan" target="_blank" className="author-link">
+                          Twitter
+                        </a>
+                        <a href="https://linkedin.com/in/amillan" target="_blank" className="author-link">
+                          LinkedIn
+                        </a>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </aside>
             </div>
           </div>
-        </div>
+        </main>
 
-        {/* Navigation */}
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-          <div className="text-center">
-            <a 
-              href="/"
-              className="inline-flex items-center text-blue-600 hover:text-blue-800 font-medium bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-200 transition-colors"
-            >
-              ← Ver más análisis diarios
-            </a>
-          </div>
-        </div>
-
-        {/* Footer */}
-        <footer className="bg-white border-t border-gray-200 mt-8">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <div className="text-center text-gray-600">
-              <p className="mb-2">
-                🚀 Powered by{' '}
-                <a href="https://nova.itsmillan.com" className="text-blue-600 hover:text-blue-800 font-medium">
-                  NovaSecOps
-                </a>
-                {' '}|{' '}
-                <a href="/" className="text-blue-600 hover:text-blue-800">Inicio</a>
-                {' '}|{' '}
-                <a href="/rss.xml" className="text-blue-600 hover:text-blue-800">RSS</a>
+        {/* NEWSLETTER CTA */}
+        <section className="newsletter-cta">
+          <div className="container">
+            <div className="cta-content">
+              <h2 className="cta-title">Get Professional Cybersecurity Intelligence</h2>
+              <p className="cta-desc">
+                Join IT professionals who rely on CyberIntel Daily for the latest 
+                threat intelligence, security updates, and technology analysis.
               </p>
-              <p className="text-sm text-gray-500">
-                © 2026 Alexis Millán. Análisis automatizado con inteligencia artificial.
+              <form className="cta-form">
+                <input 
+                  type="email" 
+                  placeholder="Enter your professional email"
+                  className="cta-input"
+                  required
+                />
+                <button type="submit" className="cta-button">
+                  Get Daily Intelligence
+                </button>
+              </form>
+            </div>
+          </div>
+        </section>
+
+        {/* FOOTER */}
+        <footer className="article-footer">
+          <div className="container">
+            <div className="footer-content">
+              <div className="footer-nav">
+                <a href="/">← Back to Intelligence Feed</a>
+                <a href="/about">About CyberIntel Daily</a>
+                <a href="mailto:alexis@itsmillan.com">Contact</a>
+              </div>
+              <p className="footer-copyright">
+                © 2026 CyberIntel Daily. Published by <span className="author-highlight">Alexis Millán</span>. 
+                Professional cybersecurity intelligence.
               </p>
             </div>
           </div>
@@ -375,93 +336,810 @@ export default function PostPage({ post }) {
       </div>
 
       <style jsx global>{`
-        .article-content h1 {
-          font-size: 2rem;
-          font-weight: 700;
-          margin: 3rem 0 1.5rem 0;
-          color: #1f2937;
-          line-height: 1.2;
-          border-bottom: 3px solid #3b82f6;
-          padding-bottom: 0.75rem;
+        /* RESET & FONTS */
+        * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
         }
-        
-        .article-content h2 {
+
+        :root {
+          --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+          --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          
+          --color-bg-primary: #0a0a0a;
+          --color-bg-secondary: #0d1117;
+          --color-bg-tertiary: #161b22;
+          --color-green-bright: #00ff41;
+          --color-green-dark: #00cc33;
+          --color-green-dim: rgba(0, 255, 65, 0.3);
+          --color-text-primary: #ffffff;
+          --color-text-secondary: #8b949e;
+          --color-text-dim: #6e7681;
+          --color-border: #30363d;
+          --color-border-glow: rgba(0, 255, 65, 0.3);
+          --color-red: #ff4444;
+          --bg-primary: #0d1117;
+          --bg-secondary: #161b22;
+          --bg-tertiary: #21262d;
+          --bg-surface: #1c2128;
+          
+          /* Text Colors */
+          --text-primary: #e6edf3;
+          --text-secondary: #7d8590;
+          --text-tertiary: #656d76;
+          --text-muted: #484f58;
+          
+          /* Brand Colors */
+          --accent-primary: #00d26a;
+          --accent-secondary: #00b959;
+          
+          /* Semantic Colors */
+          --border-primary: #30363d;
+          --border-secondary: #21262d;
+          
+          /* Professional Typography */
+          --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+          
+          /* Spacing */
+          --space-xs: 0.25rem;
+          --space-sm: 0.5rem;
+          --space-md: 1rem;
+          --space-lg: 1.5rem;
+          --space-xl: 2rem;
+          --space-2xl: 3rem;
+          --space-3xl: 4rem;
+          
+          /* Layout */
+          --container-max: 1200px;
+          --content-max: 800px;
+          --sidebar-width: 320px;
+        }
+
+        body {
+          font-family: var(--font-primary);
+          background-color: var(--bg-primary);
+          color: var(--text-primary);
+          line-height: 1.6;
+          font-size: 16px;
+          -webkit-font-smoothing: antialiased;
+          -moz-osx-font-smoothing: grayscale;
+        }
+
+        .article-page {
+          min-height: 100vh;
+        }
+
+        .container {
+          max-width: var(--container-max);
+          margin: 0 auto;
+          padding: 0 var(--space-lg);
+        }
+
+        /* ARTICLE HEADER */
+        .article-header {
+          background: var(--bg-secondary);
+          border-bottom: 1px solid var(--border-primary);
+          padding: var(--space-lg) 0;
+        }
+
+        .breadcrumb {
+          display: flex;
+          align-items: center;
+          font-size: 0.875rem;
+          margin-bottom: var(--space-lg);
+        }
+
+        .breadcrumb-link {
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .breadcrumb-link:hover {
+          color: var(--accent-primary);
+        }
+
+        .breadcrumb-separator {
+          margin: 0 var(--space-sm);
+          color: var(--text-muted);
+        }
+
+        .breadcrumb-current {
+          color: var(--text-primary);
+        }
+
+        .brand-title {
+          font-size: 1.5rem;
+          font-weight: 800;
+          color: var(--text-primary);
+        }
+
+        .brand-accent {
+          color: var(--accent-primary);
+        }
+
+        .site-brand a {
+          text-decoration: none;
+        }
+
+        /* ARTICLE HERO */
+        .article-hero {
+          background: var(--bg-primary);
+          padding: var(--space-3xl) 0;
+        }
+
+        .hero-content {
+          max-width: var(--content-max);
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .article-meta {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: var(--space-sm);
+          margin-bottom: var(--space-xl);
+          font-size: 0.875rem;
+        }
+
+        .category-tag {
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          padding: var(--space-xs) var(--space-md);
+          font-weight: 600;
+          text-transform: uppercase;
+          font-size: 0.75rem;
+          border-radius: 4px;
+        }
+
+        .meta-separator {
+          color: var(--text-tertiary);
+        }
+
+        .publish-date,
+        .reading-time {
+          color: var(--text-secondary);
+        }
+
+        .article-title {
+          font-size: clamp(2rem, 5vw, 3.5rem);
+          font-weight: 800;
+          line-height: 1.1;
+          margin-bottom: var(--space-xl);
+          color: var(--text-primary);
+        }
+
+        .article-excerpt {
+          font-size: 1.25rem;
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin-bottom: var(--space-2xl);
+          max-width: 600px;
+          margin-left: auto;
+          margin-right: auto;
+        }
+
+        .author-info {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          gap: var(--space-xl);
+        }
+
+        .author-name {
+          font-weight: 600;
+          color: var(--text-primary);
+          display: block;
+        }
+
+        .author-title {
+          font-size: 0.875rem;
+          color: var(--text-secondary);
+        }
+
+        .article-actions {
+          display: flex;
+          gap: var(--space-md);
+        }
+
+        .share-btn {
+          display: flex;
+          align-items: center;
+          gap: var(--space-sm);
+          background: transparent;
+          border: 1px solid var(--border-primary);
+          color: var(--text-secondary);
+          padding: var(--space-sm) var(--space-lg);
+          border-radius: 6px;
+          cursor: pointer;
+          transition: all 0.2s;
+        }
+
+        .share-btn:hover {
+          border-color: var(--accent-primary);
+          color: var(--accent-primary);
+        }
+
+        /* FEATURED IMAGE */
+        .featured-image {
+          background: var(--bg-secondary);
+          padding: var(--space-xl) 0;
+        }
+
+        .image-container {
+          max-width: var(--content-max);
+          margin: 0 auto;
+          border-radius: 12px;
+          overflow: hidden;
+          box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
+        }
+
+        .image-container img {
+          width: 100%;
+          height: auto;
+          display: block;
+        }
+
+        /* ARTICLE MAIN */
+        .article-main {
+          background: var(--bg-primary);
+          padding: var(--space-3xl) 0;
+        }
+
+        .content-layout {
+          display: grid;
+          grid-template-columns: 1fr var(--sidebar-width);
+          gap: var(--space-3xl);
+          max-width: var(--container-max);
+          margin: 0 auto;
+        }
+
+        .article-content {
+          max-width: none;
+        }
+
+        /* PROSE STYLES */
+        .prose {
+          color: var(--text-primary);
+          max-width: none;
+          line-height: 1.8;
+        }
+
+        .prose h1 {
+          font-size: 2.25rem;
+          font-weight: 700;
+          margin: var(--space-3xl) 0 var(--space-xl) 0;
+          color: var(--text-primary);
+          border-bottom: 2px solid var(--accent-primary);
+          padding-bottom: var(--space-md);
+        }
+
+        .prose h2 {
+          font-size: 1.875rem;
+          font-weight: 600;
+          margin: var(--space-2xl) 0 var(--space-lg) 0;
+          color: var(--text-primary);
+        }
+
+        .prose h3 {
           font-size: 1.5rem;
           font-weight: 600;
-          margin: 2.5rem 0 1rem 0;
-          color: #374151;
-          border-bottom: 2px solid #e5e7eb;
-          padding-bottom: 0.5rem;
+          margin: var(--space-xl) 0 var(--space-md) 0;
+          color: var(--text-primary);
         }
-        
-        .article-content h3 {
+
+        .prose h4 {
           font-size: 1.25rem;
           font-weight: 600;
-          margin: 2rem 0 0.75rem 0;
-          color: #4b5563;
+          margin: var(--space-lg) 0 var(--space-sm) 0;
+          color: var(--text-primary);
         }
-        
-        .article-content p {
-          margin: 1.5rem 0;
+
+        .prose p {
+          margin: var(--space-lg) 0;
+          font-size: 1.125rem;
           line-height: 1.8;
-          color: #374151;
-          font-size: 1.1rem;
         }
-        
-        .article-content ul, .article-content ol {
-          margin: 1.5rem 0;
-          padding-left: 2rem;
+
+        .prose ul, .prose ol {
+          margin: var(--space-lg) 0;
+          padding-left: var(--space-xl);
         }
-        
-        .article-content li {
-          margin: 0.75rem 0;
-          line-height: 1.7;
+
+        .prose li {
+          margin: var(--space-sm) 0;
+          font-size: 1.125rem;
         }
-        
-        .article-content strong {
+
+        .prose strong {
+          color: var(--text-primary);
           font-weight: 600;
-          color: #1f2937;
         }
-        
-        .article-content em {
+
+        .prose em {
+          color: var(--text-secondary);
+        }
+
+        .prose blockquote {
+          border-left: 4px solid var(--accent-primary);
+          margin: var(--space-xl) 0;
+          padding: var(--space-lg);
+          background: var(--bg-secondary);
+          border-radius: 0 8px 8px 0;
           font-style: italic;
-          color: #6b7280;
         }
-        
-        .article-content blockquote {
-          border-left: 4px solid #3b82f6;
-          margin: 2rem 0;
-          padding: 1rem 1.5rem;
-          background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
-          font-style: italic;
-          border-radius: 0 0.5rem 0.5rem 0;
-        }
-        
-        .article-content code {
-          background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
-          padding: 0.25rem 0.5rem;
-          border-radius: 0.375rem;
-          font-family: ui-monospace, SFMono-Regular, "SF Mono", Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+        .prose code {
+          background: var(--bg-secondary);
+          color: var(--accent-primary);
+          padding: var(--space-xs) var(--space-sm);
+          border-radius: 4px;
+          font-family: var(--font-mono);
           font-size: 0.9em;
-          border: 1px solid #e2e8f0;
         }
-        
-        .article-content hr {
-          margin: 3rem 0;
-          border: none;
-          border-top: 2px solid #e5e7eb;
-          border-radius: 1px;
+
+        .prose pre {
+          background: var(--bg-tertiary);
+          padding: var(--space-lg);
+          border-radius: 8px;
+          overflow-x: auto;
+          margin: var(--space-xl) 0;
+          border: 1px solid var(--border-primary);
         }
-        
-        .article-content a {
-          color: #3b82f6;
+
+        .prose pre code {
+          background: transparent;
+          padding: 0;
+        }
+
+        .prose a {
+          color: var(--accent-primary);
+          text-decoration: underline;
+          text-decoration-color: transparent;
+          transition: text-decoration-color 0.2s;
+        }
+
+        .prose a:hover {
+          text-decoration-color: var(--accent-primary);
+        }
+
+        /* ARTICLE TAGS */
+        .article-tags {
+          margin: var(--space-3xl) 0;
+          padding: var(--space-xl);
+          background: var(--bg-secondary);
+          border-radius: 12px;
+          border: 1px solid var(--border-primary);
+        }
+
+        .tags-title {
+          font-size: 1.125rem;
+          font-weight: 600;
+          margin-bottom: var(--space-md);
+          color: var(--text-primary);
+        }
+
+        .tags-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: var(--space-sm);
+        }
+
+        .tag {
+          background: var(--bg-tertiary);
+          color: var(--text-secondary);
+          padding: var(--space-sm) var(--space-md);
+          border-radius: 20px;
+          font-size: 0.875rem;
+          border: 1px solid var(--border-primary);
+          transition: all 0.2s;
+        }
+
+        .tag:hover {
+          border-color: var(--accent-primary);
+          color: var(--accent-primary);
+        }
+
+        /* ARTICLE SHARE */
+        .article-share {
+          margin: var(--space-3xl) 0;
+          padding: var(--space-xl);
+          background: var(--bg-secondary);
+          border-radius: 12px;
+          text-align: center;
+        }
+
+        .share-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-bottom: var(--space-lg);
+          color: var(--text-primary);
+        }
+
+        .share-buttons {
+          display: flex;
+          justify-content: center;
+          gap: var(--space-md);
+        }
+
+        .share-button {
+          display: flex;
+          align-items: center;
+          gap: var(--space-sm);
+          padding: var(--space-md) var(--space-lg);
+          border-radius: 8px;
           text-decoration: none;
-          border-bottom: 1px solid transparent;
-          transition: border-color 0.2s;
+          font-weight: 500;
+          transition: all 0.2s;
+          border: none;
+          cursor: pointer;
         }
-        
-        .article-content a:hover {
-          border-bottom-color: #3b82f6;
+
+        .share-button.twitter {
+          background: #1da1f2;
+          color: white;
+        }
+
+        .share-button.linkedin {
+          background: #0077b5;
+          color: white;
+        }
+
+        .share-button.copy {
+          background: var(--bg-tertiary);
+          color: var(--text-secondary);
+          border: 1px solid var(--border-primary);
+        }
+
+        .share-button:hover {
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        /* SIDEBAR */
+        .article-sidebar {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-xl);
+        }
+
+        .sidebar-card {
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-primary);
+          border-radius: 12px;
+          padding: var(--space-xl);
+        }
+
+        .card-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          margin-bottom: var(--space-md);
+          color: var(--text-primary);
+        }
+
+        .card-desc {
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin-bottom: var(--space-lg);
+        }
+
+        .newsletter-form {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-md);
+        }
+
+        .newsletter-input {
+          background: var(--bg-primary);
+          border: 1px solid var(--border-primary);
+          color: var(--text-primary);
+          padding: var(--space-md);
+          border-radius: 6px;
+          font-size: 1rem;
+        }
+
+        .newsletter-input:focus {
+          outline: none;
+          border-color: var(--accent-primary);
+        }
+
+        .newsletter-input::placeholder {
+          color: var(--text-tertiary);
+        }
+
+        .newsletter-btn {
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          border: none;
+          padding: var(--space-md);
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          transition: background 0.2s;
+        }
+
+        .newsletter-btn:hover {
+          background: var(--accent-secondary);
+        }
+
+        .form-note {
+          color: var(--text-tertiary);
+          font-size: 0.875rem;
+          text-align: center;
+          margin-top: var(--space-sm);
+        }
+
+        /* RELATED ARTICLES */
+        .related-articles {
+          display: flex;
+          flex-direction: column;
+          gap: var(--space-lg);
+        }
+
+        .related-item {
+          text-decoration: none;
+          padding: var(--space-md);
+          border-radius: 8px;
+          transition: background 0.2s;
+        }
+
+        .related-item:hover {
+          background: var(--bg-tertiary);
+        }
+
+        .related-title {
+          color: var(--text-primary);
+          font-size: 1rem;
+          font-weight: 500;
+          line-height: 1.4;
+          margin-bottom: var(--space-xs);
+        }
+
+        .related-date {
+          color: var(--text-tertiary);
+          font-size: 0.875rem;
+        }
+
+        /* AUTHOR CARD */
+        .author-card {
+          display: flex;
+          gap: var(--space-md);
+        }
+
+        .author-avatar {
+          width: 60px;
+          height: 60px;
+          border-radius: 50%;
+          background: var(--accent-primary);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          font-weight: 700;
+          color: var(--bg-primary);
+          flex-shrink: 0;
+        }
+
+        .author-bio {
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin-bottom: var(--space-md);
+          font-size: 0.9rem;
+        }
+
+        .author-links {
+          display: flex;
+          gap: var(--space-md);
+        }
+
+        .author-link {
+          color: var(--accent-primary);
+          text-decoration: none;
+          font-size: 0.875rem;
+          transition: color 0.2s;
+        }
+
+        .author-link:hover {
+          color: var(--accent-secondary);
+        }
+
+        /* NEWSLETTER CTA */
+        .newsletter-cta {
+          background: var(--bg-secondary);
+          padding: var(--space-3xl) 0;
+        }
+
+        .cta-content {
+          max-width: 600px;
+          margin: 0 auto;
+          text-align: center;
+        }
+
+        .cta-title {
+          font-size: 2rem;
+          font-weight: 700;
+          margin-bottom: var(--space-lg);
+          color: var(--text-primary);
+        }
+
+        .cta-desc {
+          color: var(--text-secondary);
+          font-size: 1.125rem;
+          line-height: 1.6;
+          margin-bottom: var(--space-xl);
+        }
+
+        .cta-form {
+          display: flex;
+          gap: var(--space-md);
+          max-width: 400px;
+          margin: 0 auto;
+        }
+
+        .cta-input {
+          flex: 1;
+          background: var(--bg-primary);
+          border: 1px solid var(--border-primary);
+          color: var(--text-primary);
+          padding: var(--space-md);
+          border-radius: 6px;
+          font-size: 1rem;
+        }
+
+        .cta-input:focus {
+          outline: none;
+          border-color: var(--accent-primary);
+        }
+
+        .cta-button {
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          border: none;
+          padding: var(--space-md) var(--space-xl);
+          border-radius: 6px;
+          font-weight: 600;
+          cursor: pointer;
+          white-space: nowrap;
+          transition: background 0.2s;
+        }
+
+        .cta-button:hover {
+          background: var(--accent-secondary);
+        }
+
+        /* FOOTER */
+        .article-footer {
+          background: var(--bg-primary);
+          border-top: 1px solid var(--border-primary);
+          padding: var(--space-2xl) 0;
+        }
+
+        .footer-content {
+          text-align: center;
+        }
+
+        .footer-nav {
+          display: flex;
+          justify-content: center;
+          gap: var(--space-xl);
+          margin-bottom: var(--space-lg);
+        }
+
+        .footer-nav a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .footer-nav a:hover {
+          color: var(--accent-primary);
+        }
+
+        .footer-copyright {
+          color: var(--text-tertiary);
+        }
+
+        .author-highlight {
+          color: var(--accent-primary);
+          font-weight: 600;
+        }
+
+        /* ERROR PAGE */
+        .error-page {
+          min-height: 100vh;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          background: var(--bg-primary);
+        }
+
+        .error-content {
+          text-align: center;
+          max-width: 500px;
+        }
+
+        .error-content h1 {
+          font-size: 2rem;
+          margin-bottom: var(--space-lg);
+          color: var(--text-primary);
+        }
+
+        .error-content p {
+          color: var(--text-secondary);
+          margin-bottom: var(--space-xl);
+        }
+
+        .return-home {
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          padding: var(--space-md) var(--space-xl);
+          text-decoration: none;
+          border-radius: 6px;
+          font-weight: 600;
+          transition: background 0.2s;
+        }
+
+        .return-home:hover {
+          background: var(--accent-secondary);
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+          .content-layout {
+            grid-template-columns: 1fr;
+            gap: var(--space-2xl);
+          }
+        }
+
+        @media (max-width: 768px) {
+          .container {
+            padding: 0 var(--space-md);
+          }
+          
+          .author-info {
+            flex-direction: column;
+            gap: var(--space-lg);
+          }
+          
+          .article-meta {
+            flex-wrap: wrap;
+          }
+          
+          .share-buttons {
+            flex-direction: column;
+            align-items: center;
+          }
+          
+          .cta-form {
+            flex-direction: column;
+            max-width: 100%;
+          }
+          
+          .footer-nav {
+            flex-direction: column;
+            gap: var(--space-md);
+          }
+          
+          .author-card {
+            flex-direction: column;
+            text-align: center;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .article-title {
+            font-size: 2rem;
+          }
+          
+          .breadcrumb {
+            font-size: 0.8rem;
+          }
+          
+          .sidebar-card {
+            padding: var(--space-lg);
+          }
         }
       `}</style>
     </>
@@ -469,17 +1147,19 @@ export default function PostPage({ post }) {
 }
 
 export async function getStaticPaths() {
-  const postsDirectory = path.join(process.cwd(), 'content', 'posts')
+  const postsDirectory = path.join(process.cwd(), 'content', 'blog')
   
   let paths = []
   
   try {
-    const filenames = fs.readdirSync(postsDirectory)
-    paths = filenames
-      .filter(name => name.endsWith('.md'))
-      .map(filename => ({
-        params: { slug: filename.replace('.md', '') }
-      }))
+    if (fs.existsSync(postsDirectory)) {
+      const filenames = fs.readdirSync(postsDirectory)
+      paths = filenames
+        .filter(name => name.endsWith('.md'))
+        .map(filename => ({
+          params: { slug: filename.replace('.md', '') }
+        }))
+    }
   } catch (error) {
     console.log('Posts directory not found, using empty paths')
   }
@@ -492,20 +1172,20 @@ export async function getStaticPaths() {
 
 export async function getStaticProps({ params }) {
   try {
-    const postsDirectory = path.join(process.cwd(), 'content', 'posts')
+    const postsDirectory = path.join(process.cwd(), 'content', 'blog')
     const filePath = path.join(postsDirectory, `${params.slug}.md`)
     const fileContents = fs.readFileSync(filePath, 'utf8')
     const { data, content } = matter(fileContents)
 
     const post = {
       slug: params.slug,
-      title: data.title || 'Tech Digest',
+      title: data.title || 'CyberIntel Article',
       date: data.date || new Date().toISOString(),
       excerpt: data.excerpt || '',
-      categories: data.categories || [],
+      category: data.category || 'Technology',
       tags: data.tags || [],
-      total_stories: data.total_stories || 0,
-      sources: data.sources || ['Hacker News', 'TechCrunch', 'Wired'],
+      image: data.image,
+      readTime: data.readTime || '5 min read',
       contentHtml: marked(content)
     }
 

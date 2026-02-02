@@ -6,220 +6,373 @@ import matter from 'gray-matter'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
-export default function Editorial({ posts, featuredPost }) {
+export default function ProfessionalCyberNews({ posts, featuredPost }) {
   const [isLoaded, setIsLoaded] = useState(false)
 
   useEffect(() => {
     setIsLoaded(true)
+    
+    // Subtle matrix rain effect - much more subtle for professional look
+    const canvas = document.getElementById('matrix-bg')
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      
+      const matrix = "01"
+      const matrixChars = matrix.split("")
+      
+      const fontSize = 12
+      const columns = canvas.width / fontSize
+      const drops = []
+      
+      for(let x = 0; x < columns; x++) {
+        drops[x] = Math.floor(Math.random() * canvas.height / fontSize)
+      }
+      
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(13, 17, 23, 0.02)'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        
+        ctx.fillStyle = 'rgba(0, 255, 65, 0.06)'
+        ctx.font = fontSize + 'px monospace'
+        
+        for(let i = 0; i < drops.length; i++) {
+          if (Math.random() > 0.99) { // Much slower, more subtle
+            const text = matrixChars[Math.floor(Math.random() * matrixChars.length)]
+            ctx.fillText(text, i * fontSize, drops[i] * fontSize)
+            
+            if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+              drops[i] = 0
+            }
+            drops[i]++
+          }
+        }
+      }
+      
+      const matrixInterval = setInterval(drawMatrix, 150) // Much slower
+      
+      return () => clearInterval(matrixInterval)
+    }
   }, [])
 
   const categories = [
-    'Todas las historias',
-    'Tecnología',
-    'Inteligencia Artificial', 
-    'Ciberseguridad',
-    'Programación',
-    'Startups'
+    { name: 'All Stories', slug: 'all' },
+    { name: 'Cybersecurity', slug: 'cybersecurity' },
+    { name: 'Infrastructure', slug: 'infrastructure' },
+    { name: 'Technology', slug: 'technology' },
+    { name: 'Networking', slug: 'networking' },
+    { name: 'AI & ML', slug: 'ai' }
   ]
 
   return (
     <>
       <Head>
-        <title>NovaNews | Periodismo tecnológico de próxima generación</title>
-        <meta name="description" content="Las historias más importantes del mundo tech. Análisis profundo, investigación y perspectivas únicas sobre el futuro de la tecnología." />
+        <title>CyberIntel Daily | Professional Cybersecurity & Technology Intelligence</title>
+        <meta name="description" content="Professional cybersecurity and technology intelligence for IT professionals. Daily coverage of threats, vulnerabilities, infrastructure, and emerging tech trends." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
-        <meta property="og:title" content="NovaNews | Periodismo tecnológico de próxima generación" />
-        <meta property="og:description" content="Las historias más importantes del mundo tech con análisis profundo y perspectivas únicas." />
-        <meta property="og:type" content="website" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+        
+        <script type="application/ld+json" dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "NewsMediaOrganization",
+            "name": "CyberIntel Daily",
+            "url": "https://blog.itsmillan.com",
+            "logo": "https://blog.itsmillan.com/logo.png",
+            "author": {
+              "@type": "Person",
+              "name": "Alexis Millán"
+            },
+            "description": "Professional cybersecurity and technology intelligence publication"
+          })
+        }} />
       </Head>
 
-      <div className="editorial-site">
-        {/* HEADER */}
-        <header className="editorial-header">
+      <div className="cyber-news-site">
+        {/* Subtle Matrix Background */}
+        <canvas 
+          id="matrix-bg" 
+          className="fixed inset-0 pointer-events-none opacity-20 z-0"
+        ></canvas>
+
+        {/* TOP BAR */}
+        <div className="top-bar">
+          <div className="container">
+            <div className="top-content">
+              <div className="date-info">
+                <span className="today-date">
+                  {format(new Date(), 'EEEE, MMMM do, yyyy', { locale: es })}
+                </span>
+              </div>
+              <div className="quick-links">
+                <a href="/rss" className="top-link">RSS</a>
+                <a href="mailto:alexis@itsmillan.com" className="top-link">Contact</a>
+                <a href="https://twitter.com/itsmillan" className="top-link" target="_blank">Twitter</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* MAIN HEADER */}
+        <header className="main-header">
           <div className="container">
             <div className="header-content">
-              <a href="/" className="logo">NovaNews</a>
-              <nav>
-                <ul className="nav-menu">
-                  <li><a href="/" className="nav-link active">Historias</a></li>
-                  <li><a href="/weekly" className="nav-link">Resumen Semanal</a></li>
-                  <li><a href="/about" className="nav-link">Sobre Nova</a></li>
-                  <li><a href="/newsletter" className="nav-link">Newsletter</a></li>
+              <div className="brand">
+                <h1 className="site-title">
+                  <a href="/">CyberIntel <span className="title-accent">Daily</span></a>
+                </h1>
+                <p className="site-tagline">Professional Cybersecurity & Technology Intelligence</p>
+              </div>
+              
+              <nav className="main-nav">
+                <ul className="nav-list">
+                  <li><a href="/" className="nav-item active">Home</a></li>
+                  <li><a href="/categories/cybersecurity" className="nav-item">Cybersecurity</a></li>
+                  <li><a href="/categories/infrastructure" className="nav-item">Infrastructure</a></li>
+                  <li><a href="/categories/technology" className="nav-item">Technology</a></li>
+                  <li><a href="/about" className="nav-item">About</a></li>
                 </ul>
               </nav>
-              <div className="header-actions">
-                <button className="theme-toggle" aria-label="Cambiar tema">
-                  🌙
-                </button>
-              </div>
             </div>
           </div>
         </header>
 
-        {/* HERO SECTION */}
-        <section className="hero">
+        {/* BREAKING NEWS BAR (if needed) */}
+        <div className="breaking-bar">
           <div className="container">
-            <div className="content-container">
-              <div className="hero-content">
-                <p className="overline">Periodismo tecnológico de próxima generación</p>
-                <h1 className="display-1 mb-md">
-                  Las historias más importantes del mundo tech.{" "}
-                  <span className="text-gradient">Análisis profundo, investigación y perspectivas únicas</span>{" "}
-                  sobre el futuro que estamos construyendo.
-                </h1>
-                <a href="#stories" className="cta-button primary">
-                  Explorar historias
-                  <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-                    <path d="M8 3L13 8L8 13M13 8H3" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-                  </svg>
-                </a>
-              </div>
+            <div className="breaking-content">
+              <span className="breaking-label">LATEST</span>
+              <span className="breaking-text">
+                Quantum encryption breakthrough threatens current RSA infrastructure
+              </span>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* FEATURED POST */}
+        {/* FEATURED STORY */}
         {featuredPost && (
-          <section className="featured-post">
+          <section className="featured-section">
             <div className="container">
-              <div className="content-container">
-                <div className="featured-content">
-                  <div className="featured-text">
-                    <div className="overline featured-label">Historia destacada</div>
-                    <h2 className="display-2 mb-sm">{featuredPost.title}</h2>
-                    <p className="body-large mb-md">{featuredPost.excerpt}</p>
-                    <div className="featured-meta">
-                      <span className="overline">{featuredPost.category}</span>
-                      <span className="meta-separator">•</span>
-                      <span className="caption">
-                        {format(new Date(featuredPost.date), 'dd \'de\' MMMM', { locale: es })}
-                      </span>
-                      <span className="meta-separator">•</span>
-                      <span className="caption">{featuredPost.readTime}</span>
-                    </div>
-                    <a 
-                      href={`/story/${featuredPost.slug}`}
-                      className="read-more"
-                    >
-                      Leer historia completa →
+              <div className="featured-story">
+                <div className="story-image">
+                  <img 
+                    src={featuredPost.image || '/images/default-tech.jpg'} 
+                    alt={featuredPost.title}
+                  />
+                  <div className="category-badge">{featuredPost.category}</div>
+                </div>
+                
+                <div className="story-content">
+                  <div className="story-meta">
+                    <span className="meta-category">{featuredPost.category}</span>
+                    <span className="meta-separator">•</span>
+                    <span className="meta-date">
+                      {format(new Date(featuredPost.date), 'MMM dd, yyyy')}
+                    </span>
+                    <span className="meta-separator">•</span>
+                    <span className="meta-reading">{featuredPost.readTime} read</span>
+                  </div>
+                  
+                  <h2 className="story-title">
+                    <a href={`/${featuredPost.slug}`}>
+                      {featuredPost.title}
                     </a>
-                  </div>
-                  <div className="featured-image">
-                    <img 
-                      src={featuredPost.image || '/images/default-tech.jpg'} 
-                      alt={featuredPost.title}
-                    />
-                  </div>
+                  </h2>
+                  
+                  <p className="story-excerpt">{featuredPost.excerpt}</p>
+                  
+                  <a href={`/${featuredPost.slug}`} className="read-more-btn">
+                    Read Full Story
+                    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+                      <path d="M6 4L10 8L6 12" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </a>
                 </div>
               </div>
             </div>
           </section>
         )}
 
-        {/* STORIES SECTION */}
-        <section id="stories" className="stories">
+        {/* CATEGORY FILTER */}
+        <section className="filter-section">
           <div className="container">
-            <div className="content-container">
-              <div className="stories-header">
-                <h3 className="headline">Todas las historias</h3>
-                <div className="category-filters">
-                  {categories.map(category => (
-                    <button
-                      key={category}
-                      className={`filter-button ${category === 'Todas las historias' ? 'active' : ''}`}
-                    >
-                      {category}
-                    </button>
-                  ))}
-                </div>
-              </div>
-
-              <div className="stories-grid">
-                {posts && posts.length > 0 ? posts.map(post => (
-                  <article key={post.slug} className="story-card">
-                    <a href={`/story/${post.slug}`}>
-                      <div className="card-image">
-                        <img 
-                          src={post.image || '/images/default-tech.jpg'} 
-                          alt={post.title}
-                        />
-                        <div className="card-category">{post.category}</div>
-                      </div>
-                      <div className="card-content">
-                        <h4 className="title card-title">{post.title}</h4>
-                        <p className="body card-excerpt">{post.excerpt}</p>
-                        <div className="card-meta">
-                          <span className="caption">
-                            {format(new Date(post.date), 'dd MMM', { locale: es })}
-                          </span>
-                          <span className="meta-separator">•</span>
-                          <span className="caption">{post.readTime}</span>
-                        </div>
-                      </div>
-                    </a>
-                  </article>
-                )) : (
-                  <div className="empty-state">
-                    <h4 className="subtitle">Próximamente...</h4>
-                    <p className="body">Estamos preparando historias increíbles para ti.</p>
-                    <button className="load-more" onClick={() => window.location.reload()}>
-                      Cargar más historias
-                    </button>
-                  </div>
-                )}
+            <div className="filter-bar">
+              <h3 className="filter-title">Browse by Category</h3>
+              <div className="category-filters">
+                {categories.map((category, index) => (
+                  <button
+                    key={category.slug}
+                    className={`category-btn ${index === 0 ? 'active' : ''}`}
+                  >
+                    {category.name}
+                  </button>
+                ))}
               </div>
             </div>
           </div>
         </section>
 
-        {/* NEWSLETTER */}
-        <section className="newsletter">
+        {/* LATEST STORIES */}
+        <section className="latest-section">
           <div className="container">
-            <div className="content-container">
-              <h2 className="display-2 mb-md">Mantente actualizado</h2>
-              <p className="body-large mb-xl">
-                Recibe cada semana las historias más importantes del mundo tecnológico directamente en tu inbox.
-              </p>
-              <form className="newsletter-form">
-                <input 
-                  type="email" 
-                  placeholder="tu@email.com"
-                  className="newsletter-input"
-                  required
-                />
-                <button type="submit" className="newsletter-button">
-                  Suscribirse
-                </button>
-              </form>
-              <p className="caption newsletter-disclaimer">
-                Sin spam. Solo las historias que importan. Cancela cuando quieras.
-              </p>
+            <div className="section-header">
+              <h3 className="section-title">Latest Intelligence</h3>
+            </div>
+
+            <div className="stories-layout">
+              {posts && posts.length > 0 ? posts.map((post, index) => (
+                <article key={post.slug} className="news-card">
+                  <div className="card-image">
+                    <img 
+                      src={post.image || '/images/default-tech.jpg'} 
+                      alt={post.title}
+                    />
+                    <div className="image-category">{post.category}</div>
+                  </div>
+                  
+                  <div className="card-content">
+                    <div className="article-meta">
+                      <span className="meta-category">{post.category}</span>
+                      <span className="meta-date">
+                        {format(new Date(post.date), 'MMM dd')}
+                      </span>
+                    </div>
+                    
+                    <h4 className="article-title">
+                      <a href={`/${post.slug}`}>
+                        {post.title}
+                      </a>
+                    </h4>
+                    
+                    <p className="article-excerpt">{post.excerpt}</p>
+                    
+                    <div className="article-footer">
+                      <span className="reading-time">{post.readTime}</span>
+                      <a href={`/${post.slug}`} className="read-link">
+                        Read More
+                      </a>
+                    </div>
+                  </div>
+                </article>
+              )) : (
+                <div className="no-content">
+                  <div className="no-content-icon">📰</div>
+                  <h4>No Stories Available</h4>
+                  <p>Check back soon for the latest cybersecurity and technology intelligence.</p>
+                  <button 
+                    className="refresh-btn"
+                    onClick={() => window.location.reload()}
+                  >
+                    Refresh Page
+                  </button>
+                </div>
+              )}
+            </div>
+          </div>
+        </section>
+
+        {/* NEWSLETTER SIGNUP */}
+        <section className="newsletter-section">
+          <div className="container">
+            <div className="newsletter-content">
+              <div className="newsletter-info">
+                <h3 className="newsletter-title">Stay Informed</h3>
+                <p className="newsletter-desc">
+                  Get daily cybersecurity and technology intelligence delivered to your inbox. 
+                  No spam, just professional insights for IT professionals.
+                </p>
+                <ul className="newsletter-benefits">
+                  <li>Daily threat intelligence summaries</li>
+                  <li>Breaking security vulnerabilities</li>
+                  <li>Infrastructure and networking updates</li>
+                  <li>Technology trend analysis</li>
+                </ul>
+              </div>
+              
+              <div className="newsletter-form-container">
+                <form className="newsletter-form">
+                  <div className="form-group">
+                    <input 
+                      type="email" 
+                      placeholder="your@email.com"
+                      className="email-input"
+                      required
+                    />
+                    <button type="submit" className="subscribe-btn">
+                      Subscribe
+                    </button>
+                  </div>
+                  <p className="form-disclaimer">
+                    Secure subscription. Unsubscribe anytime. No spam policy.
+                  </p>
+                </form>
+              </div>
             </div>
           </div>
         </section>
 
         {/* FOOTER */}
-        <footer className="footer">
+        <footer className="site-footer">
           <div className="container">
-            <div className="content-container">
-              <p className="body">
-                © 2026 NovaNews. Periodismo tecnológico automatizado con análisis de próxima generación.
-              </p>
-              <div className="footer-links">
-                <span className="body">Hecho con 🤖 por Nova AI</span>
-                <span className="meta-separator">•</span>
-                <a href="/about" className="footer-link">Sobre el proyecto</a>
-                <span className="meta-separator">•</span>
-                <a href="/contact" className="footer-link">Contacto</a>
+            <div className="footer-content">
+              <div className="footer-brand">
+                <h4 className="footer-title">CyberIntel Daily</h4>
+                <p className="footer-desc">
+                  Professional cybersecurity and technology intelligence publication. 
+                  Providing IT professionals with the latest threat intelligence, 
+                  infrastructure updates, and technology analysis.
+                </p>
               </div>
+              
+              <div className="footer-links">
+                <div className="link-group">
+                  <h5 className="link-title">Content</h5>
+                  <ul>
+                    <li><a href="/categories/cybersecurity">Cybersecurity</a></li>
+                    <li><a href="/categories/infrastructure">Infrastructure</a></li>
+                    <li><a href="/categories/technology">Technology</a></li>
+                    <li><a href="/archive">Archive</a></li>
+                  </ul>
+                </div>
+                
+                <div className="link-group">
+                  <h5 className="link-title">About</h5>
+                  <ul>
+                    <li><a href="/about">About Us</a></li>
+                    <li><a href="/contact">Contact</a></li>
+                    <li><a href="/privacy">Privacy Policy</a></li>
+                    <li><a href="/terms">Terms of Service</a></li>
+                  </ul>
+                </div>
+                
+                <div className="link-group">
+                  <h5 className="link-title">Connect</h5>
+                  <ul>
+                    <li><a href="/rss">RSS Feed</a></li>
+                    <li><a href="https://twitter.com/itsmillan" target="_blank">Twitter</a></li>
+                    <li><a href="https://linkedin.com/in/amillan" target="_blank">LinkedIn</a></li>
+                    <li><a href="mailto:alexis@itsmillan.com">Email</a></li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            
+            <div className="footer-bottom">
+              <p className="copyright">
+                © 2026 CyberIntel Daily. Published by <span className="author-name">Alexis Millán</span>.
+                Independent cybersecurity and technology intelligence.
+              </p>
             </div>
           </div>
         </footer>
       </div>
 
       <style jsx global>{`
-        /* RESET & FOUNDATION */
+        /* RESET & BASE */
         * {
           margin: 0;
           padding: 0;
@@ -227,416 +380,394 @@ export default function Editorial({ posts, featuredPost }) {
         }
 
         :root {
-          /* Typography */
-          --font-display: 'Playfair Display', Georgia, serif;
-          --font-body: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          /* Professional Dark Theme Colors */
+          --bg-primary: #0d1117;
+          --bg-secondary: #161b22;
+          --bg-tertiary: #21262d;
+          --bg-surface: #1c2128;
           
-          /* Colors */
-          --text-primary: #1a1a1a;
-          --text-secondary: #666666;
-          --text-tertiary: #999999;
-          --accent-primary: #0066cc;
-          --accent-secondary: #0052a3;
-          --bg-primary: #ffffff;
-          --bg-secondary: #f8f9fa;
-          --bg-tertiary: #e9ecef;
-          --border-light: #e1e5e9;
-          --border-medium: #d1d7db;
+          /* Text Colors */
+          --text-primary: #e6edf3;
+          --text-secondary: #7d8590;
+          --text-tertiary: #656d76;
+          --text-muted: #484f58;
           
-          /* Spacing */
+          /* Brand Colors */
+          --accent-primary: #00d26a;
+          --accent-secondary: #00b959;
+          --accent-tertiary: #00a651;
+          
+          /* Semantic Colors */
+          --border-primary: #30363d;
+          --border-secondary: #21262d;
+          --border-accent: rgba(0, 210, 106, 0.3);
+          
+          /* Professional Typography */
+          --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+          --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
+          
+          /* Spacing Scale */
           --space-xs: 0.25rem;
           --space-sm: 0.5rem;
           --space-md: 1rem;
           --space-lg: 1.5rem;
           --space-xl: 2rem;
-          --space-xxl: 3rem;
-          --space-xxxl: 4rem;
+          --space-2xl: 3rem;
+          --space-3xl: 4rem;
           
           /* Layout */
-          --container-width: 1200px;
-          --content-width: 800px;
-          --border-radius: 12px;
-          --transition: all 0.2s ease;
-          
-          /* Responsive spacing */
-          --section-padding: clamp(3rem, 8vh, 6rem);
-          --card-gap: clamp(1.5rem, 3vw, 2.5rem);
+          --container-max: 1200px;
+          --border-radius: 8px;
+          --border-radius-lg: 12px;
+          --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.2);
+          --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.3);
+          --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
         }
 
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700;900&display=swap');
-
         body {
-          font-family: var(--font-body);
-          line-height: 1.6;
+          font-family: var(--font-primary);
+          background-color: var(--bg-primary);
           color: var(--text-primary);
-          background: var(--bg-primary);
+          line-height: 1.6;
+          font-size: 16px;
           -webkit-font-smoothing: antialiased;
           -moz-osx-font-smoothing: grayscale;
         }
 
-        /* TYPOGRAPHY */
-        .display-1 {
-          font-family: var(--font-display);
-          font-size: clamp(2.5rem, 6vw, 5.5rem);
-          font-weight: 700;
-          line-height: 1.1;
-          letter-spacing: -0.025em;
+        .cyber-news-site {
+          min-height: 100vh;
+          position: relative;
+          z-index: 1;
         }
 
-        .display-2 {
-          font-family: var(--font-display);
-          font-size: clamp(2rem, 5vw, 4rem);
-          font-weight: 600;
-          line-height: 1.15;
-          letter-spacing: -0.02em;
-        }
-
-        .headline {
-          font-family: var(--font-display);
-          font-size: clamp(1.75rem, 4vw, 3rem);
-          font-weight: 600;
-          line-height: 1.25;
-          letter-spacing: -0.015em;
-        }
-
-        @media (min-width: 1200px) {
-          .display-1 {
-            font-size: clamp(4rem, 5vw, 6rem);
-          }
-        }
-
-        .title {
-          font-family: var(--font-body);
-          font-size: 1.375rem;
-          font-weight: 600;
-          line-height: 1.4;
-        }
-
-        .subtitle {
-          font-family: var(--font-body);
-          font-size: 1.125rem;
-          font-weight: 600;
-          line-height: 1.4;
-        }
-
-        .body-large {
-          font-size: 1.125rem;
-          line-height: 1.7;
-        }
-
-        .body {
-          font-size: 1rem;
-          line-height: 1.6;
-        }
-
-        .caption {
-          font-size: 0.875rem;
-          line-height: 1.4;
-          color: var(--text-tertiary);
-        }
-
-        .overline {
-          font-size: 0.75rem;
-          font-weight: 600;
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          color: var(--accent-primary);
-        }
-
-        /* UTILITY CLASSES */
-        .text-gradient {
-          background: linear-gradient(135deg, var(--accent-primary) 0%, #6366f1 100%);
-          -webkit-background-clip: text;
-          -webkit-text-fill-color: transparent;
-          background-clip: text;
-        }
-
-        .mb-xs { margin-bottom: var(--space-xs); }
-        .mb-sm { margin-bottom: var(--space-sm); }
-        .mb-md { margin-bottom: var(--space-md); }
-        .mb-lg { margin-bottom: var(--space-lg); }
-        .mb-xl { margin-bottom: var(--space-xl); }
-        .mb-xxl { margin-bottom: var(--space-xxl); }
-
-        .mt-xs { margin-top: var(--space-xs); }
-        .mt-sm { margin-top: var(--space-sm); }
-        .mt-md { margin-top: var(--space-md); }
-        .mt-lg { margin-top: var(--space-lg); }
-        .mt-xl { margin-top: var(--space-xl); }
-        .mt-xxl { margin-top: var(--space-xxl); }
-
-        /* LAYOUT */
         .container {
-          width: 100%;
-          max-width: var(--container-width);
+          max-width: var(--container-max);
           margin: 0 auto;
           padding: 0 var(--space-lg);
         }
 
-        .content-container {
-          max-width: var(--content-width);
-          margin: 0 auto;
+        /* TOP BAR */
+        .top-bar {
+          background: var(--bg-secondary);
+          border-bottom: 1px solid var(--border-primary);
+          padding: var(--space-sm) 0;
         }
 
-        @media (min-width: 1400px) {
-          .container {
-            max-width: 1400px;
-          }
+        .top-content {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          font-size: 0.875rem;
         }
 
-        /* HEADER */
-        .editorial-header {
-          padding: var(--space-md) 0;
-          border-bottom: 1px solid var(--border-light);
+        .today-date {
+          color: var(--text-secondary);
+          font-weight: 500;
+        }
+
+        .quick-links {
+          display: flex;
+          gap: var(--space-lg);
+        }
+
+        .top-link {
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .top-link:hover {
+          color: var(--accent-primary);
+        }
+
+        /* MAIN HEADER */
+        .main-header {
           background: var(--bg-primary);
-          position: sticky;
-          top: 0;
-          z-index: 100;
+          border-bottom: 1px solid var(--border-primary);
+          padding: var(--space-xl) 0;
         }
 
         .header-content {
           display: flex;
-          align-items: center;
           justify-content: space-between;
+          align-items: center;
         }
 
-        .logo {
-          font-family: var(--font-display);
-          font-size: 1.5rem;
-          font-weight: 700;
+        .site-title {
+          font-size: 2.5rem;
+          font-weight: 800;
+          letter-spacing: -0.02em;
+        }
+
+        .site-title a {
           color: var(--text-primary);
           text-decoration: none;
         }
 
-        .nav-menu {
-          display: flex;
-          list-style: none;
-          gap: var(--space-lg);
-        }
-
-        .nav-link {
-          color: var(--text-secondary);
-          text-decoration: none;
-          font-weight: 500;
-          transition: var(--transition);
-        }
-
-        .nav-link:hover,
-        .nav-link.active {
+        .title-accent {
           color: var(--accent-primary);
         }
 
-        .header-actions {
+        .site-tagline {
+          color: var(--text-secondary);
+          font-size: 0.95rem;
+          font-weight: 500;
+          margin-top: var(--space-xs);
+        }
+
+        .nav-list {
           display: flex;
-          align-items: center;
-          gap: var(--space-sm);
+          list-style: none;
+          gap: var(--space-xl);
         }
 
-        .theme-toggle {
-          background: none;
-          border: 1px solid var(--border-medium);
-          border-radius: 8px;
-          width: 40px;
-          height: 40px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          cursor: pointer;
-          transition: var(--transition);
-        }
-
-        .theme-toggle:hover {
-          border-color: var(--accent-primary);
-        }
-
-        /* HERO */
-        .hero {
-          padding: clamp(4rem, 10vh, 8rem) 0 clamp(3rem, 8vh, 6rem);
-          text-align: center;
-          background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-        }
-
-        .hero-content {
-          max-width: 900px;
-          margin: 0 auto;
-        }
-
-        @media (min-width: 1200px) {
-          .hero {
-            padding: 8rem 0 6rem;
-          }
-          
-          .hero-content {
-            max-width: 1000px;
-          }
-        }
-
-        .cta-button {
-          display: inline-flex;
-          align-items: center;
-          gap: var(--space-xs);
-          padding: var(--space-md) var(--space-xl);
-          background: var(--accent-primary);
-          color: white;
+        .nav-item {
+          color: var(--text-secondary);
           text-decoration: none;
-          border-radius: var(--border-radius);
-          font-weight: 600;
-          transition: var(--transition);
+          font-weight: 500;
+          font-size: 0.95rem;
+          transition: color 0.2s;
+          position: relative;
         }
 
-        .cta-button:hover {
-          background: var(--accent-secondary);
-          transform: translateY(-1px);
+        .nav-item:hover,
+        .nav-item.active {
+          color: var(--text-primary);
         }
 
-        /* FEATURED POST */
-        .featured-post {
-          padding: clamp(3rem, 8vh, 6rem) 0;
+        .nav-item.active::after {
+          content: '';
+          position: absolute;
+          bottom: -6px;
+          left: 0;
+          right: 0;
+          height: 2px;
+          background: var(--accent-primary);
+        }
+
+        /* BREAKING BAR */
+        .breaking-bar {
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          padding: var(--space-sm) 0;
+        }
+
+        .breaking-content {
+          display: flex;
+          align-items: center;
+          gap: var(--space-md);
+        }
+
+        .breaking-label {
           background: var(--bg-primary);
-          border-top: 1px solid var(--border-light);
-          border-bottom: 1px solid var(--border-light);
+          color: var(--accent-primary);
+          padding: var(--space-xs) var(--space-sm);
+          font-weight: 700;
+          font-size: 0.75rem;
+          text-transform: uppercase;
+          border-radius: var(--border-radius);
         }
 
-        .featured-content {
+        .breaking-text {
+          font-weight: 600;
+          animation: scroll-text 30s linear infinite;
+        }
+
+        /* FEATURED SECTION */
+        .featured-section {
+          background: var(--bg-secondary);
+          padding: var(--space-3xl) 0;
+        }
+
+        .featured-story {
           display: grid;
           grid-template-columns: 1fr 1fr;
-          gap: clamp(2rem, 5vw, 4rem);
+          gap: var(--space-3xl);
           align-items: center;
-          max-width: 1200px;
-          margin: 0 auto;
         }
 
-        @media (min-width: 1400px) {
-          .featured-content {
-            max-width: 1300px;
-            gap: 5rem;
-          }
+        .story-image {
+          position: relative;
+          border-radius: var(--border-radius-lg);
+          overflow: hidden;
         }
 
-        .featured-label {
-          margin-bottom: var(--space-sm);
+        .story-image img {
+          width: 100%;
+          height: 400px;
+          object-fit: cover;
         }
 
-        .featured-meta {
+        .category-badge {
+          position: absolute;
+          top: var(--space-lg);
+          left: var(--space-lg);
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          padding: var(--space-sm) var(--space-md);
+          font-weight: 600;
+          font-size: 0.875rem;
+          text-transform: uppercase;
+          border-radius: var(--border-radius);
+        }
+
+        .story-meta {
           display: flex;
           align-items: center;
           gap: var(--space-sm);
           margin-bottom: var(--space-md);
+          font-size: 0.875rem;
+        }
+
+        .meta-category {
+          color: var(--accent-primary);
+          font-weight: 600;
+          text-transform: uppercase;
         }
 
         .meta-separator {
           color: var(--text-tertiary);
         }
 
-        .read-more {
+        .meta-date,
+        .meta-reading {
+          color: var(--text-secondary);
+        }
+
+        .story-title {
+          font-size: 2.25rem;
+          font-weight: 700;
+          line-height: 1.2;
+          margin-bottom: var(--space-lg);
+        }
+
+        .story-title a {
+          color: var(--text-primary);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .story-title a:hover {
           color: var(--accent-primary);
+        }
+
+        .story-excerpt {
+          color: var(--text-secondary);
+          font-size: 1.125rem;
+          line-height: 1.7;
+          margin-bottom: var(--space-xl);
+        }
+
+        .read-more-btn {
+          display: inline-flex;
+          align-items: center;
+          gap: var(--space-sm);
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          padding: var(--space-md) var(--space-xl);
           text-decoration: none;
           font-weight: 600;
-          transition: var(--transition);
-        }
-
-        .read-more:hover {
-          color: var(--accent-secondary);
-        }
-
-        .featured-image img {
-          width: 100%;
-          height: 300px;
-          object-fit: cover;
           border-radius: var(--border-radius);
+          transition: all 0.2s;
         }
 
-        /* STORIES */
-        .stories {
-          padding: clamp(3rem, 8vh, 6rem) 0;
-          background: var(--bg-secondary);
+        .read-more-btn:hover {
+          background: var(--accent-secondary);
+          transform: translateY(-1px);
         }
 
-        .stories-header {
-          margin-bottom: clamp(2rem, 5vh, 4rem);
-          text-align: center;
+        /* FILTER SECTION */
+        .filter-section {
+          background: var(--bg-tertiary);
+          padding: var(--space-xl) 0;
+        }
+
+        .filter-bar {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .filter-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          color: var(--text-primary);
         }
 
         .category-filters {
           display: flex;
-          justify-content: center;
           gap: var(--space-sm);
-          margin-top: var(--space-lg);
-          flex-wrap: wrap;
         }
 
-        .filter-button {
-          padding: var(--space-sm) var(--space-lg);
+        .category-btn {
           background: transparent;
-          border: 1px solid var(--border-medium);
-          border-radius: 25px;
           color: var(--text-secondary);
-          font-size: 0.875rem;
+          border: 1px solid var(--border-primary);
+          padding: var(--space-sm) var(--space-lg);
           font-weight: 500;
+          font-size: 0.875rem;
+          border-radius: var(--border-radius);
           cursor: pointer;
-          transition: var(--transition);
+          transition: all 0.2s;
         }
 
-        .filter-button:hover,
-        .filter-button.active {
+        .category-btn:hover,
+        .category-btn.active {
           background: var(--accent-primary);
-          color: white;
+          color: var(--bg-primary);
           border-color: var(--accent-primary);
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(0, 102, 204, 0.2);
         }
 
-        .stories-grid {
+        /* LATEST SECTION */
+        .latest-section {
+          padding: var(--space-3xl) 0;
+        }
+
+        .section-header {
+          margin-bottom: var(--space-2xl);
+        }
+
+        .section-title {
+          font-size: 2rem;
+          font-weight: 700;
+          color: var(--text-primary);
+          position: relative;
+          padding-bottom: var(--space-md);
+        }
+
+        .section-title::after {
+          content: '';
+          position: absolute;
+          bottom: 0;
+          left: 0;
+          width: 60px;
+          height: 3px;
+          background: var(--accent-primary);
+        }
+
+        .stories-layout {
           display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
-          gap: clamp(1.5rem, 3vw, 2.5rem);
-          max-width: 1400px;
-          margin: 0 auto;
+          grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+          gap: var(--space-2xl);
         }
 
-        @media (min-width: 768px) {
-          .stories-grid {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
-        @media (min-width: 1200px) {
-          .stories-grid {
-            grid-template-columns: repeat(3, 1fr);
-          }
-        }
-
-        @media (min-width: 1600px) {
-          .stories-grid {
-            grid-template-columns: repeat(4, 1fr);
-          }
-        }
-
-        .story-card {
-          border-radius: 16px;
+        .news-card {
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-primary);
+          border-radius: var(--border-radius-lg);
           overflow: hidden;
-          transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-          background: var(--bg-primary);
-          box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-          border: 1px solid var(--border-light);
+          transition: all 0.2s;
         }
 
-        .story-card:hover {
-          transform: translateY(-8px) scale(1.02);
-          box-shadow: 0 20px 40px rgba(0,0,0,0.1);
-          border-color: var(--accent-primary);
-        }
-
-        .story-card a {
-          text-decoration: none;
-          color: inherit;
-          display: block;
-          height: 100%;
+        .news-card:hover {
+          border-color: var(--border-accent);
+          transform: translateY(-4px);
+          box-shadow: var(--shadow-lg);
         }
 
         .card-image {
           position: relative;
-          height: 220px;
+          height: 200px;
           overflow: hidden;
         }
 
@@ -644,225 +775,374 @@ export default function Editorial({ posts, featuredPost }) {
           width: 100%;
           height: 100%;
           object-fit: cover;
-          transition: transform 0.3s ease;
+          transition: transform 0.2s;
         }
 
-        .story-card:hover .card-image img {
+        .news-card:hover .card-image img {
           transform: scale(1.05);
         }
 
-        .card-category {
+        .image-category {
           position: absolute;
           top: var(--space-md);
-          left: var(--space-md);
-          background: rgba(0, 102, 204, 0.9);
-          backdrop-filter: blur(8px);
-          color: white;
-          padding: var(--space-xs) var(--space-md);
-          border-radius: 20px;
+          right: var(--space-md);
+          background: rgba(0, 0, 0, 0.8);
+          color: var(--accent-primary);
+          padding: var(--space-xs) var(--space-sm);
           font-size: 0.75rem;
           font-weight: 600;
           text-transform: uppercase;
-          letter-spacing: 0.05em;
+          border-radius: var(--border-radius);
         }
 
         .card-content {
-          padding: var(--space-lg);
-          display: flex;
-          flex-direction: column;
-          height: calc(100% - 220px);
+          padding: var(--space-xl);
         }
 
-        .card-title {
-          margin-bottom: var(--space-sm);
-          line-height: 1.4;
-          flex-shrink: 0;
-        }
-
-        .card-excerpt {
-          color: var(--text-secondary);
-          margin-bottom: var(--space-md);
-          flex-grow: 1;
-          line-height: 1.6;
-        }
-
-        .card-meta {
+        .article-meta {
           display: flex;
           align-items: center;
           gap: var(--space-sm);
-          margin-top: auto;
+          margin-bottom: var(--space-md);
+          font-size: 0.8rem;
         }
 
-        .empty-state {
+        .article-title {
+          font-size: 1.25rem;
+          font-weight: 600;
+          line-height: 1.4;
+          margin-bottom: var(--space-md);
+        }
+
+        .article-title a {
+          color: var(--text-primary);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .article-title a:hover {
+          color: var(--accent-primary);
+        }
+
+        .article-excerpt {
+          color: var(--text-secondary);
+          line-height: 1.6;
+          margin-bottom: var(--space-lg);
+        }
+
+        .article-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+        }
+
+        .reading-time {
+          color: var(--text-tertiary);
+          font-size: 0.875rem;
+          font-family: var(--font-mono);
+        }
+
+        .read-link {
+          color: var(--accent-primary);
+          text-decoration: none;
+          font-weight: 600;
+          font-size: 0.875rem;
+          transition: color 0.2s;
+        }
+
+        .read-link:hover {
+          color: var(--accent-secondary);
+        }
+
+        /* NO CONTENT */
+        .no-content {
           grid-column: 1 / -1;
           text-align: center;
-          padding: var(--space-xxl);
+          padding: var(--space-3xl);
+          background: var(--bg-secondary);
+          border: 1px solid var(--border-primary);
+          border-radius: var(--border-radius-lg);
         }
 
-        .load-more {
-          margin-top: var(--space-lg);
-          padding: var(--space-md) var(--space-xl);
+        .no-content-icon {
+          font-size: 3rem;
+          margin-bottom: var(--space-lg);
+        }
+
+        .refresh-btn {
           background: var(--accent-primary);
-          color: white;
+          color: var(--bg-primary);
           border: none;
-          border-radius: var(--border-radius);
+          padding: var(--space-md) var(--space-xl);
           font-weight: 600;
+          border-radius: var(--border-radius);
           cursor: pointer;
-          transition: var(--transition);
+          margin-top: var(--space-lg);
+          transition: background 0.2s;
         }
 
-        .load-more:hover {
+        .refresh-btn:hover {
           background: var(--accent-secondary);
         }
 
-        /* NEWSLETTER */
-        .newsletter {
-          padding: clamp(4rem, 10vh, 8rem) 0;
-          background: linear-gradient(135deg, var(--accent-primary) 0%, #4f46e5 100%);
-          text-align: center;
-          color: white;
+        /* NEWSLETTER SECTION */
+        .newsletter-section {
+          background: var(--bg-secondary);
+          padding: var(--space-3xl) 0;
         }
 
-        .newsletter h2 {
-          color: white;
-          margin-bottom: var(--space-md);
+        .newsletter-content {
+          display: grid;
+          grid-template-columns: 1fr 1fr;
+          gap: var(--space-3xl);
+          align-items: center;
         }
 
-        .newsletter .body-large {
-          color: rgba(255, 255, 255, 0.9);
+        .newsletter-title {
+          font-size: 2rem;
+          font-weight: 700;
+          margin-bottom: var(--space-lg);
+          color: var(--text-primary);
+        }
+
+        .newsletter-desc {
+          color: var(--text-secondary);
+          font-size: 1.125rem;
+          line-height: 1.6;
           margin-bottom: var(--space-xl);
-          max-width: 600px;
-          margin-left: auto;
-          margin-right: auto;
+        }
+
+        .newsletter-benefits {
+          list-style: none;
+          color: var(--text-secondary);
+        }
+
+        .newsletter-benefits li {
+          position: relative;
+          padding-left: var(--space-lg);
+          margin-bottom: var(--space-sm);
+        }
+
+        .newsletter-benefits li::before {
+          content: '✓';
+          position: absolute;
+          left: 0;
+          color: var(--accent-primary);
+          font-weight: bold;
         }
 
         .newsletter-form {
+          background: var(--bg-tertiary);
+          padding: var(--space-2xl);
+          border-radius: var(--border-radius-lg);
+          border: 1px solid var(--border-primary);
+        }
+
+        .form-group {
           display: flex;
-          max-width: 500px;
-          margin: 0 auto var(--space-lg);
-          gap: var(--space-md);
-          background: rgba(255, 255, 255, 0.1);
-          backdrop-filter: blur(10px);
-          padding: var(--space-sm);
-          border-radius: 50px;
+          gap: var(--space-sm);
+          margin-bottom: var(--space-md);
         }
 
-        .newsletter-input {
+        .email-input {
           flex: 1;
-          padding: var(--space-md) var(--space-lg);
-          border: none;
-          border-radius: 40px;
+          background: var(--bg-primary);
+          border: 1px solid var(--border-primary);
+          color: var(--text-primary);
+          padding: var(--space-md);
+          border-radius: var(--border-radius);
           font-size: 1rem;
-          background: rgba(255, 255, 255, 0.9);
+          transition: border-color 0.2s;
         }
 
-        .newsletter-input::placeholder {
+        .email-input:focus {
+          outline: none;
+          border-color: var(--accent-primary);
+        }
+
+        .email-input::placeholder {
           color: var(--text-tertiary);
         }
 
-        .newsletter-button {
+        .subscribe-btn {
+          background: var(--accent-primary);
+          color: var(--bg-primary);
+          border: none;
           padding: var(--space-md) var(--space-xl);
-          background: rgba(255, 255, 255, 0.2);
-          color: white;
-          border: 2px solid rgba(255, 255, 255, 0.3);
-          border-radius: 40px;
           font-weight: 600;
+          border-radius: var(--border-radius);
           cursor: pointer;
-          transition: var(--transition);
-          white-space: nowrap;
-          backdrop-filter: blur(10px);
+          transition: background 0.2s;
         }
 
-        .newsletter-button:hover {
-          background: white;
-          color: var(--accent-primary);
-          border-color: white;
+        .subscribe-btn:hover {
+          background: var(--accent-secondary);
         }
 
-        .newsletter-disclaimer {
-          text-align: center;
-          color: rgba(255, 255, 255, 0.8);
+        .form-disclaimer {
+          color: var(--text-tertiary);
           font-size: 0.875rem;
+          text-align: center;
         }
 
         /* FOOTER */
-        .footer {
-          padding: var(--space-xl) 0;
-          background: var(--text-primary);
-          color: white;
+        .site-footer {
+          background: var(--bg-primary);
+          border-top: 1px solid var(--border-primary);
+          padding: var(--space-3xl) 0 var(--space-xl);
+        }
+
+        .footer-content {
+          display: grid;
+          grid-template-columns: 2fr 1fr 1fr 1fr;
+          gap: var(--space-2xl);
+          margin-bottom: var(--space-2xl);
+        }
+
+        .footer-title {
+          font-size: 1.5rem;
+          font-weight: 700;
+          margin-bottom: var(--space-md);
+          color: var(--text-primary);
+        }
+
+        .footer-desc {
+          color: var(--text-secondary);
+          line-height: 1.6;
+        }
+
+        .link-title {
+          font-size: 1rem;
+          font-weight: 600;
+          margin-bottom: var(--space-md);
+          color: var(--text-primary);
+        }
+
+        .link-group ul {
+          list-style: none;
+        }
+
+        .link-group li {
+          margin-bottom: var(--space-sm);
+        }
+
+        .link-group a {
+          color: var(--text-secondary);
+          text-decoration: none;
+          transition: color 0.2s;
+        }
+
+        .link-group a:hover {
+          color: var(--accent-primary);
+        }
+
+        .footer-bottom {
+          border-top: 1px solid var(--border-primary);
+          padding-top: var(--space-lg);
+        }
+
+        .copyright {
+          color: var(--text-secondary);
           text-align: center;
         }
 
-        .footer-links {
-          margin-top: var(--space-md);
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          gap: var(--space-sm);
-          flex-wrap: wrap;
+        .author-name {
+          color: var(--accent-primary);
+          font-weight: 600;
         }
 
-        .footer-link {
-          color: #cccccc;
-          text-decoration: none;
-          transition: var(--transition);
-        }
-
-        .footer-link:hover {
-          color: white;
-        }
-
-        /* RESPONSIVE IMPROVEMENTS */
-        @media (min-width: 768px) {
-          .header-content {
-            padding: 0 var(--space-lg);
-          }
-          
-          .nav-menu {
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 1024px) {
+          .featured-story {
+            grid-template-columns: 1fr;
             gap: var(--space-xl);
           }
-        }
-
-        @media (min-width: 1200px) {
-          .container {
-            padding: 0 var(--space-xl);
+          
+          .newsletter-content {
+            grid-template-columns: 1fr;
+          }
+          
+          .footer-content {
+            grid-template-columns: 1fr 1fr;
           }
         }
 
         @media (max-width: 768px) {
-          .nav-menu {
-            display: none;
-          }
-
-          .featured-content {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: var(--space-xl);
-          }
-
-          .category-filters {
-            justify-content: flex-start;
-            overflow-x: auto;
-            padding: 0 var(--space-md);
-            margin: var(--space-lg) -var(--space-md) 0;
-          }
-
-          .newsletter-form {
-            flex-direction: column;
-          }
-          
-          .hero {
-            padding: 3rem 0 2rem;
-          }
-        }
-
-        @media (max-width: 480px) {
           .container {
             padding: 0 var(--space-md);
           }
           
-          .filter-button {
-            white-space: nowrap;
+          .header-content {
+            flex-direction: column;
+            gap: var(--space-lg);
+            text-align: center;
+          }
+          
+          .nav-list {
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+          
+          .filter-bar {
+            flex-direction: column;
+            gap: var(--space-lg);
+            text-align: center;
+          }
+          
+          .category-filters {
+            flex-wrap: wrap;
+            justify-content: center;
+          }
+          
+          .stories-layout {
+            grid-template-columns: 1fr;
+          }
+          
+          .footer-content {
+            grid-template-columns: 1fr;
+          }
+          
+          .form-group {
+            flex-direction: column;
+          }
+          
+          .site-title {
+            font-size: 2rem;
+          }
+          
+          .story-title {
+            font-size: 1.75rem;
+          }
+        }
+
+        @media (max-width: 480px) {
+          .top-content {
+            flex-direction: column;
+            gap: var(--space-sm);
+          }
+          
+          .breaking-content {
+            flex-direction: column;
+            text-align: center;
+            gap: var(--space-sm);
+          }
+          
+          .nav-list {
+            gap: var(--space-md);
+          }
+        }
+
+        /* SMOOTH ANIMATIONS */
+        @media (prefers-reduced-motion: no-preference) {
+          html {
+            scroll-behavior: smooth;
+          }
+          
+          .news-card,
+          .nav-item,
+          .category-btn,
+          .read-more-btn {
+            transition: all 0.2s ease-out;
           }
         }
       `}</style>
