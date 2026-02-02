@@ -90,14 +90,14 @@ export default function PostPage({ post }) {
             </div>
             <div className="terminal-body">
               <p className="terminal-text error">
-                $ cat /dev/null > article.txt<br />
+                $ cat /dev/null {'>'}article.txt<br />
                 ERROR: File not found in directory<br />
                 STATUS: <span className="text-red">404_NOT_FOUND</span><br />
                 <br />
                 <span className="cursor">█</span>
               </p>
               <a href="/" className="terminal-btn">
-                > RETURN_TO_INDEX
+                {'>'} RETURN_TO_INDEX
               </a>
             </div>
           </div>
@@ -275,7 +275,7 @@ export default function PostPage({ post }) {
             <div className="article-hero-content">
               <nav className="article-breadcrumb">
                 <a href="/" className="breadcrumb-link">
-                  <span className="terminal-prompt-inline">></span>
+                  <span className="terminal-prompt-inline">{'>'}</span>
                   cd ../stories/
                 </a>
               </nav>
@@ -389,7 +389,7 @@ export default function PostPage({ post }) {
                     <div className="terminal-body">
                       <div className="share-content">
                         <h3 className="share-title">
-                          <span className="terminal-prompt-inline">></span>
+                          <span className="terminal-prompt-inline">{'>'}</span>
                           BROADCAST_SIGNAL
                         </h3>
                         <p className="share-desc">
@@ -403,7 +403,7 @@ export default function PostPage({ post }) {
                             rel="noopener noreferrer"
                             className="share-btn twitter"
                           >
-                            > TWITTER.EXE
+                            {'>'} TWITTER.EXE
                           </a>
                           <a 
                             href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}/`)}`}
@@ -411,13 +411,13 @@ export default function PostPage({ post }) {
                             rel="noopener noreferrer"
                             className="share-btn linkedin"
                           >
-                            > LINKEDIN.EXE
+                            {'>'} LINKEDIN.EXE
                           </a>
                           <button 
                             onClick={() => navigator.clipboard.writeText(window.location.href)}
                             className="share-btn copy"
                           >
-                            > COPY_URL
+                            {'>'} COPY_URL
                           </button>
                         </div>
                       </div>
@@ -434,7 +434,7 @@ export default function PostPage({ post }) {
                   <div className="sidebar-widget">
                     <div className="widget-header">
                       <h3 className="widget-title">
-                        <span className="terminal-prompt-inline">></span>
+                        <span className="terminal-prompt-inline">{'>'}</span>
                         RELATED_FILES.log
                       </h3>
                     </div>
@@ -472,7 +472,7 @@ export default function PostPage({ post }) {
                   <div className="sidebar-widget">
                     <div className="widget-header">
                       <h3 className="widget-title">
-                        <span className="terminal-prompt-inline">></span>
+                        <span className="terminal-prompt-inline">{'>'}</span>
                         AUTHOR.info
                       </h3>
                     </div>
@@ -488,7 +488,7 @@ export default function PostPage({ post }) {
                           network security, and emerging technology analysis.
                         </p>
                         <a href="https://itsmillan.com" className="author-link">
-                          > VIEW_PROFILE
+                          {'>'} VIEW_PROFILE
                         </a>
                       </div>
                     </div>
@@ -497,14 +497,14 @@ export default function PostPage({ post }) {
               </div>
             </div>
           </div>
-        </section>
+        </div>
 
         {/* Navigation */}
         <section className="article-nav">
           <div className="container">
             <div className="nav-content">
               <a href="/" className="nav-btn">
-                <span className="terminal-prompt-inline">></span>
+                <span className="terminal-prompt-inline">{'>'}</span>
                 RETURN_TO_INDEX
               </a>
             </div>
@@ -534,7 +534,7 @@ export default function PostPage({ post }) {
                   
                   <form className="subscribe-form">
                     <div className="input-group">
-                      <span className="input-prompt">$ echo "your@email.com" ></span>
+                      <span className="input-prompt">$ echo "your@email.com" {'>'}</span>
                       <input 
                         type="email" 
                         placeholder="your@email.com"
@@ -542,7 +542,7 @@ export default function PostPage({ post }) {
                         required
                       />
                       <button type="submit" className="submit-btn">
-                        > EXECUTE
+                        {'>'} EXECUTE
                       </button>
                     </div>
                   </form>

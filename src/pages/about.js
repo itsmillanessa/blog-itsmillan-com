@@ -1,21 +1,73 @@
 import Head from 'next/head'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 
 export default function About() {
-  const [activeTab, setActiveTab] = useState('background')
+  const [isLoaded, setIsLoaded] = useState(false)
+  const [glitchText, setGlitchText] = useState('N0V4')
 
-  const tabs = [
-    { id: 'background', title: 'Background', icon: '👤' },
-    { id: 'expertise', title: 'Expertise', icon: '🛡️' },
-    { id: 'methodology', title: 'Methodology', icon: '🔍' },
-    { id: 'mission', title: 'Mission', icon: '🎯' }
-  ]
+  useEffect(() => {
+    setIsLoaded(true)
+    
+    // Matrix rain effect
+    const canvas = document.getElementById('matrix-rain')
+    if (canvas) {
+      const ctx = canvas.getContext('2d')
+      canvas.width = window.innerWidth
+      canvas.height = window.innerHeight
+      
+      const matrix = "0101ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*()_+-=[]{}|;':\",./<>?"
+      const matrixChars = matrix.split("")
+      
+      const fontSize = 14
+      const columns = canvas.width / fontSize
+      const drops = []
+      
+      for(let x = 0; x < columns; x++) {
+        drops[x] = Math.floor(Math.random() * canvas.height / fontSize)
+      }
+      
+      function drawMatrix() {
+        ctx.fillStyle = 'rgba(10, 10, 10, 0.04)'
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        
+        ctx.fillStyle = '#00ff41'
+        ctx.font = fontSize + 'px monospace'
+        
+        for(let i = 0; i < drops.length; i++) {
+          const text = matrixChars[Math.floor(Math.random() * matrixChars.length)]
+          ctx.fillStyle = `rgba(0, 255, 65, ${Math.random() * 0.8 + 0.2})`
+          ctx.fillText(text, i * fontSize, drops[i] * fontSize)
+          
+          if(drops[i] * fontSize > canvas.height && Math.random() > 0.975) {
+            drops[i] = 0
+          }
+          drops[i]++
+        }
+      }
+      
+      const matrixInterval = setInterval(drawMatrix, 50)
+      
+      return () => clearInterval(matrixInterval)
+    }
+  }, [])
+
+  useEffect(() => {
+    const glitchOptions = ['N0V4', 'NOV4', 'N0VA', 'NOVA', 'N█V4', 'N0V█']
+    const glitchInterval = setInterval(() => {
+      if (Math.random() < 0.1) {
+        setGlitchText(glitchOptions[Math.floor(Math.random() * glitchOptions.length)])
+        setTimeout(() => setGlitchText('N0V4'), 100)
+      }
+    }, 2000)
+    
+    return () => clearInterval(glitchInterval)
+  }, [])
 
   return (
     <>
       <Head>
-        <title>About | CyberIntel Daily - Professional Cybersecurity Intelligence</title>
-        <meta name="description" content="Learn about Alexis Millán, cybersecurity professional and technology analyst behind CyberIntel Daily. Professional intelligence for IT professionals." />
+        <title>$ whoami | N0V4://FEED</title>
+        <meta name="description" content="About Alexis Millán - Security & Infrastructure Engineer from Monterrey, Mexico. Cybersecurity specialist focused on infrastructure hardening and emerging technology analysis." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -28,77 +80,82 @@ export default function About() {
             "@type": "Person",
             "name": "Alexis Millán",
             "url": "https://blog.itsmillan.com/about",
-            "jobTitle": "Cybersecurity Professional & Technology Analyst",
+            "jobTitle": "Security & Infrastructure Engineer",
             "worksFor": {
               "@type": "Organization",
-              "name": "CyberIntel Daily"
+              "name": "Independent"
             },
-            "description": "Cybersecurity professional specializing in threat intelligence, infrastructure security, and technology analysis"
+            "description": "Security & Infrastructure Engineer from Monterrey, Mexico"
           })
         }} />
       </Head>
 
-      <div className="about-page">
+      <div className="hacker-site">
+        <canvas 
+          id="matrix-rain" 
+          className="fixed inset-0 pointer-events-none opacity-30 z-0"
+        ></canvas>
+        <div className="crt-scanlines fixed inset-0 pointer-events-none z-10"></div>
+
         {/* HEADER */}
-        <header className="page-header">
+        <header className="header">
           <div className="container">
-            <nav className="breadcrumb">
-              <a href="/" className="breadcrumb-link">Home</a>
-              <span className="breadcrumb-separator">/</span>
-              <span className="breadcrumb-current">About</span>
-            </nav>
-            
-            <div className="site-brand">
-              <a href="/">
-                <h1 className="brand-title">CyberIntel <span className="brand-accent">Daily</span></h1>
+            <div className="header-content">
+              <a href="/" className="logo">
+                <span className="logo-text glitch" data-text={glitchText}>
+                  {glitchText}
+                </span>
+                <span className="logo-subtitle">://FEED</span>
               </a>
+              
+              <nav className="nav">
+                <ul className="nav-menu">
+                  <li><a href="/" className="nav-link">$ ls stories</a></li>
+                  <li><a href="/about" className="nav-link active">$ whoami</a></li>
+                  <li><a href="https://twitter.com/itsmillan" className="nav-link" target="_blank">$ contact</a></li>
+                </ul>
+              </nav>
+              
+              <div className="header-status">
+                <span className="status-indicator">
+                  <span className="status-dot"></span>
+                  ONLINE
+                </span>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* HERO SECTION */}
+        {/* HERO */}
         <section className="about-hero">
           <div className="container">
             <div className="hero-content">
-              <div className="hero-image">
-                <div className="profile-avatar">AM</div>
-                <div className="status-indicator">
-                  <span className="status-dot"></span>
-                  <span className="status-text">Active</span>
-                </div>
+              <div className="terminal-prompt">
+                <span className="prompt-symbol">{'>'}</span>
+                <span className="prompt-text cursor">cat /etc/passwd | grep amillan...</span>
               </div>
               
-              <div className="hero-text">
-                <h1 className="hero-title">Alexis Millán</h1>
-                <p className="hero-subtitle">Cybersecurity Professional & Technology Analyst</p>
-                <p className="hero-description">
-                  Independent cybersecurity professional providing intelligence analysis 
-                  on emerging threats, infrastructure security, and technology trends 
-                  for IT professionals and security teams worldwide.
-                </p>
-                
-                <div className="hero-stats">
-                  <div className="stat-item">
-                    <span className="stat-number">10+</span>
-                    <span className="stat-label">Years Experience</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-number">500+</span>
-                    <span className="stat-label">Intelligence Reports</span>
-                  </div>
-                  <div className="stat-item">
-                    <span className="stat-number">50k+</span>
-                    <span className="stat-label">Professionals Reached</span>
-                  </div>
+              <h1 className="hero-title">
+                ALEXIS_MILLÁN<br />
+                <span className="text-glow">SECURITY_ENGINEER</span>
+              </h1>
+              
+              <div className="hero-info">
+                <div className="info-line">
+                  <span className="info-label">LOCATION:</span>
+                  <span className="info-value">Monterrey, Mexico</span>
                 </div>
-
-                <div className="hero-actions">
-                  <a href="mailto:alexis@itsmillan.com" className="contact-btn primary">
-                    Get in Touch
-                  </a>
-                  <a href="https://linkedin.com/in/amillan" target="_blank" className="contact-btn secondary">
-                    LinkedIn Profile
-                  </a>
+                <div className="info-line">
+                  <span className="info-label">ROLE:</span>
+                  <span className="info-value">Security & Infrastructure Engineer</span>
+                </div>
+                <div className="info-line">
+                  <span className="info-label">FOCUS:</span>
+                  <span className="info-value">Cybersecurity, Infrastructure, Networking</span>
+                </div>
+                <div className="info-line">
+                  <span className="info-label">STATUS:</span>
+                  <span className="info-value text-glow">ACTIVE</span>
                 </div>
               </div>
             </div>
@@ -106,444 +163,220 @@ export default function About() {
         </section>
 
         {/* MAIN CONTENT */}
-        <section className="about-content">
+        <section className="about-main">
           <div className="container">
             <div className="content-layout">
               
-              {/* TAB NAVIGATION */}
-              <div className="tab-navigation">
-                {tabs.map((tab) => (
-                  <button
-                    key={tab.id}
-                    onClick={() => setActiveTab(tab.id)}
-                    className={`tab-button ${activeTab === tab.id ? 'active' : ''}`}
-                  >
-                    <span className="tab-icon">{tab.icon}</span>
-                    <span className="tab-title">{tab.title}</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* TAB CONTENT */}
-              <div className="tab-content">
-                
-                {/* BACKGROUND TAB */}
-                {activeTab === 'background' && (
-                  <div className="tab-panel">
-                    <h2 className="panel-title">Professional Background</h2>
-                    
-                    <div className="content-grid">
-                      <div className="content-section">
-                        <h3 className="section-title">Career Journey</h3>
-                        <p className="section-text">
-                          With over a decade of experience in cybersecurity and technology infrastructure, 
-                          I've worked across diverse environments from enterprise corporations to 
-                          government agencies. My career has spanned network security, incident response, 
-                          threat intelligence, and strategic security planning.
+              {/* PROFILE */}
+              <div className="profile-section">
+                <div className="terminal-window">
+                  <div className="terminal-header">
+                    <span className="terminal-title">profile.sh</span>
+                    <div className="terminal-controls">
+                      <span className="control-dot red"></span>
+                      <span className="control-dot yellow"></span>
+                      <span className="control-dot green"></span>
+                    </div>
+                  </div>
+                  
+                  <div className="terminal-body">
+                    <div className="profile-content">
+                      <h2 className="section-title">
+                        <span className="terminal-prompt-inline">{'>'}</span>
+                        PROFESSIONAL_PROFILE.txt
+                      </h2>
+                      
+                      <div className="profile-text">
+                        <p>
+                          Security & Infrastructure Engineer based in Monterrey, Mexico, 
+                          specializing in cybersecurity analysis, infrastructure hardening, 
+                          and emerging technology assessment.
                         </p>
                         
-                        <p className="section-text">
-                          I founded <strong>CyberIntel Daily</strong> to bridge the gap between 
-                          complex cybersecurity developments and actionable intelligence for 
-                          IT professionals. The goal is simple: deliver critical security 
-                          information in a format that busy professionals can quickly digest and act upon.
+                        <p>
+                          Focus areas include network security architecture, threat intelligence, 
+                          infrastructure security, and technology trend analysis. 
+                          Committed to sharing knowledge through independent cybersecurity 
+                          intelligence publication.
                         </p>
                       </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* EXPERTISE */}
+              <div className="expertise-section">
+                <div className="terminal-window">
+                  <div className="terminal-header">
+                    <span className="terminal-title">skills.cfg</span>
+                    <div className="terminal-controls">
+                      <span className="control-dot red"></span>
+                      <span className="control-dot yellow"></span>
+                      <span className="control-dot green"></span>
+                    </div>
+                  </div>
+                  
+                  <div className="terminal-body">
+                    <div className="skills-content">
+                      <h2 className="section-title">
+                        <span className="terminal-prompt-inline">{'>'}</span>
+                        CORE_EXPERTISE.log
+                      </h2>
                       
-                      <div className="content-section">
-                        <h3 className="section-title">Core Competencies</h3>
-                        <ul className="competency-list">
-                          <li>Threat Intelligence Analysis</li>
-                          <li>Infrastructure Security Architecture</li>
-                          <li>Incident Response & Forensics</li>
-                          <li>Risk Assessment & Management</li>
-                          <li>Security Policy Development</li>
-                          <li>Technology Trend Analysis</li>
-                          <li>Vulnerability Assessment</li>
-                          <li>Compliance & Governance</li>
-                        </ul>
-                      </div>
-                    </div>
+                      <div className="skills-grid">
+                        <div className="skill-category">
+                          <h3 className="category-title">
+                            <span className="bracket">[</span>CYBERSECURITY<span className="bracket">]</span>
+                          </h3>
+                          <ul className="skill-list">
+                            <li>Threat Intelligence Analysis</li>
+                            <li>Vulnerability Assessment</li>
+                            <li>Incident Response</li>
+                            <li>Security Architecture</li>
+                            <li>Risk Management</li>
+                          </ul>
+                        </div>
 
-                    <div className="credentials-section">
-                      <h3 className="section-title">Education & Certifications</h3>
-                      <div className="credentials-grid">
-                        <div className="credential-item">
-                          <div className="credential-type">Education</div>
-                          <div className="credential-title">B.S. Computer Science</div>
-                          <div className="credential-detail">Information Security Concentration</div>
+                        <div className="skill-category">
+                          <h3 className="category-title">
+                            <span className="bracket">[</span>INFRASTRUCTURE<span className="bracket">]</span>
+                          </h3>
+                          <ul className="skill-list">
+                            <li>Network Security</li>
+                            <li>Cloud Security (AWS/Azure)</li>
+                            <li>Infrastructure Hardening</li>
+                            <li>DevSecOps Integration</li>
+                            <li>Zero Trust Architecture</li>
+                          </ul>
                         </div>
-                        <div className="credential-item">
-                          <div className="credential-type">Certification</div>
-                          <div className="credential-title">CISSP</div>
-                          <div className="credential-detail">Certified Information Systems Security Professional</div>
-                        </div>
-                        <div className="credential-item">
-                          <div className="credential-type">Certification</div>
-                          <div className="credential-title">CISM</div>
-                          <div className="credential-detail">Certified Information Security Manager</div>
-                        </div>
-                        <div className="credential-item">
-                          <div className="credential-type">Training</div>
-                          <div className="credential-title">Advanced Threat Hunting</div>
-                          <div className="credential-detail">SANS FOR508</div>
+
+                        <div className="skill-category">
+                          <h3 className="category-title">
+                            <span className="bracket">[</span>TECHNOLOGY<span className="bracket">]</span>
+                          </h3>
+                          <ul className="skill-list">
+                            <li>Emerging Tech Analysis</li>
+                            <li>Security Tool Evaluation</li>
+                            <li>Technical Writing</li>
+                            <li>Research & Development</li>
+                            <li>Knowledge Sharing</li>
+                          </ul>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
+              </div>
 
-                {/* EXPERTISE TAB */}
-                {activeTab === 'expertise' && (
-                  <div className="tab-panel">
-                    <h2 className="panel-title">Areas of Expertise</h2>
-                    
-                    <div className="expertise-grid">
-                      <div className="expertise-card">
-                        <div className="card-header">
-                          <div className="card-icon">🛡️</div>
-                          <h3 className="card-title">Cybersecurity</h3>
-                        </div>
-                        <div className="card-content">
-                          <ul>
-                            <li>Advanced Persistent Threat (APT) Analysis</li>
-                            <li>Zero-day Vulnerability Research</li>
-                            <li>Malware Analysis & Reverse Engineering</li>
-                            <li>Security Operations Center (SOC) Management</li>
-                            <li>Incident Response & Digital Forensics</li>
-                            <li>Threat Intelligence Platforms</li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="expertise-card">
-                        <div className="card-header">
-                          <div className="card-icon">🏗️</div>
-                          <h3 className="card-title">Infrastructure</h3>
-                        </div>
-                        <div className="card-content">
-                          <ul>
-                            <li>Network Security Architecture</li>
-                            <li>Cloud Security (AWS, Azure, GCP)</li>
-                            <li>Zero Trust Implementation</li>
-                            <li>Identity & Access Management (IAM)</li>
-                            <li>Secure DevOps & CI/CD Pipelines</li>
-                            <li>Container & Kubernetes Security</li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="expertise-card">
-                        <div className="card-header">
-                          <div className="card-icon">🔗</div>
-                          <h3 className="card-title">Networking</h3>
-                        </div>
-                        <div className="card-content">
-                          <ul>
-                            <li>Network Segmentation & Microsegmentation</li>
-                            <li>VPN & Remote Access Security</li>
-                            <li>Software-Defined Networking (SDN)</li>
-                            <li>Network Traffic Analysis</li>
-                            <li>Firewall & IPS Management</li>
-                            <li>5G & IoT Security</li>
-                          </ul>
-                        </div>
-                      </div>
-
-                      <div className="expertise-card">
-                        <div className="card-header">
-                          <div className="card-icon">🚀</div>
-                          <h3 className="card-title">Emerging Technologies</h3>
-                        </div>
-                        <div className="card-content">
-                          <ul>
-                            <li>Artificial Intelligence & Machine Learning Security</li>
-                            <li>Quantum Computing & Cryptography</li>
-                            <li>Blockchain & DeFi Security</li>
-                            <li>Edge Computing Security</li>
-                            <li>Extended Reality (XR) Security</li>
-                            <li>Autonomous Systems Security</li>
-                          </ul>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="focus-areas">
-                      <h3 className="section-title">Current Research Focus</h3>
-                      <div className="focus-list">
-                        <div className="focus-item">
-                          <strong>Post-Quantum Cryptography:</strong> Analyzing the impact of quantum computing 
-                          on current encryption standards and evaluating migration strategies.
-                        </div>
-                        <div className="focus-item">
-                          <strong>Supply Chain Security:</strong> Investigating software supply chain attacks 
-                          and developing frameworks for vendor risk assessment.
-                        </div>
-                        <div className="focus-item">
-                          <strong>AI-Powered Threats:</strong> Studying the evolution of AI-generated attacks 
-                          and developing countermeasures for AI-based security solutions.
-                        </div>
-                      </div>
+              {/* MISSION */}
+              <div className="mission-section">
+                <div className="terminal-window">
+                  <div className="terminal-header">
+                    <span className="terminal-title">mission.md</span>
+                    <div className="terminal-controls">
+                      <span className="control-dot red"></span>
+                      <span className="control-dot yellow"></span>
+                      <span className="control-dot green"></span>
                     </div>
                   </div>
-                )}
-
-                {/* METHODOLOGY TAB */}
-                {activeTab === 'methodology' && (
-                  <div className="tab-panel">
-                    <h2 className="panel-title">Intelligence Methodology</h2>
-                    
-                    <div className="methodology-flow">
-                      <div className="flow-step">
-                        <div className="step-number">01</div>
-                        <div className="step-content">
-                          <h3 className="step-title">Data Collection</h3>
-                          <p className="step-description">
-                            Continuous monitoring of 50+ premium cybersecurity sources, 
-                            government advisories, research publications, and industry reports. 
-                            Automated aggregation combined with manual verification.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flow-step">
-                        <div className="step-number">02</div>
-                        <div className="step-content">
-                          <h3 className="step-title">Analysis & Validation</h3>
-                          <p className="step-description">
-                            Multi-source verification and context analysis. Assessment of 
-                            credibility, impact, and relevance. Cross-referencing with 
-                            historical patterns and threat landscape evolution.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flow-step">
-                        <div className="step-number">03</div>
-                        <div className="step-content">
-                          <h3 className="step-title">Synthesis & Insight</h3>
-                          <p className="step-description">
-                            Transformation of raw intelligence into actionable insights. 
-                            Identification of trends, implications, and strategic recommendations. 
-                            Focus on practical application for IT professionals.
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flow-step">
-                        <div className="step-number">04</div>
-                        <div className="step-content">
-                          <h3 className="step-title">Distribution & Follow-up</h3>
-                          <p className="step-description">
-                            Timely dissemination through multiple channels. Monitoring of 
-                            developments and providing updates as situations evolve. 
-                            Community feedback integration for continuous improvement.
-                          </p>
-                        </div>
-                      </div>
-                    </div>
-
-                    <div className="standards-section">
-                      <h3 className="section-title">Editorial Standards</h3>
-                      <div className="standards-grid">
-                        <div className="standard-item">
-                          <div className="standard-icon">✅</div>
-                          <div className="standard-content">
-                            <h4>Source Verification</h4>
-                            <p>All information verified through multiple independent sources before publication.</p>
-                          </div>
-                        </div>
-                        <div className="standard-item">
-                          <div className="standard-icon">🔍</div>
-                          <div className="standard-content">
-                            <h4>Fact Checking</h4>
-                            <p>Rigorous fact-checking process with technical accuracy as top priority.</p>
-                          </div>
-                        </div>
-                        <div className="standard-item">
-                          <div className="standard-icon">⚡</div>
-                          <div className="standard-content">
-                            <h4>Timeliness</h4>
-                            <p>Critical security information prioritized for immediate dissemination.</p>
-                          </div>
-                        </div>
-                        <div className="standard-item">
-                          <div className="standard-icon">🎯</div>
-                          <div className="standard-content">
-                            <h4>Relevance</h4>
-                            <p>Content filtered for practical relevance to IT security professionals.</p>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                )}
-
-                {/* MISSION TAB */}
-                {activeTab === 'mission' && (
-                  <div className="tab-panel">
-                    <h2 className="panel-title">Mission & Vision</h2>
-                    
+                  
+                  <div className="terminal-body">
                     <div className="mission-content">
-                      <div className="mission-statement">
-                        <h3 className="mission-title">Mission Statement</h3>
-                        <blockquote className="mission-quote">
-                          "To provide IT professionals and cybersecurity teams with timely, 
-                          accurate, and actionable intelligence that enables proactive defense 
-                          against emerging threats and informed decision-making in an 
-                          increasingly complex digital landscape."
-                        </blockquote>
-                      </div>
-
-                      <div className="vision-section">
-                        <h3 className="section-title">Core Values</h3>
-                        <div className="values-grid">
-                          <div className="value-item">
-                            <div className="value-icon">🔒</div>
-                            <h4 className="value-title">Independence</h4>
-                            <p className="value-description">
-                              Maintaining editorial independence from vendors, governments, 
-                              and special interests to provide unbiased analysis.
-                            </p>
-                          </div>
-                          <div className="value-item">
-                            <div className="value-icon">📊</div>
-                            <h4 className="value-title">Accuracy</h4>
-                            <p className="value-description">
-                              Commitment to technical accuracy and thorough verification 
-                              of all published intelligence.
-                            </p>
-                          </div>
-                          <div className="value-item">
-                            <div className="value-icon">⚡</div>
-                            <h4 className="value-title">Timeliness</h4>
-                            <p className="value-description">
-                              Rapid dissemination of critical security information 
-                              when timing can impact defensive posture.
-                            </p>
-                          </div>
-                          <div className="value-item">
-                            <div className="value-icon">🎯</div>
-                            <h4 className="value-title">Practicality</h4>
-                            <p className="value-description">
-                              Focus on actionable intelligence that professionals 
-                              can immediately apply to improve security posture.
-                            </p>
-                          </div>
+                      <h2 className="section-title">
+                        <span className="terminal-prompt-inline">{'>'}</span>
+                        MISSION_STATEMENT.exe
+                      </h2>
+                      
+                      <blockquote className="mission-quote">
+                        "Providing independent cybersecurity intelligence and technology analysis 
+                        to help security professionals stay informed about emerging threats, 
+                        vulnerabilities, and defensive strategies in an increasingly complex 
+                        digital landscape."
+                      </blockquote>
+                      
+                      <div className="mission-values">
+                        <div className="value-item">
+                          <span className="value-label">INDEPENDENCE:</span>
+                          <span className="value-desc">Unbiased analysis free from vendor influence</span>
                         </div>
-                      </div>
-
-                      <div className="goals-section">
-                        <h3 className="section-title">Strategic Goals</h3>
-                        <div className="goals-list">
-                          <div className="goal-item">
-                            <div className="goal-number">2026</div>
-                            <div className="goal-content">
-                              <h4>Intelligence Expansion</h4>
-                              <p>Expand coverage to include emerging markets and specialized threat actors. 
-                              Launch real-time threat intelligence API for enterprise subscribers.</p>
-                            </div>
-                          </div>
-                          <div className="goal-item">
-                            <div className="goal-number">2027</div>
-                            <div className="goal-content">
-                              <h4>Community Building</h4>
-                              <p>Build collaborative platform for security professionals to share 
-                              validated threat intelligence and best practices.</p>
-                            </div>
-                          </div>
-                          <div className="goal-item">
-                            <div className="goal-number">2028</div>
-                            <div className="goal-content">
-                              <h4>Research Initiative</h4>
-                              <p>Launch independent cybersecurity research program focusing on 
-                              post-quantum cryptography and AI-powered defense systems.</p>
-                            </div>
-                          </div>
+                        <div className="value-item">
+                          <span className="value-label">ACCURACY:</span>
+                          <span className="value-desc">Verified information with technical precision</span>
                         </div>
-                      </div>
-
-                      <div className="contact-section">
-                        <h3 className="section-title">Get Involved</h3>
-                        <p className="contact-description">
-                          CyberIntel Daily thrives on community input and collaboration. 
-                          Whether you're a security researcher, IT professional, or industry expert, 
-                          there are several ways to contribute to the mission.
-                        </p>
-                        <div className="involvement-options">
-                          <div className="involvement-item">
-                            <strong>Share Intelligence:</strong> Submit verified threat intelligence 
-                            or security research findings for community benefit.
-                          </div>
-                          <div className="involvement-item">
-                            <strong>Expert Commentary:</strong> Provide expert analysis on emerging 
-                            threats or technology developments in your area of expertise.
-                          </div>
-                          <div className="involvement-item">
-                            <strong>Community Feedback:</strong> Help improve content quality and 
-                            relevance through constructive feedback and suggestions.
-                          </div>
+                        <div className="value-item">
+                          <span className="value-label">TIMELINESS:</span>
+                          <span className="value-desc">Rapid dissemination of critical intelligence</span>
                         </div>
                       </div>
                     </div>
                   </div>
-                )}
+                </div>
               </div>
             </div>
           </div>
         </section>
 
-        {/* CONTACT SECTION */}
+        {/* CONTACT */}
         <section className="contact-section">
           <div className="container">
-            <div className="contact-content">
-              <h2 className="contact-title">Professional Contact</h2>
-              <p className="contact-description">
-                Available for cybersecurity consulting, threat intelligence collaboration, 
-                and professional speaking engagements.
-              </p>
+            <div className="terminal-window large">
+              <div className="terminal-header">
+                <span className="terminal-title">contact.sh</span>
+                <div className="terminal-controls">
+                  <span className="control-dot red"></span>
+                  <span className="control-dot yellow"></span>
+                  <span className="control-dot green"></span>
+                </div>
+              </div>
               
-              <div className="contact-methods">
-                <a href="mailto:alexis@itsmillan.com" className="contact-method">
-                  <div className="method-icon">✉️</div>
-                  <div className="method-content">
-                    <div className="method-title">Email</div>
-                    <div className="method-detail">alexis@itsmillan.com</div>
+              <div className="terminal-body">
+                <div className="contact-content">
+                  <h2 className="contact-title">
+                    <span className="terminal-prompt-inline">{'>'}</span>
+                    ESTABLISH_CONNECTION
+                  </h2>
+                  
+                  <p className="contact-desc">
+                    Available for cybersecurity consulting, threat intelligence collaboration, 
+                    and professional networking.
+                  </p>
+                  
+                  <div className="contact-methods">
+                    <a href="mailto:alexis@itsmillan.com" className="contact-method">
+                      {">"} EMAIL.exe → alexis@itsmillan.com
+                    </a>
+                    <a href="https://twitter.com/itsmillan" target="_blank" className="contact-method">
+                      {">"} TWITTER.exe → @itsmillan
+                    </a>
+                    <a href="https://itsmillan.com" target="_blank" className="contact-method">
+                      {">"} WEBSITE.exe → itsmillan.com
+                    </a>
                   </div>
-                </a>
-                
-                <a href="https://linkedin.com/in/amillan" target="_blank" className="contact-method">
-                  <div className="method-icon">💼</div>
-                  <div className="method-content">
-                    <div className="method-title">LinkedIn</div>
-                    <div className="method-detail">Professional Network</div>
-                  </div>
-                </a>
-                
-                <a href="https://twitter.com/itsmillan" target="_blank" className="contact-method">
-                  <div className="method-icon">🐦</div>
-                  <div className="method-content">
-                    <div className="method-title">Twitter</div>
-                    <div className="method-detail">Industry Updates</div>
-                  </div>
-                </a>
+                </div>
               </div>
             </div>
           </div>
         </section>
 
         {/* FOOTER */}
-        <footer className="page-footer">
+        <footer className="footer">
           <div className="container">
             <div className="footer-content">
-              <p className="footer-text">
-                © 2026 CyberIntel Daily. Published by <span className="author-name">Alexis Millán</span>. 
-                Independent cybersecurity intelligence for IT professionals.
-              </p>
+              <div className="footer-info">
+                <p className="footer-text">
+                  © 2026 N0V4://FEED - Independent cybersecurity intelligence
+                </p>
+                <p className="footer-author">
+                  Engineered by <span className="text-glow">Alexis Millán</span>
+                </p>
+              </div>
+              
               <div className="footer-links">
-                <a href="/">Back to Intelligence Feed</a>
-                <a href="mailto:alexis@itsmillan.com">Contact</a>
-                <a href="/privacy">Privacy Policy</a>
+                <a href="/" className="footer-link">Stories</a>
+                <a href="/about" className="footer-link">About</a>
+                <a href="https://twitter.com/itsmillan" className="footer-link" target="_blank">Twitter</a>
+                <a href="mailto:alexis@itsmillan.com" className="footer-link">Contact</a>
               </div>
             </div>
           </div>
@@ -551,7 +384,7 @@ export default function About() {
       </div>
 
       <style jsx global>{`
-        /* RESET & BASE */
+        /* RESET & FONTS */
         * {
           margin: 0;
           padding: 0;
@@ -559,159 +392,196 @@ export default function About() {
         }
 
         :root {
-          /* Professional Dark Theme Colors */
-          --bg-primary: #0d1117;
-          --bg-secondary: #161b22;
-          --bg-tertiary: #21262d;
-          --bg-surface: #1c2128;
+          --font-mono: 'JetBrains Mono', 'Fira Code', 'Courier New', monospace;
+          --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
           
-          /* Text Colors */
-          --text-primary: #e6edf3;
-          --text-secondary: #7d8590;
-          --text-tertiary: #656d76;
-          --text-muted: #484f58;
-          
-          /* Brand Colors */
-          --accent-primary: #00d26a;
-          --accent-secondary: #00b959;
-          
-          /* Semantic Colors */
-          --border-primary: #30363d;
-          --border-secondary: #21262d;
-          
-          /* Typography */
-          --font-primary: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-          --font-mono: 'JetBrains Mono', 'SF Mono', Monaco, monospace;
-          
-          /* Spacing */
-          --space-xs: 0.25rem;
-          --space-sm: 0.5rem;
-          --space-md: 1rem;
-          --space-lg: 1.5rem;
-          --space-xl: 2rem;
-          --space-2xl: 3rem;
-          --space-3xl: 4rem;
-          
-          /* Layout */
-          --container-max: 1200px;
+          --color-bg-primary: #0a0a0a;
+          --color-bg-secondary: #0d1117;
+          --color-bg-tertiary: #161b22;
+          --color-green-bright: #00ff41;
+          --color-green-dark: #00cc33;
+          --color-green-dim: rgba(0, 255, 65, 0.3);
+          --color-text-primary: #ffffff;
+          --color-text-secondary: #8b949e;
+          --color-text-dim: #6e7681;
+          --color-border: #30363d;
+          --color-border-glow: rgba(0, 255, 65, 0.3);
         }
 
         body {
-          font-family: var(--font-primary);
-          background-color: var(--bg-primary);
-          color: var(--text-primary);
+          font-family: var(--font-sans);
+          background: var(--color-bg-primary);
+          color: var(--color-text-primary);
           line-height: 1.6;
-          font-size: 16px;
-          -webkit-font-smoothing: antialiased;
-          -moz-osx-font-smoothing: grayscale;
+          overflow-x: hidden;
+          scroll-behavior: smooth;
         }
 
-        .about-page {
+        .hacker-site {
           min-height: 100vh;
+          position: relative;
+          z-index: 5;
         }
 
         .container {
-          max-width: var(--container-max);
+          max-width: 1200px;
           margin: 0 auto;
-          padding: 0 var(--space-lg);
+          padding: 0 1rem;
         }
 
-        /* PAGE HEADER */
-        .page-header {
-          background: var(--bg-secondary);
-          border-bottom: 1px solid var(--border-primary);
-          padding: var(--space-lg) 0;
+        /* CRT SCANLINES */
+        .crt-scanlines {
+          background: repeating-linear-gradient(
+            90deg,
+            transparent,
+            transparent 2px,
+            rgba(0, 255, 65, 0.03) 2px,
+            rgba(0, 255, 65, 0.03) 4px
+          );
+          animation: scanlines 0.1s linear infinite;
         }
 
-        .breadcrumb {
+        @keyframes scanlines {
+          0% { transform: translateX(0); }
+          100% { transform: translateX(2px); }
+        }
+
+        /* GLITCH EFFECT */
+        .glitch {
+          position: relative;
+          animation: glitch 2s infinite;
+        }
+
+        .glitch::before,
+        .glitch::after {
+          content: attr(data-text);
+          position: absolute;
+          top: 0;
+          left: 0;
+          width: 100%;
+          height: 100%;
+        }
+
+        .glitch::before {
+          animation: glitch-1 0.5s infinite;
+          color: #ff0040;
+          z-index: -1;
+        }
+
+        .glitch::after {
+          animation: glitch-2 0.5s infinite;
+          color: #00ffff;
+          z-index: -2;
+        }
+
+        @keyframes glitch {
+          0%, 74%, 76%, 100% { transform: translate(0); }
+          75% { transform: translate(-2px, 2px); }
+        }
+
+        @keyframes glitch-1 {
+          0%, 24%, 26%, 100% { transform: translate(0); }
+          25% { transform: translate(-1px, 1px); }
+        }
+
+        @keyframes glitch-2 {
+          0%, 49%, 51%, 100% { transform: translate(0); }
+          50% { transform: translate(1px, -1px); }
+        }
+
+        /* TEXT EFFECTS */
+        .text-glow {
+          color: var(--color-green-bright);
+          text-shadow: 
+            0 0 10px var(--color-green-bright),
+            0 0 20px var(--color-green-bright),
+            0 0 30px var(--color-green-bright);
+        }
+
+        .text-dim {
+          color: var(--color-text-dim);
+        }
+
+        .cursor {
+          animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+          0%, 50% { opacity: 1; }
+          51%, 100% { opacity: 0; }
+        }
+
+        /* HEADER */
+        .header {
+          position: sticky;
+          top: 0;
+          z-index: 100;
+          background: rgba(10, 10, 10, 0.95);
+          backdrop-filter: blur(10px);
+          border-bottom: 1px solid var(--color-border);
+          padding: 1rem 0;
+        }
+
+        .header-content {
           display: flex;
           align-items: center;
-          font-size: 0.875rem;
-          margin-bottom: var(--space-lg);
+          justify-content: space-between;
         }
 
-        .breadcrumb-link {
-          color: var(--text-secondary);
-          text-decoration: none;
-          transition: color 0.2s;
-        }
-
-        .breadcrumb-link:hover {
-          color: var(--accent-primary);
-        }
-
-        .breadcrumb-separator {
-          margin: 0 var(--space-sm);
-          color: var(--text-muted);
-        }
-
-        .breadcrumb-current {
-          color: var(--text-primary);
-        }
-
-        .brand-title {
+        .logo {
+          font-family: var(--font-mono);
+          font-weight: 700;
           font-size: 1.5rem;
-          font-weight: 800;
-          color: var(--text-primary);
-        }
-
-        .brand-accent {
-          color: var(--accent-primary);
-        }
-
-        .site-brand a {
           text-decoration: none;
-        }
-
-        /* HERO SECTION */
-        .about-hero {
-          background: var(--bg-primary);
-          padding: var(--space-3xl) 0;
-        }
-
-        .hero-content {
-          display: grid;
-          grid-template-columns: auto 1fr;
-          gap: var(--space-3xl);
-          align-items: start;
-          max-width: 800px;
-          margin: 0 auto;
-        }
-
-        .hero-image {
+          color: var(--color-text-primary);
           display: flex;
-          flex-direction: column;
-          align-items: center;
-          gap: var(--space-md);
+          align-items: baseline;
         }
 
-        .profile-avatar {
-          width: 120px;
-          height: 120px;
-          border-radius: 50%;
-          background: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
+        .logo-text {
+          color: var(--color-green-bright);
+          text-shadow: 0 0 10px var(--color-green-bright);
+        }
+
+        .logo-subtitle {
+          color: var(--color-text-secondary);
+          margin-left: 0.2rem;
+        }
+
+        .nav-menu {
           display: flex;
-          align-items: center;
-          justify-content: center;
-          font-size: 3rem;
-          font-weight: 800;
-          color: var(--bg-primary);
-          box-shadow: 0 8px 32px rgba(0, 210, 106, 0.3);
+          list-style: none;
+          gap: 2rem;
         }
 
-        .status-indicator {
+        .nav-link {
+          font-family: var(--font-mono);
+          color: var(--color-text-secondary);
+          text-decoration: none;
+          font-size: 0.9rem;
+          transition: all 0.3s;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+          color: var(--color-green-bright);
+          text-shadow: 0 0 5px var(--color-green-bright);
+        }
+
+        .header-status {
+          font-family: var(--font-mono);
           display: flex;
           align-items: center;
-          gap: var(--space-sm);
-          font-size: 0.875rem;
-          color: var(--text-secondary);
+          gap: 0.5rem;
+          color: var(--color-text-secondary);
+          font-size: 0.8rem;
         }
 
         .status-dot {
           width: 8px;
           height: 8px;
           border-radius: 50%;
-          background: var(--accent-primary);
+          background: var(--color-green-bright);
           animation: pulse 2s infinite;
         }
 
@@ -720,601 +590,306 @@ export default function About() {
           50% { opacity: 0.5; }
         }
 
-        .hero-title {
-          font-size: 3rem;
-          font-weight: 800;
-          margin-bottom: var(--space-sm);
-          color: var(--text-primary);
-        }
-
-        .hero-subtitle {
-          font-size: 1.25rem;
-          color: var(--accent-primary);
-          font-weight: 600;
-          margin-bottom: var(--space-lg);
-        }
-
-        .hero-description {
-          font-size: 1.125rem;
-          color: var(--text-secondary);
-          line-height: 1.7;
-          margin-bottom: var(--space-2xl);
-        }
-
-        .hero-stats {
-          display: grid;
-          grid-template-columns: repeat(3, 1fr);
-          gap: var(--space-lg);
-          margin-bottom: var(--space-2xl);
-        }
-
-        .stat-item {
+        /* HERO */
+        .about-hero {
+          padding: 6rem 0;
+          background: linear-gradient(135deg, var(--color-bg-primary) 0%, var(--color-bg-secondary) 100%);
           text-align: center;
-          padding: var(--space-lg);
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-primary);
-          border-radius: 12px;
         }
 
-        .stat-number {
-          display: block;
-          font-size: 2rem;
-          font-weight: 800;
-          color: var(--accent-primary);
+        .hero-content {
+          max-width: 800px;
+          margin: 0 auto;
         }
 
-        .stat-label {
-          display: block;
-          font-size: 0.875rem;
-          color: var(--text-secondary);
+        .terminal-prompt {
+          font-family: var(--font-mono);
+          color: var(--color-text-secondary);
+          margin-bottom: 2rem;
+          text-align: left;
+          max-width: 500px;
+          margin-left: auto;
+          margin-right: auto;
+          margin-bottom: 2rem;
         }
 
-        .hero-actions {
+        .prompt-symbol {
+          color: var(--color-green-bright);
+        }
+
+        .prompt-text {
+          margin-left: 0.5rem;
+        }
+
+        .hero-title {
+          font-family: var(--font-mono);
+          font-size: clamp(2rem, 6vw, 4rem);
+          font-weight: 700;
+          line-height: 1;
+          margin-bottom: 3rem;
+          text-transform: uppercase;
+          letter-spacing: -0.02em;
+        }
+
+        .hero-info {
+          font-family: var(--font-mono);
+          max-width: 600px;
+          margin: 0 auto;
+          text-align: left;
+          background: var(--color-bg-tertiary);
+          border: 1px solid var(--color-border);
+          padding: 2rem;
+        }
+
+        .info-line {
           display: flex;
-          gap: var(--space-md);
+          margin-bottom: 1rem;
+          font-size: 1rem;
         }
 
-        .contact-btn {
-          padding: var(--space-md) var(--space-xl);
-          border-radius: 8px;
-          text-decoration: none;
+        .info-line:last-child {
+          margin-bottom: 0;
+        }
+
+        .info-label {
+          color: var(--color-green-bright);
+          min-width: 120px;
           font-weight: 600;
-          transition: all 0.2s;
-          display: inline-flex;
-          align-items: center;
-          gap: var(--space-sm);
         }
 
-        .contact-btn.primary {
-          background: var(--accent-primary);
-          color: var(--bg-primary);
+        .info-value {
+          color: var(--color-text-secondary);
+          flex: 1;
         }
 
-        .contact-btn.primary:hover {
-          background: var(--accent-secondary);
-          transform: translateY(-2px);
+        .terminal-prompt-inline {
+          color: var(--color-green-bright);
+          margin-right: 0.5rem;
         }
 
-        .contact-btn.secondary {
-          background: transparent;
-          color: var(--text-secondary);
-          border: 1px solid var(--border-primary);
-        }
-
-        .contact-btn.secondary:hover {
-          border-color: var(--accent-primary);
-          color: var(--accent-primary);
-        }
-
-        /* TAB NAVIGATION */
-        .about-content {
-          background: var(--bg-secondary);
-          padding: var(--space-3xl) 0;
+        /* MAIN CONTENT */
+        .about-main {
+          padding: 4rem 0;
+          background: var(--color-bg-secondary);
         }
 
         .content-layout {
+          display: flex;
+          flex-direction: column;
+          gap: 3rem;
           max-width: 1000px;
           margin: 0 auto;
         }
 
-        .tab-navigation {
-          display: grid;
-          grid-template-columns: repeat(4, 1fr);
-          gap: var(--space-sm);
-          margin-bottom: var(--space-3xl);
+        /* TERMINAL WINDOWS */
+        .terminal-window {
+          background: var(--color-bg-primary);
+          border: 1px solid var(--color-border);
+          width: 100%;
         }
 
-        .tab-button {
-          background: transparent;
-          border: 1px solid var(--border-primary);
-          color: var(--text-secondary);
-          padding: var(--space-lg);
-          border-radius: 12px;
-          cursor: pointer;
-          transition: all 0.2s;
+        .terminal-window.large {
+          max-width: 800px;
+          margin: 0 auto;
+        }
+
+        .terminal-header {
+          background: var(--color-bg-tertiary);
+          padding: 0.5rem 1rem;
           display: flex;
-          flex-direction: column;
+          justify-content: space-between;
           align-items: center;
-          gap: var(--space-sm);
+          border-bottom: 1px solid var(--color-border);
         }
 
-        .tab-button:hover,
-        .tab-button.active {
-          border-color: var(--accent-primary);
-          background: var(--bg-tertiary);
+        .terminal-title {
+          font-family: var(--font-mono);
+          font-size: 0.8rem;
+          color: var(--color-text-secondary);
         }
 
-        .tab-button.active {
-          color: var(--accent-primary);
-        }
-
-        .tab-icon {
-          font-size: 1.5rem;
-        }
-
-        .tab-title {
-          font-weight: 600;
-        }
-
-        /* TAB CONTENT */
-        .tab-content {
-          background: var(--bg-primary);
-          border: 1px solid var(--border-primary);
-          border-radius: 16px;
-          padding: var(--space-3xl);
-        }
-
-        .tab-panel {
-          animation: fadeIn 0.3s ease-out;
-        }
-
-        @keyframes fadeIn {
-          from { opacity: 0; transform: translateY(10px); }
-          to { opacity: 1; transform: translateY(0); }
-        }
-
-        .panel-title {
-          font-size: 2.5rem;
-          font-weight: 700;
-          margin-bottom: var(--space-2xl);
-          color: var(--text-primary);
-        }
-
-        .content-grid {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: var(--space-3xl);
-          margin-bottom: var(--space-3xl);
-        }
-
-        .content-section {
+        .terminal-controls {
           display: flex;
-          flex-direction: column;
-          gap: var(--space-lg);
+          gap: 0.5rem;
+        }
+
+        .control-dot {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+        }
+
+        .control-dot.red { background: #ff5f56; }
+        .control-dot.yellow { background: #ffbd2e; }
+        .control-dot.green { background: #27ca3f; }
+
+        .terminal-body {
+          padding: 2rem;
         }
 
         .section-title {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-md);
+          font-family: var(--font-mono);
+          font-size: 1.8rem;
+          color: var(--color-green-bright);
+          margin-bottom: 1.5rem;
+          text-shadow: 0 0 10px var(--color-green-bright);
         }
 
-        .section-text {
-          color: var(--text-secondary);
-          line-height: 1.7;
-          font-size: 1.125rem;
+        /* PROFILE SECTION */
+        .profile-text {
+          font-family: var(--font-mono);
+          color: var(--color-text-secondary);
+          line-height: 1.8;
         }
 
-        .competency-list {
-          list-style: none;
-          display: grid;
-          gap: var(--space-sm);
+        .profile-text p {
+          margin-bottom: 1.5rem;
         }
 
-        .competency-list li {
-          position: relative;
-          padding-left: var(--space-lg);
-          color: var(--text-secondary);
+        .profile-text p:last-child {
+          margin-bottom: 0;
         }
 
-        .competency-list li::before {
-          content: '▸';
-          position: absolute;
-          left: 0;
-          color: var(--accent-primary);
-          font-weight: bold;
-        }
-
-        /* CREDENTIALS */
-        .credentials-section {
-          margin-top: var(--space-3xl);
-          padding: var(--space-2xl);
-          background: var(--bg-secondary);
-          border-radius: 12px;
-          border: 1px solid var(--border-primary);
-        }
-
-        .credentials-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: var(--space-lg);
-        }
-
-        .credential-item {
-          padding: var(--space-lg);
-          background: var(--bg-tertiary);
-          border-radius: 8px;
-          border: 1px solid var(--border-secondary);
-        }
-
-        .credential-type {
-          font-size: 0.875rem;
-          color: var(--accent-primary);
-          font-weight: 600;
-          text-transform: uppercase;
-          margin-bottom: var(--space-xs);
-        }
-
-        .credential-title {
-          font-size: 1.125rem;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-xs);
-        }
-
-        .credential-detail {
-          font-size: 0.875rem;
-          color: var(--text-secondary);
-        }
-
-        /* EXPERTISE GRID */
-        .expertise-grid {
+        /* SKILLS SECTION */
+        .skills-grid {
           display: grid;
           grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-          gap: var(--space-xl);
-          margin-bottom: var(--space-3xl);
+          gap: 2rem;
         }
 
-        .expertise-card {
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-primary);
-          border-radius: 12px;
-          padding: var(--space-xl);
-          transition: all 0.2s;
+        .skill-category {
+          background: var(--color-bg-secondary);
+          border: 1px solid var(--color-border);
+          padding: 1.5rem;
         }
 
-        .expertise-card:hover {
-          border-color: var(--accent-primary);
-          transform: translateY(-4px);
-        }
-
-        .card-header {
-          display: flex;
-          align-items: center;
-          gap: var(--space-md);
-          margin-bottom: var(--space-lg);
-        }
-
-        .card-icon {
-          font-size: 2rem;
-        }
-
-        .card-title {
-          font-size: 1.25rem;
+        .category-title {
+          font-family: var(--font-mono);
+          color: var(--color-green-bright);
+          margin-bottom: 1rem;
+          font-size: 1.1rem;
           font-weight: 600;
-          color: var(--text-primary);
         }
 
-        .card-content ul {
+        .bracket {
+          color: var(--color-text-dim);
+        }
+
+        .skill-list {
           list-style: none;
           display: flex;
           flex-direction: column;
-          gap: var(--space-sm);
+          gap: 0.5rem;
         }
 
-        .card-content li {
+        .skill-list li {
+          font-family: var(--font-mono);
+          color: var(--color-text-secondary);
           position: relative;
-          padding-left: var(--space-lg);
-          color: var(--text-secondary);
-          line-height: 1.5;
+          padding-left: 1.5rem;
         }
 
-        .card-content li::before {
-          content: '•';
+        .skill-list li::before {
+          content: '\\003E';
           position: absolute;
           left: 0;
-          color: var(--accent-primary);
+          color: var(--color-green-bright);
           font-weight: bold;
         }
 
-        /* FOCUS AREAS */
-        .focus-areas {
-          margin-top: var(--space-3xl);
-        }
-
-        .focus-list {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-lg);
-        }
-
-        .focus-item {
-          padding: var(--space-lg);
-          background: var(--bg-secondary);
-          border-radius: 8px;
-          border-left: 4px solid var(--accent-primary);
-          color: var(--text-secondary);
-          line-height: 1.6;
-        }
-
-        /* METHODOLOGY FLOW */
-        .methodology-flow {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-2xl);
-          margin-bottom: var(--space-3xl);
-        }
-
-        .flow-step {
-          display: grid;
-          grid-template-columns: auto 1fr;
-          gap: var(--space-xl);
-          align-items: start;
-        }
-
-        .step-number {
-          width: 60px;
-          height: 60px;
-          border-radius: 50%;
-          background: var(--accent-primary);
-          color: var(--bg-primary);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-          font-family: var(--font-mono);
-        }
-
-        .step-title {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-sm);
-        }
-
-        .step-description {
-          color: var(--text-secondary);
-          line-height: 1.6;
-        }
-
-        /* STANDARDS GRID */
-        .standards-section {
-          margin-top: var(--space-3xl);
-        }
-
-        .standards-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: var(--space-lg);
-        }
-
-        .standard-item {
-          display: flex;
-          gap: var(--space-md);
-          padding: var(--space-lg);
-          background: var(--bg-secondary);
-          border-radius: 8px;
-          border: 1px solid var(--border-primary);
-        }
-
-        .standard-icon {
-          font-size: 1.5rem;
-          flex-shrink: 0;
-        }
-
-        .standard-content h4 {
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-xs);
-        }
-
-        .standard-content p {
-          color: var(--text-secondary);
-          font-size: 0.9rem;
-          line-height: 1.5;
-        }
-
-        /* MISSION CONTENT */
-        .mission-statement {
-          text-align: center;
-          margin-bottom: var(--space-3xl);
-        }
-
-        .mission-title {
-          font-size: 1.5rem;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-lg);
-        }
-
+        /* MISSION SECTION */
         .mission-quote {
-          font-size: 1.375rem;
+          font-family: var(--font-mono);
+          font-size: 1.1rem;
           font-style: italic;
-          color: var(--text-secondary);
-          line-height: 1.6;
-          border-left: 4px solid var(--accent-primary);
-          padding-left: var(--space-xl);
-          margin: 0 auto;
-          max-width: 800px;
+          color: var(--color-text-secondary);
+          line-height: 1.8;
+          border-left: 4px solid var(--color-green-bright);
+          padding-left: 1.5rem;
+          margin: 2rem 0;
         }
 
-        /* VALUES GRID */
-        .values-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-          gap: var(--space-xl);
-          margin-bottom: var(--space-3xl);
+        .mission-values {
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
         }
 
         .value-item {
-          text-align: center;
-          padding: var(--space-xl);
-          background: var(--bg-secondary);
-          border-radius: 12px;
-          border: 1px solid var(--border-primary);
+          font-family: var(--font-mono);
+          display: flex;
+          gap: 1rem;
+          padding: 1rem;
+          background: var(--color-bg-secondary);
+          border: 1px solid var(--color-border);
         }
 
-        .value-icon {
-          font-size: 3rem;
-          margin-bottom: var(--space-lg);
-        }
-
-        .value-title {
-          font-size: 1.25rem;
+        .value-label {
+          color: var(--color-green-bright);
           font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-md);
+          min-width: 120px;
         }
 
-        .value-description {
-          color: var(--text-secondary);
-          line-height: 1.6;
-        }
-
-        /* GOALS LIST */
-        .goals-list {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-xl);
-        }
-
-        .goal-item {
-          display: grid;
-          grid-template-columns: auto 1fr;
-          gap: var(--space-xl);
-          align-items: start;
-        }
-
-        .goal-number {
-          width: 80px;
-          height: 80px;
-          border-radius: 12px;
-          background: var(--accent-primary);
-          color: var(--bg-primary);
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          font-weight: 700;
-          font-size: 1.25rem;
-        }
-
-        .goal-content h4 {
-          font-size: 1.25rem;
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-sm);
-        }
-
-        .goal-content p {
-          color: var(--text-secondary);
-          line-height: 1.6;
-        }
-
-        /* INVOLVEMENT OPTIONS */
-        .contact-description {
-          color: var(--text-secondary);
-          font-size: 1.125rem;
-          line-height: 1.6;
-          margin-bottom: var(--space-xl);
-        }
-
-        .involvement-options {
-          display: flex;
-          flex-direction: column;
-          gap: var(--space-lg);
-        }
-
-        .involvement-item {
-          padding: var(--space-lg);
-          background: var(--bg-secondary);
-          border-radius: 8px;
-          border-left: 4px solid var(--accent-primary);
-          color: var(--text-secondary);
-          line-height: 1.6;
+        .value-desc {
+          color: var(--color-text-secondary);
+          flex: 1;
         }
 
         /* CONTACT SECTION */
         .contact-section {
-          background: var(--bg-primary);
-          padding: var(--space-3xl) 0;
+          padding: 6rem 0;
+          background: var(--color-bg-primary);
         }
 
         .contact-content {
-          max-width: 600px;
-          margin: 0 auto;
           text-align: center;
         }
 
         .contact-title {
+          font-family: var(--font-mono);
           font-size: 2rem;
-          font-weight: 700;
-          margin-bottom: var(--space-lg);
-          color: var(--text-primary);
+          color: var(--color-green-bright);
+          margin-bottom: 1.5rem;
+          text-shadow: 0 0 20px var(--color-green-bright);
         }
 
-        .contact-description {
-          color: var(--text-secondary);
-          font-size: 1.125rem;
+        .contact-desc {
+          color: var(--color-text-secondary);
+          margin-bottom: 3rem;
           line-height: 1.6;
-          margin-bottom: var(--space-2xl);
+          font-size: 1.1rem;
         }
 
         .contact-methods {
-          display: grid;
-          gap: var(--space-lg);
+          display: flex;
+          flex-direction: column;
+          gap: 1rem;
+          max-width: 500px;
+          margin: 0 auto;
         }
 
         .contact-method {
-          display: flex;
-          align-items: center;
-          gap: var(--space-lg);
-          padding: var(--space-xl);
-          background: var(--bg-secondary);
-          border: 1px solid var(--border-primary);
-          border-radius: 12px;
+          font-family: var(--font-mono);
+          background: transparent;
+          color: var(--color-green-bright);
+          border: 1px solid var(--color-green-bright);
+          padding: 1rem;
           text-decoration: none;
-          transition: all 0.2s;
-        }
-
-        .contact-method:hover {
-          border-color: var(--accent-primary);
-          transform: translateY(-2px);
-        }
-
-        .method-icon {
-          font-size: 2rem;
-        }
-
-        .method-content {
+          transition: all 0.3s;
           text-align: left;
         }
 
-        .method-title {
-          font-weight: 600;
-          color: var(--text-primary);
-          margin-bottom: var(--space-xs);
-        }
-
-        .method-detail {
-          color: var(--text-secondary);
+        .contact-method:hover {
+          background: var(--color-green-bright);
+          color: var(--color-bg-primary);
+          box-shadow: 0 0 20px var(--color-green-dim);
         }
 
         /* FOOTER */
-        .page-footer {
-          background: var(--bg-secondary);
-          border-top: 1px solid var(--border-primary);
-          padding: var(--space-2xl) 0;
+        .footer {
+          padding: 3rem 0 2rem;
+          background: var(--color-bg-primary);
+          border-top: 1px solid var(--color-border);
         }
 
         .footer-content {
@@ -1324,96 +899,61 @@ export default function About() {
         }
 
         .footer-text {
-          color: var(--text-secondary);
+          font-family: var(--font-mono);
+          color: var(--color-text-secondary);
+          font-size: 0.9rem;
         }
 
-        .author-name {
-          color: var(--accent-primary);
-          font-weight: 600;
+        .footer-author {
+          font-family: var(--font-mono);
+          color: var(--color-text-dim);
+          font-size: 0.8rem;
+          margin-top: 0.5rem;
         }
 
         .footer-links {
           display: flex;
-          gap: var(--space-xl);
+          gap: 2rem;
         }
 
-        .footer-links a {
-          color: var(--text-secondary);
+        .footer-link {
+          font-family: var(--font-mono);
+          color: var(--color-text-secondary);
           text-decoration: none;
-          transition: color 0.2s;
+          transition: color 0.3s;
         }
 
-        .footer-links a:hover {
-          color: var(--accent-primary);
+        .footer-link:hover {
+          color: var(--color-green-bright);
         }
 
-        /* RESPONSIVE DESIGN */
-        @media (max-width: 1024px) {
-          .hero-content {
-            grid-template-columns: 1fr;
-            text-align: center;
-            gap: var(--space-2xl);
-          }
-          
-          .content-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .tab-navigation {
-            grid-template-columns: repeat(2, 1fr);
-          }
-        }
-
+        /* RESPONSIVE */
         @media (max-width: 768px) {
-          .container {
-            padding: 0 var(--space-md);
+          .nav-menu {
+            display: none;
           }
           
-          .hero-stats {
+          .skills-grid {
             grid-template-columns: 1fr;
-          }
-          
-          .tab-navigation {
-            grid-template-columns: 1fr;
-          }
-          
-          .hero-actions {
-            flex-direction: column;
-            align-items: center;
           }
           
           .footer-content {
             flex-direction: column;
-            gap: var(--space-lg);
+            gap: 2rem;
             text-align: center;
           }
           
-          .expertise-grid {
-            grid-template-columns: 1fr;
+          .hero-info {
+            text-align: left;
           }
           
-          .values-grid {
-            grid-template-columns: 1fr;
-          }
-          
-          .flow-step {
-            grid-template-columns: 1fr;
-            text-align: center;
-          }
-        }
-
-        @media (max-width: 480px) {
-          .hero-title {
-            font-size: 2rem;
-          }
-          
-          .panel-title {
-            font-size: 2rem;
-          }
-          
-          .contact-method {
+          .info-line {
             flex-direction: column;
-            text-align: center;
+            gap: 0.5rem;
+          }
+          
+          .info-label {
+            min-width: auto;
           }
         }
       `}</style>
