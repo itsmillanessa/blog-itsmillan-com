@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "CERT Polonia revela ataques coordinados de Static Tundra (Sandworm) contra infraestructura de energía renovable con objetivos puramente destructivos. Un nuevo frente en la guerra cibernética energética."
 category: "Ciberseguridad"
 readTime: "6 min"
-image: "https://image.pollinations.ai/prompt/cyberattack%20wind%20turbines%20solar%20panels%20poland%20renewable%20energy%20infrastructure%20hacking%20russia%20dark%20cyber%20warfare?width=1200&height=630&model=flux&seed=101"
+image: "https://image.pollinations.ai/prompt/cyber%20attack%20power%20grid%20dark%20red%20warning%20infrastructure?width=1200&height=630&model=flux&seed=201"
 featured: false
 tags: ["Ciberataques", "Energía Renovable", "Sandworm", "Infraestructura Crítica", "Polonia"]
 ---
