@@ -44,7 +44,7 @@ export default function Home({ posts, featuredPost }) {
             <div className="container">
               <div className="featured-card">
                 <div className="featured-img">
-                  <img src={featuredPost.image || '/images/default-tech.jpg'} alt={featuredPost.title} />
+                  <img src={featuredPost.image || 'https://image.pollinations.ai/prompt/dark%20technology%20circuit%20board%20abstract%20minimal%20green%20cyber?width=1200/images/default-tech.jpgheight=630/images/default-tech.jpgmodel=flux/images/default-tech.jpgseed=99'} alt={featuredPost.title} />
                   <div className="featured-badge">LATEST</div>
                 </div>
                 <div className="featured-body">
@@ -80,7 +80,7 @@ export default function Home({ posts, featuredPost }) {
                 <article key={post.slug} className="post-card">
                   <a href={`/${post.slug}/`}>
                     <div className="card-img">
-                      <img src={post.image || '/images/default-tech.jpg'} alt={post.title} />
+                      <img src={post.image || 'https://image.pollinations.ai/prompt/dark%20technology%20circuit%20board%20abstract%20minimal%20green%20cyber?width=1200/images/default-tech.jpgheight=630/images/default-tech.jpgmodel=flux/images/default-tech.jpgseed=99'} alt={post.title} />
                       <span className="card-tag">{post.category || 'Intel'}</span>
                     </div>
                     <div className="card-body">

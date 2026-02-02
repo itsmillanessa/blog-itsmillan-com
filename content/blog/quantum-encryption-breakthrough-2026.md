@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "A team from Beijing University successfully demonstrated the first practical quantum attack against RSA-2048 encryption, marking a pivotal moment in cybersecurity history. The implications are massive for digital infrastructure worldwide."
 category: "Ciberseguridad"
 readTime: "5 min"
-image: "/images/post-1.jpg"
+image: "https://image.pollinations.ai/prompt/cybersecurity%20dark%20hacker%20terminal%20green%20code%20digital%20abstract%20professional?width=1200&height=630&model=flux&seed=42"
 featured: true
 tags: ["Quantum Computing", "Encryption", "Cybersecurity", "RSA", "Post-Quantum Cryptography"]
 ---
