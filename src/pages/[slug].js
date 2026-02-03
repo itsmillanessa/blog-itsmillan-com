@@ -37,7 +37,7 @@ export default function PostPage({ post }) {
     <>
       <Head>
         <title>{post.title} | N0V4 Feed</title>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2269060435520772" crossOrigin="anonymous"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8449056291567140" crossOrigin="anonymous"></script>
         <meta name="description" content={post.excerpt} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content={post.title} />
@@ -113,7 +113,7 @@ export default function PostPage({ post }) {
         <section className="ad-section">
           <div className="container">
             <div className="ad-banner">
-              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-2269060435520772" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
           </div>
         </section>

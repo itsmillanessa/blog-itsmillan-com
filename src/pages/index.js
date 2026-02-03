@@ -14,7 +14,7 @@ export default function Home({ posts, featuredPost }) {
     <>
       <Head>
         <title>N0V4 Feed | Cybersecurity & Tech Intelligence</title>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-2269060435520772" crossOrigin="anonymous"></script>
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8449056291567140" crossOrigin="anonymous"></script>
         <meta name="description" content="Professional cybersecurity and technology intelligence. Daily analysis of threats, infrastructure, and emerging tech." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
@@ -74,7 +74,7 @@ export default function Home({ posts, featuredPost }) {
         <section className="ad-section">
           <div className="container">
             <div className="ad-banner" id="ad-top">
-              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-2269060435520772" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
           </div>
         </section>
@@ -117,7 +117,7 @@ export default function Home({ posts, featuredPost }) {
         <section className="ad-section">
           <div className="container">
             <div className="ad-banner" id="ad-bottom">
-              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-2269060435520772" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
             </div>
           </div>
         </section>
