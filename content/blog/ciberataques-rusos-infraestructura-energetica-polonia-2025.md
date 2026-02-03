@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "CERT Polska revela que el grupo Static Tundra, vinculado al FSB ruso, lanzó ataques destructivos contra infraestructura energética renovable y una planta de calefacción que sirve a medio millón de personas."
 category: "Ciberseguridad"
 readTime: "6 min"
-image: "/images/blog/ciberataques-infraestructura.jpg"
+image: "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?w=1200&h=630&fit=crop"
 featured: false
 tags: ["Ciberguerra", "Infraestructura Crítica", "Rusia", "Energía Renovable", "SCADA", "ICS", "Polonia"]
 ---

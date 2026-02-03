@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "Investigadores descubren una campaña masiva de extensiones maliciosas que secuestran comisiones de afiliados en Amazon, AliExpress y otras plataformas, mientras roban credenciales de OpenAI ChatGPT."
 category: "Ciberseguridad"
 readTime: "5 min"
-image: "/images/blog/extensiones-chrome-maliciosas.jpg"
+image: "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=1200&h=630&fit=crop"
 featured: false
 tags: ["Chrome", "Extensiones Maliciosas", "Secuestro de Afiliados", "ChatGPT", "Browser Security"]
 ---

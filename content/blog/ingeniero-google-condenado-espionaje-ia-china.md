@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "Un jurado federal estadounidense condena a Linwei Ding, ex-ingeniero de software de Google, por robar datos de supercomputadoras de IA de su empleador y compartirlos secretamente con firmas tecnológicas chinas."
 category: "Ciberseguridad"
 readTime: "6 min"
-image: "/images/blog/ingeniero-google-espionaje.jpg"
+image: "https://images.unsplash.com/photo-1677442136019-21780ecad995?w=1200&h=630&fit=crop"
 featured: false
 tags: ["Espionaje Corporativo", "Google", "Inteligencia Artificial", "China", "Seguridad Nacional"]
 ---
