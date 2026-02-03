@@ -4,7 +4,7 @@ date: "2026-02-02"
 excerpt: "Un equipo de la Universidad de Beijing demostró con éxito el primer ataque cuántico práctico contra el cifrado RSA-2048, marcando un momento crucial en la historia de la ciberseguridad. Las implicaciones son masivas para la infraestructura digital mundial."
 category: "Ciberseguridad"
 readTime: "5 min"
-image: "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?w=1200&h=630&fit=crop"
+image: "/images/blog/quantum-encryption.jpg"
 featured: true
 tags: ["Computación Cuántica", "Cifrado", "Ciberseguridad", "RSA", "Criptografía Post-Cuántica"]
 ---
