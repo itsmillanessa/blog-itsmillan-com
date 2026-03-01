@@ -1,4 +1,5 @@
 import Head from 'next/head'
+import Link from 'next/link'
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
@@ -6,48 +7,62 @@ import { marked } from 'marked'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
 
+function formatDate(dateStr) {
+  try {
+    return format(new Date(dateStr), "dd 'de' MMMM, yyyy", { locale: es })
+  } catch { return dateStr }
+}
+
+const CATEGORY_STYLES = {
+  IA: 'bg-cyan-900/40 text-cyan-300 border-cyan-700/50',
+  Ciberseguridad: 'bg-red-900/40 text-red-400 border-red-700/50',
+  Hardware: 'bg-purple-900/40 text-purple-400 border-purple-700/50',
+  Infraestructura: 'bg-blue-900/40 text-blue-400 border-blue-700/50',
+}
+
+function getCategoryClass(category) {
+  const key = Object.keys(CATEGORY_STYLES).find(k =>
+    category && category.toLowerCase().includes(k.toLowerCase())
+  )
+  return CATEGORY_STYLES[key] || 'bg-slate-800/40 text-slate-400 border-slate-700/50'
+}
+
 export default function PostPage({ post }) {
   if (!post) {
     return (
       <>
         <Head>
-          <title>Not Found | N0V4 Feed</title>
-          <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+          <title>Not Found | NOVA FEED</title>
+          <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600&display=swap" rel="stylesheet" />
         </Head>
-        <div className="error-page">
-          <div className="error-box">
-            <h1>404</h1>
-            <p>Article not found.</p>
-            <a href="/">← Back to home</a>
+        <div className="min-h-screen bg-[#102222] flex items-center justify-center">
+          <div className="text-center">
+            <h1 className="text-6xl font-bold text-[#0df2f2]">404</h1>
+            <p className="text-slate-400 my-4">Artículo no encontrado.</p>
+            <Link href="/" className="text-[#0df2f2] hover:underline">← Volver al inicio</Link>
           </div>
         </div>
-        <style jsx global>{`
-          body { background: #0a0a0a; color: #e6edf3; font-family: 'JetBrains Mono', monospace; }
-          .error-page { min-height: 100vh; display: flex; align-items: center; justify-content: center; }
-          .error-box { text-align: center; }
-          .error-box h1 { font-size: 4rem; color: #00ff41; }
-          .error-box p { color: #8b949e; margin: 12px 0 24px; }
-          .error-box a { color: #00ff41; }
-        `}</style>
       </>
     )
   }
 
+  const catClass = getCategoryClass(post.category)
+
   return (
     <>
       <Head>
-        <title>{post.title} | N0V4 Feed</title>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8449056291567140" crossOrigin="anonymous"></script>
+        <title>{post.title} | NOVA FEED</title>
         <meta name="description" content={post.excerpt} />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <meta property="og:title" content={post.title} />
         <meta property="og:description" content={post.excerpt} />
         <meta property="og:type" content="article" />
         <meta property="article:published_time" content={post.date} />
-        <meta property="article:author" content="Alexis Millán" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8449056291567140" crossOrigin="anonymous"></script>
         <script type="application/ld+json" dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             "@context": "https://schema.org",
@@ -55,312 +70,175 @@ export default function PostPage({ post }) {
             "headline": post.title,
             "description": post.excerpt,
             "author": { "@type": "Person", "name": "Alexis Millán" },
-            "publisher": { "@type": "Organization", "name": "N0V4 Feed" },
+            "publisher": { "@type": "Organization", "name": "NOVA FEED" },
             "datePublished": post.date,
-            "dateModified": post.date
           })
         }} />
       </Head>
 
-      <div className="site">
+      <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-[#102222] text-slate-100">
+
         {/* Header */}
-        <header className="header">
-          <div className="container">
-            <div className="header-inner">
-              <a href="/" className="logo">
-                <span className="logo-accent">N0V4</span> Feed
-              </a>
-              <nav className="nav">
-                <a href="/" className="nav-link">Home</a>
-                <a href="/about" className="nav-link">About</a>
+        <header className="sticky top-0 z-50 w-full border-b border-[#0df2f2]/10 bg-[#102222]/80 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex h-20 items-center justify-between">
+              <Link href="/" className="flex items-center gap-3">
+                <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0df2f2]/20 text-[#0df2f2]">
+                  <span className="material-symbols-outlined text-3xl">token</span>
+                </div>
+                <span className="text-2xl font-bold tracking-tighter text-slate-100">
+                  NOVA <span className="text-[#0df2f2]">FEED</span>
+                </span>
+              </Link>
+              <nav className="hidden md:flex items-center gap-8">
+                <Link href="/" className="text-sm font-semibold text-slate-400 hover:text-[#0df2f2] transition-colors">IA</Link>
+                <Link href="/" className="text-sm font-semibold text-slate-400 hover:text-[#0df2f2] transition-colors">Ciberseguridad</Link>
+                <Link href="/" className="text-sm font-semibold text-slate-400 hover:text-[#0df2f2] transition-colors">Hardware</Link>
+                <Link href="/" className="text-sm font-semibold text-slate-400 hover:text-[#0df2f2] transition-colors">Todo</Link>
               </nav>
             </div>
           </div>
         </header>
 
-        {/* Article Header */}
-        <section className="article-hero">
-          <div className="container">
-            <a href="/" className="back-link">← Back to reports</a>
-            <div className="article-meta-row">
-              <span className="tag">{post.category || 'Intel'}</span>
-              <span className="meta-text">{format(new Date(post.date), "dd 'de' MMMM, yyyy", { locale: es })}</span>
-              <span className="meta-text">{post.readTime || Math.ceil((post.contentHtml?.length || 0) / 1000) + ' min read'}</span>
-              <span className="meta-text">Alexis Millán</span>
-            </div>
-            <h1 className="article-title">{post.title}</h1>
-            {post.excerpt && <p className="article-excerpt">{post.excerpt}</p>}
-          </div>
-        </section>
+        {/* Article Hero */}
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 w-full">
+          <Link href="/" className="inline-flex items-center gap-2 text-[#0df2f2] text-sm font-medium mb-8 hover:opacity-80 transition-opacity">
+            <span className="material-symbols-outlined" style={{fontSize:'16px'}}>arrow_back</span>
+            Volver a reportes
+          </Link>
 
-        {/* Article Image */}
-        {post.image && (
-          <div className="article-image-wrapper">
-            <div className="container">
-              <img src={post.image} alt={post.title} className="article-image" />
-            </div>
+          <div className="mb-6 flex items-center gap-3 flex-wrap">
+            <span className={`rounded border px-3 py-1 text-xs font-bold uppercase tracking-widest ${catClass}`}>
+              {post.category}
+            </span>
+            <span className="text-sm text-slate-500">{formatDate(post.date)}</span>
+            <span className="text-sm text-slate-500">{post.readTime || '5 min read'}</span>
+            <span className="text-sm text-slate-500">Alexis Millán</span>
           </div>
-        )}
 
-        {/* Article Content */}
-        <article className="article-content-section">
-          <div className="container">
-            <div className="article-body" dangerouslySetInnerHTML={{ __html: post.contentHtml }} />
-          </div>
-        </article>
+          <h1 className="text-3xl md:text-5xl font-bold leading-tight mb-6">{post.title}</h1>
 
-        {/* Ad - In Article */}
-        <section className="ad-section">
-          <div className="container">
-            <div className="ad-banner">
-              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
+          {post.excerpt && (
+            <p className="text-xl text-slate-400 leading-relaxed mb-8 border-l-4 border-[#0df2f2]/40 pl-6">
+              {post.excerpt}
+            </p>
+          )}
+
+          {post.image && (
+            <div className="mb-8 rounded-xl overflow-hidden border border-slate-800">
+              <img src={post.image} alt={post.title} className="w-full object-cover" style={{maxHeight:'450px', width:'100%'}} />
             </div>
-          </div>
-        </section>
+          )}
 
-        {/* Tags */}
-        {post.tags && post.tags.length > 0 && (
-          <section className="tags-section">
-            <div className="container">
-              <div className="tags-list">
-                {post.tags.map(tag => (
-                  <span key={tag} className="tag-pill">#{tag}</span>
-                ))}
-              </div>
-            </div>
-          </section>
-        )}
-
-        {/* Share */}
-        <section className="share-section">
-          <div className="container">
-            <div className="share-bar">
-              <span className="share-label">Share this report:</span>
-              <div className="share-buttons">
-                <a href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}/`)}`} target="_blank" rel="noopener noreferrer" className="share-btn">Twitter</a>
-                <a href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}/`)}`} target="_blank" rel="noopener noreferrer" className="share-btn">LinkedIn</a>
-                <button onClick={() => navigator.clipboard.writeText(typeof window !== 'undefined' ? window.location.href : '')} className="share-btn">Copy Link</button>
-              </div>
-            </div>
+          {/* AdSense */}
+          <div className="mb-8">
+            <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
           </div>
-        </section>
+
+          {/* Article content */}
+          <div
+            className="article-body text-slate-200"
+            dangerouslySetInnerHTML={{ __html: post.contentHtml }}
+          />
+
+          {/* Tags */}
+          {post.tags && post.tags.length > 0 && (
+            <div className="mt-8 flex flex-wrap gap-2">
+              {post.tags.map(tag => (
+                <span key={tag} className="rounded-full border border-slate-800 px-3 py-1 text-xs font-medium text-slate-400">
+                  #{tag}
+                </span>
+              ))}
+            </div>
+          )}
+
+          {/* Share */}
+          <div className="mt-8 flex items-center gap-4 flex-wrap p-6 bg-slate-900/50 rounded-xl border border-slate-800">
+            <span className="text-sm text-slate-400 font-semibold">Compartir:</span>
+            <a
+              href={`https://twitter.com/intent/tweet?text=${encodeURIComponent(post.title)}&url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-[#0df2f2] hover:text-[#0df2f2] transition-colors"
+            >
+              Twitter / X
+            </a>
+            <a
+              href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(`https://blog.itsmillan.com/${post.slug}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-xs px-4 py-2 rounded-lg border border-slate-700 text-slate-400 hover:border-[#0df2f2] hover:text-[#0df2f2] transition-colors"
+            >
+              LinkedIn
+            </a>
+          </div>
+        </div>
 
         {/* Footer */}
-        <footer className="footer">
-          <div className="container">
-            <div className="footer-inner">
-              <div className="footer-brand"><span className="logo-accent">N0V4</span> Feed</div>
-              <p className="footer-copy">© 2026 Alexis Millán. Professional cybersecurity intelligence.</p>
+        <footer className="mt-auto border-t border-[#0df2f2]/10 bg-slate-900 py-8 text-slate-400">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <div className="flex items-center justify-center gap-2 text-white mb-4">
+              <span className="material-symbols-outlined text-[#0df2f2]">token</span>
+              <span className="text-xl font-bold tracking-tighter">NOVA <span className="text-[#0df2f2]">FEED</span></span>
             </div>
+            <p className="text-xs text-slate-500">© 2026 NOVA FEED. Todos los derechos reservados. Powered by Nova 🤖</p>
           </div>
         </footer>
       </div>
-
-      <style jsx global>{`
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-          --bg: #0a0a0a;
-          --bg-card: #111318;
-          --border: #1e2430;
-          --green: #00ff41;
-          --green-dim: #00cc33;
-          --green-dark: #003d10;
-          --text: #e6edf3;
-          --text-dim: #8b949e;
-          --text-muted: #484f58;
-          --font-mono: 'JetBrains Mono', monospace;
-          --font-sans: 'Inter', -apple-system, sans-serif;
-          --container: 800px;
-          --radius: 8px;
-        }
-        body {
-          font-family: var(--font-sans);
-          background: var(--bg);
-          color: var(--text);
-          line-height: 1.6;
-          -webkit-font-smoothing: antialiased;
-        }
-        a { color: inherit; text-decoration: none; }
-        img { max-width: 100%; height: auto; display: block; }
-        .container { max-width: var(--container); margin: 0 auto; padding: 0 20px; }
-
-        /* HEADER */
-        .header {
-          border-bottom: 1px solid var(--border);
-          padding: 16px 0;
-          position: sticky; top: 0;
-          background: rgba(10, 10, 10, 0.95);
-          backdrop-filter: blur(10px);
-          z-index: 100;
-        }
-        .header .container { max-width: 1100px; }
-        .header-inner { display: flex; align-items: center; justify-content: space-between; }
-        .logo { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 700; }
-        .logo-accent { color: var(--green); }
-        .nav { display: flex; gap: 24px; }
-        .nav-link { font-size: 0.9rem; color: var(--text-dim); transition: color 0.2s; font-weight: 500; }
-        .nav-link:hover { color: var(--green); }
-
-        /* ARTICLE HERO */
-        .article-hero { padding: 40px 0 24px; }
-        .back-link {
-          font-family: var(--font-mono);
-          font-size: 0.8rem;
-          color: var(--green);
-          display: inline-block;
-          margin-bottom: 24px;
-          transition: opacity 0.2s;
-        }
-        .back-link:hover { opacity: 0.8; }
-        .article-meta-row {
-          display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 16px;
-        }
-        .tag {
-          font-family: var(--font-mono); font-size: 0.7rem; color: var(--green);
-          text-transform: uppercase; letter-spacing: 0.1em;
-          border: 1px solid var(--green-dark); padding: 3px 10px; border-radius: 4px;
-        }
-        .meta-text { font-size: 0.8rem; color: var(--text-muted); font-family: var(--font-mono); }
-        .article-title {
-          font-size: clamp(1.8rem, 4vw, 2.5rem); font-weight: 700; line-height: 1.25; margin-bottom: 16px;
-        }
-        .article-excerpt { font-size: 1.05rem; color: var(--text-dim); line-height: 1.7; }
-
-        /* ARTICLE IMAGE */
-        .article-image-wrapper { padding: 24px 0; }
-        .article-image { width: 100%; border-radius: var(--radius); border: 1px solid var(--border); }
-
-        /* ARTICLE CONTENT */
-        .article-content-section { padding: 16px 0 40px; }
-        .article-body { font-size: 1.05rem; line-height: 1.8; color: var(--text); }
-        .article-body h1 {
-          font-size: 1.8rem; font-weight: 700; margin: 2.5rem 0 1rem;
-          color: var(--text); border-bottom: 2px solid var(--border); padding-bottom: 8px;
-        }
-        .article-body h2 {
-          font-size: 1.4rem; font-weight: 600; margin: 2rem 0 0.75rem;
-          color: var(--green); 
-        }
-        .article-body h3 {
-          font-size: 1.15rem; font-weight: 600; margin: 1.5rem 0 0.5rem; color: var(--text);
-        }
-        .article-body p { margin: 1rem 0; }
-        .article-body ul, .article-body ol { margin: 1rem 0; padding-left: 1.5rem; }
-        .article-body li { margin: 0.5rem 0; }
-        .article-body strong { color: #fff; font-weight: 600; }
-        .article-body em { color: var(--text-dim); }
-        .article-body blockquote {
-          border-left: 3px solid var(--green); margin: 1.5rem 0; padding: 12px 20px;
-          background: var(--bg-card); border-radius: 0 var(--radius) var(--radius) 0;
-          font-style: italic; color: var(--text-dim);
-        }
-        .article-body code {
-          font-family: var(--font-mono); font-size: 0.85em;
-          background: var(--bg-card); padding: 2px 6px; border-radius: 3px;
-          border: 1px solid var(--border); color: var(--green);
-        }
-        .article-body pre {
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 16px; overflow-x: auto;
-          margin: 1.5rem 0;
-        }
-        .article-body pre code {
-          background: none; border: none; padding: 0; font-size: 0.85rem;
-        }
-        .article-body a { color: var(--green); border-bottom: 1px solid transparent; }
-        .article-body a:hover { border-bottom-color: var(--green); }
-        .article-body hr { border: none; border-top: 1px solid var(--border); margin: 2rem 0; }
-
-        /* TAGS */
-        .tags-section { padding: 0 0 32px; }
-        .tags-list { display: flex; flex-wrap: wrap; gap: 8px; }
-        .tag-pill {
-          font-family: var(--font-mono); font-size: 0.75rem; color: var(--green-dim);
-          background: var(--bg-card); border: 1px solid var(--border); padding: 4px 12px;
-          border-radius: 20px;
-        }
-
-        /* SHARE */
-        .share-section { padding: 0 0 40px; }
-        .share-bar {
-          display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
-          padding: 20px; background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius);
-        }
-        .share-label { font-family: var(--font-mono); font-size: 0.8rem; color: var(--text-dim); }
-        .share-buttons { display: flex; gap: 10px; }
-        .share-btn {
-          font-family: var(--font-mono); font-size: 0.75rem;
-          padding: 6px 14px; border-radius: 4px; border: 1px solid var(--border);
-          background: transparent; color: var(--text-dim); cursor: pointer;
-          transition: all 0.2s;
-        }
-        .share-btn:hover { border-color: var(--green); color: var(--green); }
-
-        /* FOOTER */
-        .footer { border-top: 1px solid var(--border); padding: 32px 0; }
-        .footer .container { max-width: 1100px; }
-        .footer-inner { text-align: center; }
-        .footer-brand { font-family: var(--font-mono); font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
-        .footer-copy { font-size: 0.8rem; color: var(--text-muted); }
-
-        /* ADS */
-        .ad-section { padding: 20px 0; }
-        .ad-banner {
-          background: var(--bg-card); border: 1px solid var(--border);
-          border-radius: var(--radius); padding: 16px; text-align: center;
-          min-height: 100px; display: flex; align-items: center; justify-content: center;
-          color: var(--text-muted); font-family: var(--font-mono); font-size: 0.7rem;
-        }
-
-        @media (max-width: 768px) {
-          .article-title { font-size: 1.5rem; }
-          .article-body { font-size: 1rem; }
-          .nav { gap: 16px; }
-        }
-      `}</style>
     </>
   )
 }
 
 export async function getStaticPaths() {
-  const postsDirectory = path.join(process.cwd(), 'content', 'blog')
+  const dirs = [
+    path.join(process.cwd(), 'content', 'blog'),
+    path.join(process.cwd(), 'content', 'posts'),
+  ]
   let paths = []
-  try {
-    const filenames = fs.readdirSync(postsDirectory)
-    paths = filenames
-      .filter(name => name.endsWith('.md'))
-      .map(filename => ({ params: { slug: filename.replace('.md', '') } }))
-  } catch (error) {
-    console.log('Posts directory not found')
+  for (const dir of dirs) {
+    try {
+      if (fs.existsSync(dir)) {
+        const filenames = fs.readdirSync(dir)
+        const dirPaths = filenames
+          .filter(name => name.endsWith('.md'))
+          .map(filename => ({ params: { slug: filename.replace('.md', '') } }))
+        paths = paths.concat(dirPaths)
+      }
+    } catch (e) {
+      console.log('Dir not found:', dir)
+    }
   }
   return { paths, fallback: false }
 }
 
 export async function getStaticProps({ params }) {
-  try {
-    const postsDirectory = path.join(process.cwd(), 'content', 'blog')
-    const filePath = path.join(postsDirectory, `${params.slug}.md`)
-    const fileContents = fs.readFileSync(filePath, 'utf8')
-    const { data, content } = matter(fileContents)
-    return {
-      props: {
-        post: {
-          slug: params.slug,
-          title: data.title || 'Untitled',
-          date: data.date || new Date().toISOString(),
-          excerpt: data.excerpt || '',
-          category: data.category || 'General',
-          readTime: data.readTime || null,
-          image: data.image || null,
-          tags: data.tags || [],
-          categories: data.categories || [],
-          sources: data.sources || [],
-          contentHtml: marked(content)
+  const dirs = [
+    path.join(process.cwd(), 'content', 'blog'),
+    path.join(process.cwd(), 'content', 'posts'),
+  ]
+  for (const dir of dirs) {
+    try {
+      const filePath = path.join(dir, `${params.slug}.md`)
+      if (fs.existsSync(filePath)) {
+        const fileContents = fs.readFileSync(filePath, 'utf8')
+        const { data, content } = matter(fileContents)
+        return {
+          props: {
+            post: {
+              slug: params.slug,
+              title: data.title || 'Untitled',
+              date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+              excerpt: data.excerpt || '',
+              category: data.category || 'General',
+              readTime: data.readTime || null,
+              image: data.image || null,
+              tags: data.tags || [],
+              contentHtml: marked(content),
+            }
+          }
         }
       }
-    }
-  } catch (error) {
-    return { props: { post: null } }
+    } catch (e) {}
   }
+  return { props: { post: null } }
 }

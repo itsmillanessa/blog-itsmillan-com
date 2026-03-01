@@ -1,475 +1,352 @@
 import Head from 'next/head'
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import fs from 'fs'
 import path from 'path'
 import matter from 'gray-matter'
 import { format } from 'date-fns'
 import { es } from 'date-fns/locale'
+import Link from 'next/link'
+
+const CATEGORY_STYLES = {
+  IA: { bg: 'bg-cyan-900/40', text: 'text-primary', border: 'border-cyan-700/50' },
+  Ciberseguridad: { bg: 'bg-red-900/40', text: 'text-red-400', border: 'border-red-700/50' },
+  Hardware: { bg: 'bg-purple-900/40', text: 'text-purple-400', border: 'border-purple-700/50' },
+  Infraestructura: { bg: 'bg-blue-900/40', text: 'text-blue-400', border: 'border-blue-700/50' },
+}
+
+function getCategoryStyle(category) {
+  const key = Object.keys(CATEGORY_STYLES).find(k =>
+    category && category.toLowerCase().includes(k.toLowerCase())
+  )
+  return CATEGORY_STYLES[key] || { bg: 'bg-slate-800/40', text: 'text-slate-400', border: 'border-slate-700/50' }
+}
+
+function formatDate(dateStr) {
+  try {
+    return format(new Date(dateStr), "dd 'de' MMMM, yyyy", { locale: es })
+  } catch { return dateStr }
+}
 
 export default function Home({ posts, featuredPost }) {
-  const [isLoaded, setIsLoaded] = useState(false)
-  useEffect(() => { setIsLoaded(true) }, [])
+  const [activeCategory, setActiveCategory] = useState('Todo')
+
+  const categories = ['IA', 'Ciberseguridad', 'Hardware', 'Todo']
+
+  const filteredPosts = activeCategory === 'Todo'
+    ? posts
+    : posts.filter(p => p.category && p.category.toLowerCase().includes(activeCategory.toLowerCase()))
+
+  const mostRead = [...posts].slice(0, 3)
 
   return (
     <>
       <Head>
-        <title>N0V4 Feed | Cybersecurity & Tech Intelligence</title>
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8449056291567140" crossOrigin="anonymous"></script>
-        <meta name="description" content="Professional cybersecurity and technology intelligence. Daily analysis of threats, infrastructure, and emerging tech." />
+        <title>NOVA FEED | AI & Cybersecurity Intelligence</title>
+        <meta name="description" content="Información independiente sobre la vanguardia tecnológica. IA, ciberseguridad, hardware y más." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="" />
-        <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@400,0&display=swap" rel="stylesheet" />
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8449056291567140" crossOrigin="anonymous"></script>
       </Head>
 
-      <div className="site">
+      <div className="relative flex min-h-screen flex-col overflow-x-hidden bg-[#102222] text-slate-100">
+
         {/* Header */}
-        <header className="header">
-          <div className="container">
-            <div className="header-inner">
-              <a href="/" className="logo">
-                <span className="logo-accent">N0V4</span> Feed
-              </a>
-              <nav className="nav">
-                <a href="/" className="nav-link active">Home</a>
-                <a href="/about" className="nav-link">About</a>
-              </nav>
+        <header className="sticky top-0 z-50 w-full border-b border-[#0df2f2]/10 bg-[#102222]/80 backdrop-blur-md">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="flex h-20 items-center justify-between gap-8">
+              <div className="flex items-center gap-10">
+                <Link href="/" className="flex items-center gap-3">
+                  <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-[#0df2f2]/20 text-[#0df2f2]">
+                    <span className="material-symbols-outlined text-3xl">token</span>
+                  </div>
+                  <h1 className="text-2xl font-bold tracking-tighter text-slate-100">
+                    NOVA <span className="text-[#0df2f2]">FEED</span>
+                  </h1>
+                </Link>
+                <nav className="hidden md:flex items-center gap-8">
+                  {categories.map(cat => (
+                    <button
+                      key={cat}
+                      onClick={() => setActiveCategory(cat)}
+                      className={`text-sm font-semibold transition-colors hover:text-[#0df2f2] ${activeCategory === cat ? 'text-[#0df2f2]' : 'text-slate-400'}`}
+                    >
+                      {cat}
+                    </button>
+                  ))}
+                </nav>
+              </div>
+              <div className="flex flex-1 items-center justify-end gap-6">
+                <div className="relative hidden lg:block w-full max-w-sm">
+                  <span className="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xl">search</span>
+                  <input
+                    className="w-full rounded-full border-none bg-slate-800 py-2 pl-10 pr-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#0df2f2]/50"
+                    placeholder="Buscar noticias tech..."
+                    type="text"
+                  />
+                </div>
+              </div>
+            </div>
+            {/* Mobile nav */}
+            <div className="flex md:hidden gap-4 pb-3 overflow-x-auto">
+              {categories.map(cat => (
+                <button
+                  key={cat}
+                  onClick={() => setActiveCategory(cat)}
+                  className={`text-xs font-semibold whitespace-nowrap px-3 py-1 rounded-full transition-colors ${activeCategory === cat ? 'bg-[#0df2f2]/20 text-[#0df2f2]' : 'text-slate-400'}`}
+                >
+                  {cat}
+                </button>
+              ))}
             </div>
           </div>
         </header>
 
-        {/* Featured Post */}
-        {featuredPost && (
-          <section className="featured">
-            <div className="container">
-              <div className="featured-card">
-                <div className="featured-img">
-                  <img src={featuredPost.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=630&fit=crop'} alt={featuredPost.title} />
-                  <div className="featured-badge">LATEST</div>
-                </div>
-                <div className="featured-body">
-                  <span className="tag">{featuredPost.category || 'Intel'}</span>
-                  <h1 className="featured-title">
-                    <a href={`/${featuredPost.slug}/`}>{featuredPost.title}</a>
-                  </h1>
-                  <p className="featured-excerpt">{featuredPost.excerpt}</p>
-                  <div className="meta">
-                    <span>{format(new Date(featuredPost.date), "dd 'de' MMMM, yyyy", { locale: es })}</span>
-                    <span className="meta-sep">•</span>
-                    <span>{featuredPost.readTime || '5 min'}</span>
-                    <span className="meta-sep">•</span>
-                    <span>Alexis Millán</span>
+        <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+          {/* Hero / Featured */}
+          {featuredPost && (
+            <section className="mb-12">
+              <div className="group relative overflow-hidden rounded-xl border-2 border-[#0df2f2]/30 bg-slate-900 shadow-2xl shadow-[#0df2f2]/5">
+                <div className="grid lg:grid-cols-2 gap-0">
+                  <div className="relative h-64 lg:h-[450px] w-full overflow-hidden">
+                    <div
+                      className="h-full w-full bg-center bg-cover transition-transform duration-700 group-hover:scale-105"
+                      style={{ backgroundImage: `url('${featuredPost.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=630&fit=crop'}')` }}
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-slate-900 via-transparent lg:bg-gradient-to-r" />
                   </div>
-                  <a href={`/${featuredPost.slug}/`} className="read-btn">
-                    Read Analysis →
-                  </a>
+                  <div className="flex flex-col justify-center p-8 lg:p-12 bg-slate-900">
+                    <div className="mb-4 inline-flex items-center gap-2 rounded-full bg-[#0df2f2]/10 px-3 py-1 text-xs font-bold uppercase tracking-wider text-[#0df2f2] w-fit">
+                      <span className="relative flex h-2 w-2">
+                        <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#0df2f2] opacity-75"></span>
+                        <span className="relative inline-flex rounded-full h-2 w-2 bg-[#0df2f2]"></span>
+                      </span>
+                      Último artículo
+                    </div>
+                    <h2 className="mb-6 text-3xl font-bold leading-tight text-white lg:text-5xl">
+                      {featuredPost.title}
+                    </h2>
+                    <p className="mb-8 text-lg text-slate-400">
+                      {featuredPost.excerpt}
+                    </p>
+                    <div className="flex items-center gap-6">
+                      <Link
+                        href={`/${featuredPost.slug}`}
+                        className="rounded-lg bg-[#0df2f2] px-8 py-3 text-sm font-bold text-[#102222] hover:brightness-110 transition-all"
+                      >
+                        Leer artículo completo
+                      </Link>
+                      <span className="text-sm font-medium text-slate-500">{featuredPost.readTime || '5 min'}</span>
+                    </div>
+                  </div>
                 </div>
               </div>
-            </div>
-          </section>
-        )}
+            </section>
+          )}
 
-        {/* Ad Banner */}
-        <section className="ad-section">
-          <div className="container">
-            <div className="ad-banner" id="ad-top">
-              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            </div>
+          {/* AdSense banner */}
+          <div className="mb-8">
+            <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
           </div>
-        </section>
 
-        {/* Posts Grid */}
-        <section className="posts-section">
-          <div className="container">
-            <h2 className="section-title">
-              <span className="section-accent">//</span> All Reports
-            </h2>
-            <div className="posts-grid">
-              {posts && posts.length > 0 ? posts.map(post => (
-                <article key={post.slug} className="post-card">
-                  <a href={`/${post.slug}/`}>
-                    <div className="card-img">
-                      <img src={post.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=1200&h=630&fit=crop'} alt={post.title} />
-                      <span className="card-tag">{post.category || 'Intel'}</span>
-                    </div>
-                    <div className="card-body">
-                      <h3 className="card-title">{post.title}</h3>
-                      <p className="card-excerpt">{post.excerpt}</p>
-                      <div className="card-meta">
-                        <span>{format(new Date(post.date), 'dd MMM yyyy', { locale: es })}</span>
-                        <span className="meta-sep">•</span>
-                        <span>{post.readTime || '5 min'}</span>
-                      </div>
-                    </div>
-                  </a>
-                </article>
-              )) : (
-                <div className="empty">
-                  <p>No reports available yet. Check back soon.</p>
+          <div className="flex flex-col lg:flex-row gap-12">
+            {/* Main feed */}
+            <div className="flex-1">
+              <div className="mb-8 flex items-center justify-between">
+                <h3 className="text-2xl font-bold">
+                  {activeCategory === 'Todo' ? 'Últimas Noticias' : activeCategory}
+                </h3>
+              </div>
+
+              {filteredPosts.length === 0 ? (
+                <p className="text-slate-400">No hay artículos en esta categoría aún.</p>
+              ) : (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                  {filteredPosts.map(post => {
+                    const catStyle = getCategoryStyle(post.category)
+                    return (
+                      <Link href={`/${post.slug}`} key={post.slug} className="group cursor-pointer">
+                        <div className="relative mb-4 aspect-video overflow-hidden rounded-xl bg-slate-800">
+                          <div
+                            className="h-full w-full bg-center bg-cover transition-transform duration-500 group-hover:scale-110"
+                            style={{ backgroundImage: `url('${post.image || 'https://images.unsplash.com/photo-1518770660439-4636190af475?w=800&h=450&fit=crop'}')` }}
+                          />
+                          <div className="absolute top-4 left-4">
+                            <span className={`rounded ${catStyle.bg} border ${catStyle.border} px-2 py-1 text-[10px] font-bold uppercase tracking-widest ${catStyle.text} backdrop-blur-sm`}>
+                              {post.category}
+                            </span>
+                          </div>
+                        </div>
+                        <h4 className="mb-2 text-xl font-bold group-hover:text-[#0df2f2] transition-colors">
+                          {post.title}
+                        </h4>
+                        <p className="mb-4 text-sm text-slate-400 line-clamp-2">{post.excerpt}</p>
+                        <div className="flex items-center gap-4 text-xs text-slate-500">
+                          <span className="flex items-center gap-1">
+                            <span className="material-symbols-outlined text-sm" style={{fontSize:'14px'}}>schedule</span>
+                            {formatDate(post.date)}
+                          </span>
+                          <span>{post.readTime || '5 min'}</span>
+                        </div>
+                      </Link>
+                    )
+                  })}
                 </div>
               )}
             </div>
-          </div>
-        </section>
 
-        {/* Ad Banner Bottom */}
-        <section className="ad-section">
-          <div className="container">
-            <div className="ad-banner" id="ad-bottom">
-              <ins className="adsbygoogle" style={{display:'block'}} data-ad-client="ca-pub-8449056291567140" data-ad-slot="XXXXXXXXXX" data-ad-format="auto" data-full-width-responsive="true"></ins>
-            </div>
+            {/* Sidebar */}
+            <aside className="w-full lg:w-80 flex flex-col gap-10">
+              {/* Most read */}
+              <div className="rounded-xl bg-slate-900/50 p-6 border border-slate-800">
+                <h3 className="mb-6 text-xl font-bold flex items-center gap-2">
+                  <span className="material-symbols-outlined text-[#0df2f2]" style={{fontSize:'20px'}}>trending_up</span>
+                  Lo más leído
+                </h3>
+                <div className="space-y-6">
+                  {mostRead.map((post, i) => (
+                    <Link href={`/${post.slug}`} key={post.slug} className="flex gap-4 group cursor-pointer">
+                      <span className="text-3xl font-bold text-[#0df2f2]/30 group-hover:text-[#0df2f2] transition-colors">
+                        {String(i + 1).padStart(2, '0')}
+                      </span>
+                      <div>
+                        <h5 className="text-sm font-bold leading-tight group-hover:text-[#0df2f2] transition-colors">
+                          {post.title}
+                        </h5>
+                        <span className="text-[10px] uppercase text-slate-500 font-bold">{post.category}</span>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+
+              {/* Newsletter */}
+              <div className="relative overflow-hidden rounded-xl bg-[#0df2f2] p-8 text-[#102222]">
+                <div className="relative z-10">
+                  <h3 className="mb-2 text-2xl font-bold tracking-tight">Tech Intel Weekly</h3>
+                  <p className="mb-6 text-sm font-medium opacity-80">Recibe las noticias más importantes de IA y Ciberseguridad cada viernes.</p>
+                  <form className="space-y-3">
+                    <input
+                      className="w-full rounded-lg border-none bg-[#102222]/10 px-4 py-3 text-sm placeholder:text-[#102222]/50 focus:outline-none focus:ring-2 focus:ring-[#102222]/20"
+                      placeholder="Tu correo electrónico"
+                      type="email"
+                    />
+                    <button className="w-full rounded-lg bg-[#102222] px-4 py-3 text-sm font-bold text-white transition-transform active:scale-95">
+                      Suscribirme ahora
+                    </button>
+                  </form>
+                </div>
+                <span className="material-symbols-outlined absolute -bottom-6 -right-6 opacity-10" style={{fontSize:'9rem'}}>alternate_email</span>
+              </div>
+
+              {/* Tags */}
+              <div className="p-6">
+                <h3 className="mb-4 text-sm font-bold uppercase tracking-widest text-slate-500">Temas populares</h3>
+                <div className="flex flex-wrap gap-2">
+                  {['Python', 'Linux', 'Zero Trust', 'Quantum', 'LLMs', 'API Security', 'Hardware', 'Cloud'].map(tag => (
+                    <span key={tag} className="rounded-full border border-slate-800 px-3 py-1 text-xs font-medium hover:border-[#0df2f2] hover:text-[#0df2f2] transition-colors cursor-pointer">
+                      {tag}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </aside>
           </div>
-        </section>
+        </main>
 
         {/* Footer */}
-        <footer className="footer">
-          <div className="container">
-            <div className="footer-inner">
-              <div className="footer-brand">
-                <span className="logo-accent">N0V4</span> Feed
+        <footer className="mt-auto border-t border-[#0df2f2]/10 bg-slate-900 py-12 text-slate-400">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid grid-cols-1 md:grid-cols-4 gap-12">
+              <div className="col-span-1">
+                <div className="flex items-center gap-2 text-white mb-6">
+                  <span className="material-symbols-outlined text-[#0df2f2]">token</span>
+                  <span className="text-xl font-bold tracking-tighter">NOVA <span className="text-[#0df2f2]">FEED</span></span>
+                </div>
+                <p className="text-sm leading-relaxed mb-6">Información independiente sobre la vanguardia tecnológica. El futuro no espera.</p>
               </div>
-              <p className="footer-copy">© 2026 Alexis Millán. Professional cybersecurity intelligence.</p>
-              <div className="footer-links">
-                <a href="/about">About</a>
-                <a href="https://twitter.com/itsmillan" target="_blank" rel="noopener noreferrer">Twitter</a>
+              <div>
+                <h4 className="text-white font-bold mb-6">Secciones</h4>
+                <ul className="space-y-4 text-sm">
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Inteligencia Artificial</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Ciberseguridad</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Hardware & Gadgets</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Infraestructura</a></li>
+                </ul>
               </div>
+              <div>
+                <h4 className="text-white font-bold mb-6">Comunidad</h4>
+                <ul className="space-y-4 text-sm">
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="https://twitter.com/itsmillan" target="_blank" rel="noopener noreferrer">Twitter / X</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Newsletter</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Contacto</a></li>
+                </ul>
+              </div>
+              <div>
+                <h4 className="text-white font-bold mb-6">Legal</h4>
+                <ul className="space-y-4 text-sm">
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Privacidad</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Términos</a></li>
+                  <li><a className="hover:text-[#0df2f2] transition-colors" href="#">Cookies</a></li>
+                </ul>
+              </div>
+            </div>
+            <div className="mt-12 pt-8 border-t border-slate-800 text-center text-xs">
+              <p>© 2026 NOVA FEED. Todos los derechos reservados. Powered by Nova 🤖</p>
             </div>
           </div>
         </footer>
       </div>
-
-      <style jsx global>{`
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        
-        :root {
-          --bg: #0a0a0a;
-          --bg-card: #111318;
-          --bg-card-hover: #161b22;
-          --border: #1e2430;
-          --border-hover: #00ff41;
-          --green: #00ff41;
-          --green-dim: #00cc33;
-          --green-dark: #003d10;
-          --text: #e6edf3;
-          --text-dim: #8b949e;
-          --text-muted: #484f58;
-          --font-mono: 'JetBrains Mono', monospace;
-          --font-sans: 'Inter', -apple-system, sans-serif;
-          --container: 1100px;
-          --radius: 8px;
-        }
-
-        body {
-          font-family: var(--font-sans);
-          background: var(--bg);
-          color: var(--text);
-          line-height: 1.6;
-          -webkit-font-smoothing: antialiased;
-        }
-
-        a { color: inherit; text-decoration: none; }
-        img { max-width: 100%; height: auto; display: block; }
-
-        .container {
-          max-width: var(--container);
-          margin: 0 auto;
-          padding: 0 20px;
-        }
-
-        /* HEADER */
-        .header {
-          border-bottom: 1px solid var(--border);
-          padding: 16px 0;
-          position: sticky;
-          top: 0;
-          background: rgba(10, 10, 10, 0.95);
-          backdrop-filter: blur(10px);
-          z-index: 100;
-        }
-        .header-inner {
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-        }
-        .logo {
-          font-family: var(--font-mono);
-          font-size: 1.3rem;
-          font-weight: 700;
-          color: var(--text);
-        }
-        .logo-accent { color: var(--green); }
-        .nav { display: flex; gap: 24px; }
-        .nav-link {
-          font-size: 0.9rem;
-          color: var(--text-dim);
-          transition: color 0.2s;
-          font-weight: 500;
-        }
-        .nav-link:hover, .nav-link.active { color: var(--green); }
-
-        /* FEATURED */
-        .featured { padding: 40px 0; }
-        .featured-card {
-          display: grid;
-          grid-template-columns: 1fr 1fr;
-          gap: 32px;
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          overflow: hidden;
-          transition: border-color 0.3s;
-        }
-        .featured-card:hover { border-color: var(--green); }
-        .featured-img {
-          position: relative;
-          height: 100%;
-          min-height: 300px;
-        }
-        .featured-img img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-        }
-        .featured-badge {
-          position: absolute;
-          top: 16px;
-          left: 16px;
-          background: var(--green);
-          color: #000;
-          font-family: var(--font-mono);
-          font-size: 0.7rem;
-          font-weight: 700;
-          padding: 4px 12px;
-          border-radius: 4px;
-          letter-spacing: 0.05em;
-        }
-        .featured-body { padding: 32px 32px 32px 0; display: flex; flex-direction: column; justify-content: center; }
-        .tag {
-          font-family: var(--font-mono);
-          font-size: 0.75rem;
-          color: var(--green);
-          text-transform: uppercase;
-          letter-spacing: 0.1em;
-          border: 1px solid var(--green-dark);
-          padding: 4px 10px;
-          border-radius: 4px;
-          display: inline-block;
-          margin-bottom: 16px;
-          width: fit-content;
-        }
-        .featured-title {
-          font-family: var(--font-sans);
-          font-size: clamp(1.5rem, 3vw, 2rem);
-          font-weight: 700;
-          line-height: 1.3;
-          margin-bottom: 12px;
-        }
-        .featured-title a:hover { color: var(--green); }
-        .featured-excerpt {
-          color: var(--text-dim);
-          font-size: 0.95rem;
-          margin-bottom: 16px;
-          line-height: 1.7;
-        }
-        .meta {
-          font-size: 0.8rem;
-          color: var(--text-muted);
-          font-family: var(--font-mono);
-          margin-bottom: 20px;
-          display: flex;
-          align-items: center;
-          gap: 8px;
-          flex-wrap: wrap;
-        }
-        .meta-sep { color: var(--text-muted); }
-        .read-btn {
-          font-family: var(--font-mono);
-          font-size: 0.85rem;
-          color: var(--green);
-          font-weight: 600;
-          transition: all 0.2s;
-        }
-        .read-btn:hover { text-decoration: underline; }
-
-        /* POSTS */
-        .posts-section { padding: 40px 0 60px; }
-        .section-title {
-          font-family: var(--font-mono);
-          font-size: 1rem;
-          color: var(--text-dim);
-          margin-bottom: 24px;
-          font-weight: 500;
-        }
-        .section-accent { color: var(--green); }
-        .posts-grid {
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-          gap: 20px;
-        }
-        .post-card {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          overflow: hidden;
-          transition: all 0.3s;
-        }
-        .post-card:hover {
-          border-color: var(--green);
-          transform: translateY(-2px);
-          box-shadow: 0 8px 24px rgba(0, 255, 65, 0.05);
-        }
-        .post-card a { display: block; }
-        .card-img {
-          position: relative;
-          height: 180px;
-          overflow: hidden;
-        }
-        .card-img img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          transition: transform 0.3s;
-        }
-        .post-card:hover .card-img img { transform: scale(1.03); }
-        .card-tag {
-          position: absolute;
-          top: 12px;
-          left: 12px;
-          font-family: var(--font-mono);
-          font-size: 0.65rem;
-          background: rgba(0, 255, 65, 0.15);
-          color: var(--green);
-          padding: 3px 8px;
-          border-radius: 3px;
-          text-transform: uppercase;
-          letter-spacing: 0.05em;
-          font-weight: 600;
-        }
-        .card-body { padding: 20px; }
-        .card-title {
-          font-size: 1.05rem;
-          font-weight: 600;
-          line-height: 1.4;
-          margin-bottom: 8px;
-        }
-        .post-card:hover .card-title { color: var(--green); }
-        .card-excerpt {
-          font-size: 0.85rem;
-          color: var(--text-dim);
-          line-height: 1.6;
-          margin-bottom: 12px;
-          display: -webkit-box;
-          -webkit-line-clamp: 3;
-          -webkit-box-orient: vertical;
-          overflow: hidden;
-        }
-        .card-meta {
-          font-size: 0.75rem;
-          color: var(--text-muted);
-          font-family: var(--font-mono);
-          display: flex;
-          gap: 8px;
-          align-items: center;
-        }
-        .empty {
-          grid-column: 1 / -1;
-          text-align: center;
-          padding: 60px 20px;
-          color: var(--text-dim);
-        }
-
-        /* FOOTER */
-        .footer {
-          border-top: 1px solid var(--border);
-          padding: 32px 0;
-        }
-        .footer-inner { text-align: center; }
-        .footer-brand {
-          font-family: var(--font-mono);
-          font-size: 1rem;
-          font-weight: 700;
-          margin-bottom: 8px;
-        }
-        .footer-copy {
-          font-size: 0.8rem;
-          color: var(--text-muted);
-          margin-bottom: 12px;
-        }
-        .footer-links { display: flex; justify-content: center; gap: 20px; }
-        .footer-links a {
-          font-size: 0.8rem;
-          color: var(--text-dim);
-          transition: color 0.2s;
-        }
-        .footer-links a:hover { color: var(--green); }
-
-        /* ADS */
-        .ad-section { padding: 20px 0; }
-        .ad-banner {
-          background: var(--bg-card);
-          border: 1px solid var(--border);
-          border-radius: var(--radius);
-          padding: 16px;
-          text-align: center;
-          min-height: 100px;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          color: var(--text-muted);
-          font-family: var(--font-mono);
-          font-size: 0.7rem;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-          .featured-card {
-            grid-template-columns: 1fr;
-          }
-          .featured-img { min-height: 200px; }
-          .featured-body { padding: 24px; }
-          .posts-grid {
-            grid-template-columns: 1fr;
-          }
-          .nav { gap: 16px; }
-        }
-      `}</style>
     </>
   )
 }
 
 export async function getStaticProps() {
-  const postsDirectory = path.join(process.cwd(), 'content/blog')
+  const dirs = [
+    path.join(process.cwd(), 'content/blog'),
+    path.join(process.cwd(), 'content/posts'),
+  ]
   let posts = []
-  let featuredPost = null
 
-  try {
-    if (fs.existsSync(postsDirectory)) {
-      const filenames = fs.readdirSync(postsDirectory)
-      posts = filenames
-        .filter(name => name.endsWith('.md'))
-        .map(name => {
-          const filePath = path.join(postsDirectory, name)
-          const fileContents = fs.readFileSync(filePath, 'utf8')
-          const { data } = matter(fileContents)
-          return {
-            slug: name.replace(/\.md$/, ''),
-            title: data.title || 'Untitled',
-            excerpt: data.excerpt || '',
-            date: data.date || new Date().toISOString(),
-            category: data.category || 'General',
-            readTime: data.readTime || '5 min',
-            image: data.image || null,
-            featured: data.featured || false
-          }
-        })
-        .sort((a, b) => new Date(b.date) - new Date(a.date))
-
-      featuredPost = posts.find(p => p.featured) || posts[0] || null
+  for (const dir of dirs) {
+    try {
+      if (fs.existsSync(dir)) {
+        const filenames = fs.readdirSync(dir)
+        const dirPosts = filenames
+          .filter(name => name.endsWith('.md'))
+          .map(name => {
+            const filePath = path.join(dir, name)
+            const fileContents = fs.readFileSync(filePath, 'utf8')
+            const { data } = matter(fileContents)
+            return {
+              slug: name.replace(/\.md$/, ''),
+              title: data.title || 'Untitled',
+              excerpt: data.excerpt || '',
+              date: data.date ? new Date(data.date).toISOString() : new Date().toISOString(),
+              category: data.category || 'General',
+              readTime: data.readTime || '5 min',
+              image: data.image || null,
+              featured: data.featured || false,
+            }
+          })
+        posts = posts.concat(dirPosts)
+      }
+    } catch (e) {
+      console.error('Error reading', dir, e)
     }
-  } catch (error) {
-    console.error('Error loading posts:', error)
   }
 
-  return { props: { posts, featuredPost } }
+  posts.sort((a, b) => new Date(b.date) - new Date(a.date))
+  const featuredPost = posts.find(p => p.featured) || posts[0] || null
+
+  return {
+    props: {
+      posts: posts.map(p => ({ ...p, date: p.date })),
+      featuredPost,
+    }
+  }
 }
